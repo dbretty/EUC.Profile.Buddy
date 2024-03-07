@@ -1,8 +1,8 @@
-﻿using EUC.Profile.Buddy.Common.User;
-using EUC.Profile.Buddy.Common.Logging;
-
-namespace EUC.Profile.Buddy.CLI
+﻿namespace EUC.Profile.Buddy.CLI
 {
+    using EUC.Profile.Buddy.Common.User;
+    using EUC.Profile.Buddy.Common.Logging;
+
     /// <summary>
     /// Class to do execute the CLI Program.
     /// </summary>
@@ -23,6 +23,7 @@ namespace EUC.Profile.Buddy.CLI
             await Console.Out.WriteLineAsync($"Local AppData: {user.AppDataLocal}");
             await Console.Out.WriteLineAsync($"Roaming AppData: {user.AppDataRoaming}");
             await Console.Out.WriteLineAsync($"Profile Size: {user.ProfileSize}");
+            var newSize = user.UpdateProfileSize(user.ProfileDirectory);
         }
     }
 }

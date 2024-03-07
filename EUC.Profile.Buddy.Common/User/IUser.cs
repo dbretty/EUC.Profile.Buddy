@@ -8,5 +8,7 @@
         public string? AppDataLocal { get; set; }
         public string? AppDataRoaming { get; set; }
         public string? ProfileSize { get; set; }
+
+        public string UpdateProfileSize(string profileDirectory);
     }
 }

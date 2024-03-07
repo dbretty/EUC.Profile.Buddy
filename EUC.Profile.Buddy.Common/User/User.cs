@@ -37,8 +37,21 @@ namespace EUC.Profile.Buddy.Common.User
                 this.ProfileDirectory = (string?)userRegistry.GetRegistryValue(userProfileDirectory, volatileEnvironment, RegistryHive.CurrentUser);
                 this.AppDataLocal = (string?)userRegistry.GetRegistryValue(userLocalAppData, volatileEnvironment, RegistryHive.CurrentUser);
                 this.AppDataRoaming = (string?)userRegistry.GetRegistryValue(userRoamingAppData, volatileEnvironment, RegistryHive.CurrentUser);
-                this.ProfileSize = filesAndFolders.FormatFileSize((long)filesAndFolders.DirectorySize(new DirectoryInfo(this.ProfileDirectory)));
+                UpdateProfileSize(this.ProfileDirectory);
             }
+        }
+
+        /// <summary>
+        /// Update the profile size for the user.
+        /// </summary>
+        public string UpdateProfileSize(string profileDirectory)
+        {
+            IFilesAndFolders filesAndFolders = new FilesAndFolders();
+            var profileSize = filesAndFolders.FormatFileSize(
+                (long)filesAndFolders.DirectorySize(new DirectoryInfo(this.ProfileDirectory))
+            );
+            this.ProfileSize = profileSize; 
+            return profileSize;
         }
     }
 }
