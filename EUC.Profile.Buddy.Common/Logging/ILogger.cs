@@ -1,7 +1,14 @@
-﻿using EUC.Profile.Buddy.Common.Logging.Model;
+﻿// <copyright file="ILogger.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace EUC.Profile.Buddy.Common.Logging
 {
+    using EUC.Profile.Buddy.Common.Logging.Model;
+
+    /// <summary>
+    /// Public Interface for the Logger Class.
+    /// </summary>
     public interface ILogger
     {
         /// <summary>

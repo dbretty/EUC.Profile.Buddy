@@ -1,23 +1,38 @@
-﻿namespace EUC.Profile.Buddy.Common.File
+﻿//-----------------------------------------------------------------------
+// <copyright file="FilesAndFolders.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// <author>Dave Brett</author>
+//-----------------------------------------------------------------------
+namespace EUC.Profile.Buddy.Common.File
 {
+    /// <summary>
+    /// Files and Folders Class.
+    /// </summary>
     public class FilesAndFolders : IFilesAndFolders
     {
+        /// <summary>
+        /// Gets a directory size based on a path.
+        /// </summary>
+        /// <param name="directory">The DirectoryInfo object to size.</param>
+        /// <returns>The Size of the Directory in Bytes.</returns>
         public long DirectorySize(DirectoryInfo directory)
         {
             try
             {
                 long size = 0;
-                FileInfo[] fis = directory.GetFiles();
-                foreach (FileInfo fi in fis)
+                FileInfo[] files = directory.GetFiles();
+                foreach (FileInfo file in files)
                 {
-                    size += fi.Length;
+                    size += file.Length;
                 }
-                // Add subdirectory sizes.
-                DirectoryInfo[] dis = directory.GetDirectories();
-                foreach (DirectoryInfo di in dis)
+
+                DirectoryInfo[] directories = directory.GetDirectories();
+                foreach (DirectoryInfo subdirectory in directories)
                 {
-                    size += DirectorySize(di);
+                    size += this.DirectorySize(subdirectory);
                 }
+
                 return size;
             }
             catch
@@ -27,17 +42,21 @@
         }
 
         /// <summary>
-        /// Formats the folder size from byten for a readable number.
+        /// Formats the folder size from byte to a readable number.
         /// </summary>
-        /// <param name="bytes">The root folder for the profile.</param>
+        /// <param name="bytes">The Folder Size in Bytes.</param>
         /// <returns>A <see cref="string"/>.</returns>
         public string FormatFileSize(long bytes)
         {
             var unit = 1024;
-            if (bytes < unit) { return $"{bytes} B"; }
+            if (bytes < unit)
+            {
+                return $"{bytes} B";
+            }
 
             var exp = (int)(Math.Log(bytes) / Math.Log(unit));
-            return $"{bytes / Math.Pow(unit, exp):F2} {("KMGTPE")[exp - 1]}B";
+
+            return $"{bytes / Math.Pow(unit, exp):F2} {"KMGTPE"[exp - 1]}B";
         }
     }
 }
