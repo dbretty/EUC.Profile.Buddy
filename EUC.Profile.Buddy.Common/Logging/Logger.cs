@@ -10,9 +10,7 @@ namespace EUC.Profile.Buddy.Common.Logging
         private const string fileName = "EUC.Profile.Buddy.Log.txt";
         private string fullLogFile = string.Empty;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Logger"/> class.
-        /// </summary>
+        
         public Logger()
         {
             this.fullLogFile = Path.Combine(

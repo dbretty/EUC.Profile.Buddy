@@ -14,6 +14,7 @@ namespace EUC.Profile.Buddy.CLI
     using EUC.Profile.Buddy.Common.Registry.Model;
     using System.Transactions;
     using Microsoft.Win32;
+    using EUC.Profile.Buddy.Common.User;
 
     /// <summary>
     /// Class to do execute the CLI Program.
@@ -62,8 +63,10 @@ namespace EUC.Profile.Buddy.CLI
 
                 var andrew1 = regValue.GetRegistryValue(string.Empty, string.Empty, RegistryHive.CurrentUser);
             */
-            var ServiceProvider = new ServiceCollction();
+            var user = new User();
+            var profileSize = user.ProfileSize;
 
+            
             }
         }
     }

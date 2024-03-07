@@ -30,7 +30,7 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <param name="valueKey">The key the value resides in.</param>
         /// <param name="RegistryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
         /// <returns>A <see cref="bool"/> or NONE if successfull.</returns>
-        public bool CreateRegistryKey(string valueKey, RegistryHive registryHive)
+        public bool CreateRegistryKey(string valueKey, RegistryHive registryHive);
 
     }
 }
