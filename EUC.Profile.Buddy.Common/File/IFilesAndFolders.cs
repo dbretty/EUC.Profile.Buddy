@@ -2,8 +2,6 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using EUC.Profile.Buddy.Common.File.Model;
-
 namespace EUC.Profile.Buddy.Common.File
 {
     /// <summary>

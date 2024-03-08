@@ -2,11 +2,9 @@
 namespace EUC.Profile.Buddy.GUI
 {
     using EUC.Profile.Buddy.GUI.Classes;
-    using EUC.Profile.Buddy.Common;
     using EUC.Profile.Buddy.Common.User;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.File;
-    using EUC.Profile.Buddy.Common.File.Model;
 
     /// <summary>
     /// Class to handle FormMain.

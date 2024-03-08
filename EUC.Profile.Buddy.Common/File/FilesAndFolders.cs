@@ -10,8 +10,6 @@ namespace EUC.Profile.Buddy.Common.File
     using System;
     using System.IO;
     using System.Linq;
-    using EUC.Profile.Buddy.Common.File.Model;
-    using EUC.Profile.Buddy.Common.User;
 
     /// <summary>
     /// Files and Folders Class.
