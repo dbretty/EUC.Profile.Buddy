@@ -13,7 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EUC.Profile.Buddy.GUI", "EU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EUC.Profile.Buddy.CLI", "EUC.Profile.Buddy.CLI\EUC.Profile.Buddy.CLI.csproj", "{F16E35BE-9DB6-4F32-8801-3396AEDFA97D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EUC.Profile.Buddy.Common", "EUC.Profile.Buddy.Common\EUC.Profile.Buddy.Common.csproj", "{C1E5415D-934A-4B18-9A17-197014064DB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EUC.Profile.Buddy.Common", "EUC.Profile.Buddy.Common\EUC.Profile.Buddy.Common.csproj", "{C1E5415D-934A-4B18-9A17-197014064DB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B8BCD093-8F15-4D27-B6B6-AF44A6E734E6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

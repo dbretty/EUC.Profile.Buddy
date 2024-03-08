@@ -4,6 +4,8 @@
 namespace EUC.Profile.Buddy.Common.User
 {
     using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Logging.Model;
     using EUC.Profile.Buddy.Common.Registry;
     using Microsoft.Win32;
 
@@ -28,19 +30,34 @@ namespace EUC.Profile.Buddy.Common.User
             {
                 IWindowsRegistry userRegistry = new WindowsRegistry();
                 IFilesAndFolders filesAndFolders = new FilesAndFolders();
+                ILogger logger = new Logger();
+
                 this.ProfileDirectory = string.Empty;
+
                 this.UserName = (string?)userRegistry.GetRegistryValue(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                logger.LogAsync($"Retrieved User Name: {this.UserName}");
+
                 this.Domain = (string?)userRegistry.GetRegistryValue(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                logger.LogAsync($"Retrieved Domain: {this.Domain}");
+
                 this.ProfileDirectory = (string?)userRegistry.GetRegistryValue(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                logger.LogAsync($"Retrieved Profile Directory: {this.ProfileDirectory}");
+
                 this.AppDataLocal = (string?)userRegistry.GetRegistryValue(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                logger.LogAsync($"Retrieved Local App Data: {this.AppDataLocal}");
+
                 this.AppDataRoaming = (string?)userRegistry.GetRegistryValue(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                logger.LogAsync($"Retrieved Roaming App Data: {this.AppDataRoaming}");
+
                 if (this.ProfileDirectory is not null)
                 {
                     this.ProfileSize = this.UpdateProfileSize(this.ProfileDirectory);
+                    logger.LogAsync($"Retrieved Profile Size: {this.ProfileSize}");
                 }
                 else
                 {
                     this.ProfileSize = "0 GB";
+                    logger.LogAsync($"Error Getting Profile Size, Setting To: {this.ProfileSize}", LogLevel.ERROR);
                 }
             }
         }
@@ -83,6 +100,8 @@ namespace EUC.Profile.Buddy.Common.User
         public string UpdateProfileSize(string profileDirectory)
         {
             IFilesAndFolders filesAndFolders = new FilesAndFolders();
+            ILogger logger = new Logger();
+            logger.LogAsync($"Getting Profile Size for: {profileDirectory}");
             var profileSize = filesAndFolders.FormatFileSize((long)filesAndFolders.DirectorySize(new DirectoryInfo(profileDirectory)));
             this.ProfileSize = profileSize;
             return profileSize;
