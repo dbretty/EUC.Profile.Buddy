@@ -13,7 +13,7 @@ namespace EUC.Profile.Buddy.Common.File
         /// Gets a directory size based on a path.
         /// </summary>
         /// <param name="directory">The DirectoryInfo object to size.</param>
-        /// <returns>The Size of the Directory in Bytes.</returns>
+        /// <returns>A <see cref="long"/>.</returns>
         public long DirectorySize(DirectoryInfo directory);
 
         /// <summary>
