@@ -44,8 +44,12 @@
             lblProfileSize = new Label();
             lblUserName = new Label();
             lblProfileDirectory = new Label();
+            dgUserProfileFolders = new DataGridView();
+            Folder = new DataGridViewTextBoxColumn();
+            Size = new DataGridViewTextBoxColumn();
             ContextMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).BeginInit();
             SuspendLayout();
             // 
             // NotifyMain
@@ -202,6 +206,25 @@
             lblProfileDirectory.Text = "lblProfileDirectory";
             lblProfileDirectory.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // dgUserProfileFolders
+            // 
+            dgUserProfileFolders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgUserProfileFolders.Columns.AddRange(new DataGridViewColumn[] { Folder, Size });
+            dgUserProfileFolders.Location = new Point(12, 263);
+            dgUserProfileFolders.Name = "dgUserProfileFolders";
+            dgUserProfileFolders.Size = new Size(495, 382);
+            dgUserProfileFolders.TabIndex = 11;
+            // 
+            // Folder
+            // 
+            Folder.HeaderText = "Folder";
+            Folder.Name = "Folder";
+            // 
+            // Size
+            // 
+            Size.HeaderText = "Size";
+            Size.Name = "Size";
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -209,6 +232,7 @@
             BackColor = Color.White;
             ClientSize = new Size(519, 689);
             ControlBox = false;
+            Controls.Add(dgUserProfileFolders);
             Controls.Add(lblProfileDirectory);
             Controls.Add(lblUserName);
             Controls.Add(lblProfileSize);
@@ -226,6 +250,7 @@
             Load += FormMain_Load;
             ContextMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -245,5 +270,8 @@
         private Label lblProfileSize;
         private Label lblUserName;
         private Label lblProfileDirectory;
+        private DataGridView dgUserProfileFolders;
+        private DataGridViewTextBoxColumn Folder;
+        private DataGridViewTextBoxColumn Size;
     }
 }

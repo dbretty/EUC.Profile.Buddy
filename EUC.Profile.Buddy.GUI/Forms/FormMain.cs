@@ -5,6 +5,8 @@ namespace EUC.Profile.Buddy.GUI
     using EUC.Profile.Buddy.Common;
     using EUC.Profile.Buddy.Common.User;
     using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.File.Model;
 
     /// <summary>
     /// Class to handle FormMain.
@@ -22,16 +24,25 @@ namespace EUC.Profile.Buddy.GUI
         private void FormMain_Load(object sender, EventArgs e)
         {
 
-            Logger logger = new Logger();
+            ILogger logger = new Logger();
             logger.LogAsync("Starting Application");
 
             logger.LogAsync("Building User Object");
-            User user = new User();
+            IUser user = new User();
+
+            IFilesAndFolders filesAndFolders = new FilesAndFolders();
 
             GUIElements.MinimizeApplication(this, this.NotifyMain);
             GUIElements.UpdateLabel(lblUserName, user.UserName);
             GUIElements.UpdateLabel(lblProfileDirectory, user.ProfileDirectory);
             GUIElements.UpdateLabel(lblProfileSize, user.ProfileSize);
+
+            List<(string folderName, string size, long rawSize)> profileFolders = filesAndFolders.BuildTreeSize(user.ProfileDirectory);
+
+            foreach(var folder in profileFolders)
+            {
+                this.dgUserProfileFolders.Rows.Add(folder.folderName, folder.size);
+            }
         }
 
         private void NotifyMain_MouseDoubleClick(object sender, MouseEventArgs e)

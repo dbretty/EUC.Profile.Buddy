@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using EUC.Profile.Buddy.Common.File.Model;
+
 namespace EUC.Profile.Buddy.Common.File
 {
     /// <summary>
@@ -22,5 +24,13 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="bytes">The Folder Size in Bytes.</param>
         /// <returns>A <see cref="string"/>.</returns>
         public string FormatFileSize(long bytes);
+
+        /// <summary>
+        /// Builds a directory tree size list.
+        /// </summary>
+        /// <param name="rootFolder">The root folder to build the tree from.</param>
+        /// <param name="sorted">Boolean value to sort results.</param>
+        /// <returns>A <see cref="string"/>.</returns>
+        public List<(string folderName, string size, long rawSize)> BuildTreeSize(string rootFolder, bool sorted = true);
     }
 }
