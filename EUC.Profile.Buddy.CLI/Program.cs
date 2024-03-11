@@ -15,7 +15,7 @@
         public static async Task Main(string[] args)
         {
             ILogger logger = new Logger();
-            IUser user = new User();
+            IUserDetail user = new UserDetail();
 
             await Console.Out.WriteLineAsync($"UserName: {user.UserName}");
             await Console.Out.WriteLineAsync($"Domain: {user.Domain}");

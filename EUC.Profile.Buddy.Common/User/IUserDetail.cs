@@ -1,4 +1,4 @@
-﻿// <copyright file="IUser.cs" company="PlaceholderCompany">
+﻿// <copyright file="IUserDetail.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,7 @@ namespace EUC.Profile.Buddy.Common.User
     /// <summary>
     /// Public Interface for the WindowsRegistry Class.
     /// </summary>
-    public interface IUser
+    public interface IUserDetail
     {
         /// <summary>
         /// Gets The UserName.

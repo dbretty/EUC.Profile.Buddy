@@ -4,6 +4,8 @@
 
 namespace EUC.Profile.Buddy.Common.File
 {
+    using EUC.Profile.Buddy.Common.File.Model;
+
     /// <summary>
     /// Interface for the FilesAndFolders Class.
     /// </summary>
@@ -29,6 +31,7 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="rootFolder">The root folder to build the tree from.</param>
         /// <param name="sorted">Boolean value to sort results.</param>
         /// <returns>A <see cref="string"/>.</returns>
-        public List<(string folderName, string size, long rawSize)> BuildTreeSize(string rootFolder, bool sorted = true);
+        public List<TreeSize> BuildTreeSizeFolders(string rootFolder, bool sorted = true);
+        public List<TreeSize> BuildTreeSizeFiles(string rootFolder, bool sorted = true);
     }
 }

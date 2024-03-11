@@ -47,9 +47,20 @@
             dgUserProfileFolders = new DataGridView();
             Folder = new DataGridViewTextBoxColumn();
             Size = new DataGridViewTextBoxColumn();
+            ContextFolders = new ContextMenuStrip(components);
+            drilldownToolStripMenuItem = new ToolStripMenuItem();
+            backToolStripMenuItem = new ToolStripMenuItem();
+            label5 = new Label();
+            label6 = new Label();
+            label7 = new Label();
+            lblCurrentDirectory = new Label();
+            btnBack = new Button();
+            btnHome = new Button();
+            button3 = new Button();
             ContextMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).BeginInit();
+            ContextFolders.SuspendLayout();
             SuspendLayout();
             // 
             // NotifyMain
@@ -208,22 +219,151 @@
             // 
             // dgUserProfileFolders
             // 
+            dgUserProfileFolders.AllowUserToAddRows = false;
+            dgUserProfileFolders.AllowUserToDeleteRows = false;
             dgUserProfileFolders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgUserProfileFolders.ColumnHeadersVisible = false;
             dgUserProfileFolders.Columns.AddRange(new DataGridViewColumn[] { Folder, Size });
-            dgUserProfileFolders.Location = new Point(12, 263);
+            dgUserProfileFolders.ContextMenuStrip = ContextFolders;
+            dgUserProfileFolders.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dgUserProfileFolders.Location = new Point(12, 298);
+            dgUserProfileFolders.MultiSelect = false;
             dgUserProfileFolders.Name = "dgUserProfileFolders";
-            dgUserProfileFolders.Size = new Size(495, 382);
+            dgUserProfileFolders.ReadOnly = true;
+            dgUserProfileFolders.RowHeadersVisible = false;
+            dgUserProfileFolders.ScrollBars = ScrollBars.Vertical;
+            dgUserProfileFolders.ShowEditingIcon = false;
+            dgUserProfileFolders.Size = new Size(495, 347);
             dgUserProfileFolders.TabIndex = 11;
             // 
             // Folder
             // 
+            Folder.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             Folder.HeaderText = "Folder";
             Folder.Name = "Folder";
+            Folder.ReadOnly = true;
+            Folder.SortMode = DataGridViewColumnSortMode.NotSortable;
+            Folder.Width = 410;
             // 
             // Size
             // 
+            Size.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             Size.HeaderText = "Size";
             Size.Name = "Size";
+            Size.ReadOnly = true;
+            Size.Width = 80;
+            // 
+            // ContextFolders
+            // 
+            ContextFolders.Items.AddRange(new ToolStripItem[] { drilldownToolStripMenuItem, backToolStripMenuItem });
+            ContextFolders.Name = "ContextFolders";
+            ContextFolders.Size = new Size(126, 48);
+            // 
+            // drilldownToolStripMenuItem
+            // 
+            drilldownToolStripMenuItem.Name = "drilldownToolStripMenuItem";
+            drilldownToolStripMenuItem.Size = new Size(125, 22);
+            drilldownToolStripMenuItem.Text = "Drilldown";
+            drilldownToolStripMenuItem.Click += drilldownToolStripMenuItem_Click;
+            // 
+            // backToolStripMenuItem
+            // 
+            backToolStripMenuItem.Name = "backToolStripMenuItem";
+            backToolStripMenuItem.Size = new Size(125, 22);
+            backToolStripMenuItem.Text = "Back";
+            backToolStripMenuItem.Click += backToolStripMenuItem_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label5.ForeColor = Color.FromArgb(64, 64, 64);
+            label5.Location = new Point(8, 274);
+            label5.Name = "label5";
+            label5.Size = new Size(54, 21);
+            label5.TabIndex = 12;
+            label5.Text = "Folder";
+            label5.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.FromArgb(64, 64, 64);
+            label6.Location = new Point(420, 274);
+            label6.Name = "label6";
+            label6.Size = new Size(38, 21);
+            label6.TabIndex = 13;
+            label6.Text = "Size";
+            label6.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label7.ForeColor = Color.FromArgb(64, 64, 64);
+            label7.Location = new Point(4, 217);
+            label7.Name = "label7";
+            label7.Size = new Size(138, 21);
+            label7.TabIndex = 14;
+            label7.Text = "Current Directory: ";
+            label7.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lblCurrentDirectory
+            // 
+            lblCurrentDirectory.AutoSize = true;
+            lblCurrentDirectory.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblCurrentDirectory.ForeColor = Color.FromArgb(64, 64, 64);
+            lblCurrentDirectory.Location = new Point(149, 217);
+            lblCurrentDirectory.Name = "lblCurrentDirectory";
+            lblCurrentDirectory.Size = new Size(144, 21);
+            lblCurrentDirectory.TabIndex = 15;
+            lblCurrentDirectory.Text = "lblCurrentDirectory";
+            lblCurrentDirectory.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // btnBack
+            // 
+            btnBack.BackColor = Color.FromArgb(224, 224, 224);
+            btnBack.FlatAppearance.BorderSize = 0;
+            btnBack.FlatAppearance.MouseOverBackColor = Color.Silver;
+            btnBack.FlatStyle = FlatStyle.Flat;
+            btnBack.ForeColor = Color.FromArgb(64, 64, 64);
+            btnBack.Location = new Point(12, 247);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(84, 24);
+            btnBack.TabIndex = 16;
+            btnBack.Text = "< Back";
+            btnBack.UseVisualStyleBackColor = false;
+            btnBack.Click += btnBack_Click;
+            // 
+            // btnHome
+            // 
+            btnHome.BackColor = Color.FromArgb(224, 224, 224);
+            btnHome.FlatAppearance.BorderSize = 0;
+            btnHome.FlatAppearance.MouseOverBackColor = Color.Silver;
+            btnHome.FlatStyle = FlatStyle.Flat;
+            btnHome.ForeColor = Color.FromArgb(64, 64, 64);
+            btnHome.Location = new Point(102, 247);
+            btnHome.Name = "btnHome";
+            btnHome.Size = new Size(84, 24);
+            btnHome.TabIndex = 17;
+            btnHome.Text = "Home";
+            btnHome.UseVisualStyleBackColor = false;
+            btnHome.Click += btnHome_Click;
+            // 
+            // button3
+            // 
+            button3.BackColor = Color.FromArgb(224, 224, 224);
+            button3.FlatAppearance.BorderSize = 0;
+            button3.FlatAppearance.MouseOverBackColor = Color.Silver;
+            button3.FlatStyle = FlatStyle.Flat;
+            button3.ForeColor = Color.FromArgb(64, 64, 64);
+            button3.Location = new Point(192, 247);
+            button3.Name = "button3";
+            button3.Size = new Size(84, 24);
+            button3.TabIndex = 18;
+            button3.Text = "Information";
+            button3.UseVisualStyleBackColor = false;
             // 
             // FormMain
             // 
@@ -232,6 +372,13 @@
             BackColor = Color.White;
             ClientSize = new Size(519, 689);
             ControlBox = false;
+            Controls.Add(button3);
+            Controls.Add(btnHome);
+            Controls.Add(btnBack);
+            Controls.Add(lblCurrentDirectory);
+            Controls.Add(label7);
+            Controls.Add(label6);
+            Controls.Add(label5);
             Controls.Add(dgUserProfileFolders);
             Controls.Add(lblProfileDirectory);
             Controls.Add(lblUserName);
@@ -251,6 +398,7 @@
             ContextMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).EndInit();
+            ContextFolders.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -273,5 +421,15 @@
         private DataGridView dgUserProfileFolders;
         private DataGridViewTextBoxColumn Folder;
         private DataGridViewTextBoxColumn Size;
+        private Label label5;
+        private Label label6;
+        private Label label7;
+        private Label lblCurrentDirectory;
+        private Button btnBack;
+        private Button btnHome;
+        private Button button3;
+        private ContextMenuStrip ContextFolders;
+        private ToolStripMenuItem drilldownToolStripMenuItem;
+        private ToolStripMenuItem backToolStripMenuItem;
     }
 }

@@ -5,6 +5,8 @@ namespace EUC.Profile.Buddy.GUI
     using EUC.Profile.Buddy.Common.User;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.File.Model;
+    using Microsoft.VisualBasic.ApplicationServices;
 
     /// <summary>
     /// Class to handle FormMain.
@@ -26,21 +28,17 @@ namespace EUC.Profile.Buddy.GUI
             logger.LogAsync("Starting Application");
 
             logger.LogAsync("Building User Object");
-            IUser user = new User();
+            IUserDetail user = new UserDetail();
 
-            IFilesAndFolders filesAndFolders = new FilesAndFolders();
-
+            GUIElements.SetMouseBusy();
             GUIElements.MinimizeApplication(this, this.NotifyMain);
             GUIElements.UpdateLabel(lblUserName, user.UserName);
             GUIElements.UpdateLabel(lblProfileDirectory, user.ProfileDirectory);
             GUIElements.UpdateLabel(lblProfileSize, user.ProfileSize);
+            GUIElements.UpdateLabel(lblCurrentDirectory, user.ProfileDirectory);
+            GUIElements.UpdateFolderDataGrid(user.ProfileDirectory, this.dgUserProfileFolders);
+            GUIElements.SetMouseNotBusy();
 
-            List<(string folderName, string size, long rawSize)> profileFolders = filesAndFolders.BuildTreeSize(user.ProfileDirectory);
-
-            foreach(var folder in profileFolders)
-            {
-                this.dgUserProfileFolders.Rows.Add(folder.folderName, folder.size);
-            }
         }
 
         private void NotifyMain_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -74,6 +72,59 @@ namespace EUC.Profile.Buddy.GUI
         private void showDetailToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GUIElements.RestoreApplication(this, this.NotifyMain);
+        }
+
+        private void btnHome_Click(object sender, EventArgs e)
+        {
+            GUIElements.SetMouseBusy();
+            GUIElements.UpdateFolderDataGrid(this.lblProfileDirectory.Text, this.dgUserProfileFolders);
+            GUIElements.SetMouseNotBusy();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            var lastFolder = this.lblCurrentDirectory.Text;
+            if (lastFolder != this.lblProfileDirectory.Text)
+            {
+                GUIElements.SetMouseBusy();
+                var trimmedFolder = lastFolder.Substring(0, lastFolder.LastIndexOf("\\"));
+                GUIElements.UpdateFolderDataGrid(trimmedFolder, this.dgUserProfileFolders);
+                GUIElements.UpdateLabel(lblCurrentDirectory, trimmedFolder);
+                GUIElements.SetMouseNotBusy();
+            }
+            else
+            {
+                GUIElements.DisplayCriticalMessage($"You cannot roam above the root User Profile directory of {this.lblProfileDirectory.Text}");
+            }
+        }
+
+        private void backToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var lastFolder = this.lblCurrentDirectory.Text;
+            if (lastFolder != this.lblProfileDirectory.Text)
+            {
+                GUIElements.SetMouseBusy();
+                var trimmedFolder = lastFolder.Substring(0, lastFolder.LastIndexOf("\\"));
+                GUIElements.UpdateFolderDataGrid(trimmedFolder, this.dgUserProfileFolders);
+                GUIElements.UpdateLabel(lblCurrentDirectory, trimmedFolder);
+                GUIElements.SetMouseNotBusy();
+            }
+            else
+            {
+                GUIElements.DisplayCriticalMessage($"You cannot roam above the root User Profile directory of {this.lblProfileDirectory.Text}");
+            }
+        }
+
+        private void drilldownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dgUserProfileFolders.CurrentCell.ColumnIndex == 0)
+            {
+                var currentValue = dgUserProfileFolders.CurrentCell.Value.ToString();
+                GUIElements.SetMouseBusy();
+                GUIElements.UpdateFolderDataGrid(currentValue, this.dgUserProfileFolders);
+                GUIElements.UpdateLabel(lblCurrentDirectory, currentValue);
+                GUIElements.SetMouseNotBusy();
+            }
         }
     }
 }

@@ -4,7 +4,10 @@
 
 namespace EUC.Profile.Buddy.GUI.Classes
 {
+    using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.File.Model;
     using EUC.Profile.Buddy.Common.User;
+    using Microsoft.VisualBasic.ApplicationServices;
 
     /// <summary>
     /// Class to manage GUI Operations specific to Windows Forms.
@@ -82,6 +85,47 @@ namespace EUC.Profile.Buddy.GUI.Classes
         public static void UpdateLabel(Label label, string text)
         {
             label.Text = text;
+        }
+
+        /// <summary>
+        /// Update Folder Size DataGrid.
+        /// </summary>
+        /// <param name="folder">The Label to Update.</param>
+        /// <param name="dataGridView">The Text for the Label.</param>
+        public static void UpdateFolderDataGrid(string folder, DataGridView dataGridView)
+        {
+            IFilesAndFolders filesAndFolders = new FilesAndFolders();
+            dataGridView.Rows.Clear();
+
+            List<TreeSize> profileFolders = filesAndFolders.BuildTreeSizeFolders(folder);
+
+            foreach (var localFolder in profileFolders)
+            {
+                dataGridView.Rows.Add(localFolder.FolderName, localFolder.Size);
+            }
+
+            List<TreeSize> profileFiles = filesAndFolders.BuildTreeSizeFiles(folder);
+
+            foreach (var localFile in profileFiles)
+            {
+                dataGridView.Rows.Add(localFile.FolderName, localFile.Size);
+            }
+        }
+
+        /// <summary>
+        /// Sets the mouse cursor to busy.
+        /// </summary>
+        public static void SetMouseBusy()
+        {
+            Cursor.Current = Cursors.WaitCursor;
+        }
+
+        /// <summary>
+        /// Sets the mouse cursor to normal.
+        /// </summary>
+        public static void SetMouseNotBusy()
+        {
+            Cursor.Current = Cursors.Default;
         }
     }
 }

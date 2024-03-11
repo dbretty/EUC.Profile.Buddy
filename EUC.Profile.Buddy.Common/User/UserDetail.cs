@@ -1,4 +1,4 @@
-﻿// <copyright file="User.cs" company="PlaceholderCompany">
+﻿// <copyright file="UserDetail.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 namespace EUC.Profile.Buddy.Common.User
@@ -12,7 +12,7 @@ namespace EUC.Profile.Buddy.Common.User
     /// <summary>
     /// Class look after the User object.
     /// </summary>
-    public class User : IUser
+    public class UserDetail : IUserDetail
     {
         private const string VolatileEnvironmentValue = "Volatile Environment";
         private const string UserNameValue = "USERNAME";
@@ -22,9 +22,9 @@ namespace EUC.Profile.Buddy.Common.User
         private const string UserRoamingAppDataValue = "APPDATA";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="User"/> class.
+        /// Initializes a new instance of the <see cref="UserDetail"/> class.
         /// </summary>
-        public User()
+        public UserDetail()
         {
             if (OperatingSystem.IsWindows())
             {
