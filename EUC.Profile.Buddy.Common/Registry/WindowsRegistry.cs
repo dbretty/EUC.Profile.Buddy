@@ -4,6 +4,7 @@
 namespace EUC.Profile.Buddy.Common.Registry
 {
     using System.Security;
+    using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Registry.Exceptions;
     using Microsoft.Win32;
 
@@ -12,6 +13,17 @@ namespace EUC.Profile.Buddy.Common.Registry
     /// </summary>
     public class WindowsRegistry : IWindowsRegistry
     {
+        private ILogger privateLogger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowsRegistry"/> class.
+        /// </summary>
+        /// <param name="logger">The Logger interface.</param>
+        public WindowsRegistry(ILogger logger)
+        {
+            this.privateLogger = logger;
+        }
+
         /// <summary>
         /// Gets a value from the registry.
         /// </summary>
@@ -21,9 +33,8 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <returns>A <see cref="object"/>.</returns>
         public object? GetRegistryValue(string valueName, string valueKey, RegistryHive registryHive)
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
-            ArgumentNullException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-
+            ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
+            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
             if (!OperatingSystem.IsWindows())
             {
                 throw new InvalidOperatingSystemException();
@@ -52,6 +63,7 @@ namespace EUC.Profile.Buddy.Common.Registry
                             }
                             else
                             {
+                                this.privateLogger.LogAsync($"Registry value for {valueName} retrieved: {localValue}");
                                 return localValue;
                             }
                         }
@@ -70,6 +82,11 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <returns>A <see cref="bool"/>.</returns>
         public bool SetRegistryValue(string valueName, string valueKey, object valueData, RegistryHive registryHive)
         {
+            ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
+            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
+            ArgumentNullException.ThrowIfNull(valueData, nameof(valueData));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
             if (!OperatingSystem.IsWindows())
             {
                 throw new InvalidOperatingSystemException();
@@ -94,6 +111,7 @@ namespace EUC.Profile.Buddy.Common.Registry
                             else
                             {
                                 localFullKey.SetValue(valueName, valueData);
+                                this.privateLogger.LogAsync($"Registry value set for {valueName}: {valueData}");
                                 return true;
                             }
                         }
@@ -114,6 +132,9 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <returns>A <see cref="bool"/> or NONE if successfull.</returns>
         public bool CreateRegistryKey(string valueKey, RegistryHive registryHive)
         {
+            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
             if (!OperatingSystem.IsWindows())
             {
                 throw new InvalidOperatingSystemException();
@@ -134,6 +155,7 @@ namespace EUC.Profile.Buddy.Common.Registry
                             try
                             {
                                 localKey.CreateSubKey(valueKey, true);
+                                this.privateLogger.LogAsync($"Registry key created {valueKey}");
                                 return true;
                             }
                             catch
@@ -144,6 +166,39 @@ namespace EUC.Profile.Buddy.Common.Registry
                         else
                         {
                             throw new InvalidKeyException("Registry Key already exists");
+                        }
+                    }
+                }
+            }
+        }
+
+        public bool GetRegistryKey(string valueKey, RegistryHive registryHive)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
+            if (!OperatingSystem.IsWindows())
+            {
+                throw new InvalidOperatingSystemException();
+            }
+            else
+            {
+                using (RegistryKey? localKey = GetRegistryHive(registryHive))
+                {
+                    if (localKey is null)
+                    {
+                        throw new InvalidRootKeyException();
+                    }
+                    else
+                    {
+                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, false);
+                        if (localFullKey is not null)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
                         }
                     }
                 }

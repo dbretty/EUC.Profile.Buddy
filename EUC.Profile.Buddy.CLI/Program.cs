@@ -15,15 +15,16 @@
         public static async Task Main(string[] args)
         {
             ILogger logger = new Logger();
-            IUserDetail user = new UserDetail();
-
+           // IUserDetail user = new UserDetail(logger);
+           /*
             await Console.Out.WriteLineAsync($"UserName: {user.UserName}");
             await Console.Out.WriteLineAsync($"Domain: {user.Domain}");
             await Console.Out.WriteLineAsync($"Profile Directory: {user.ProfileDirectory}");
             await Console.Out.WriteLineAsync($"Local AppData: {user.AppDataLocal}");
             await Console.Out.WriteLineAsync($"Roaming AppData: {user.AppDataRoaming}");
             await Console.Out.WriteLineAsync($"Profile Size: {user.ProfileSize}");
-            var newSize = user.UpdateProfileSize(user.ProfileDirectory);
+            //var newSize = user.UpdateProfileSize(user.ProfileDirectory);
+           */
         }
     }
 }

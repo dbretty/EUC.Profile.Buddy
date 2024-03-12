@@ -6,6 +6,8 @@ namespace EUC.Profile.Buddy.GUI.Classes
 {
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.File.Model;
+    using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.User;
     using Microsoft.VisualBasic.ApplicationServices;
 
@@ -94,7 +96,8 @@ namespace EUC.Profile.Buddy.GUI.Classes
         /// <param name="dataGridView">The Text for the Label.</param>
         public static void UpdateFolderDataGrid(string folder, DataGridView dataGridView)
         {
-            IFilesAndFolders filesAndFolders = new FilesAndFolders();
+            ILogger logger = new Logger();
+            IFilesAndFolders filesAndFolders = new FilesAndFolders(logger);
             dataGridView.Rows.Clear();
 
             List<TreeSize> profileFolders = filesAndFolders.BuildTreeSizeFolders(folder);

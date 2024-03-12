@@ -4,8 +4,11 @@
 
 namespace EUC.Profile.Buddy.Common.User
 {
+    using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.User.Model;
+
     /// <summary>
-    /// Public Interface for the WindowsRegistry Class.
+    /// Public Interface for the UserDetail Class.
     /// </summary>
     public interface IUserDetail
     {
@@ -35,15 +38,25 @@ namespace EUC.Profile.Buddy.Common.User
         public string? AppDataRoaming { get; }
 
         /// <summary>
-        /// Gets The Profile Size.
+        /// Gets or sets the Profile Size.
         /// </summary>
-        public string? ProfileSize { get; }
+        public string? ProfileSize { get; set; }
 
         /// <summary>
-        /// Updates the Profile Size.
+        /// Gets the Profile Type.
         /// </summary>
-        /// <param name="profileDirectory">The profile directory.</param>
-        /// <returns>A string.</returns>
+        public ProfileType? UserProfileType { get; }
+
+        /// <summary>
+        /// Update the profile size for the user.
+        /// </summary>
+        /// <param name="profileDirectory">The Profile Directory to get the size for.</param>
+        /// <returns>A <see cref="string"/> with the profile size.</returns>
         public string UpdateProfileSize(string profileDirectory);
+
+        /// <summary>
+        /// Gets the data the user.
+        /// </summary>
+        public void GetUserData();
     }
 }

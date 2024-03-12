@@ -8,10 +8,10 @@
 namespace EUC.Profile.Buddy.Common.File
 {
     using System;
-    using System.ComponentModel.DataAnnotations;
     using System.IO;
     using System.Linq;
     using EUC.Profile.Buddy.Common.File.Model;
+    using EUC.Profile.Buddy.Common.Logging;
 
     /// <summary>
     /// Files and Folders Class.
@@ -20,6 +20,17 @@ namespace EUC.Profile.Buddy.Common.File
     {
         private readonly List<string> folderFilter = new List<string>() { "AppData", "Cookies", "Desktop", "Favorites", "Local AppData", "Personal", "Recent", "Start Menu", "Templates" };
         private readonly List<string> fileFilter = new List<string>() { "ntuser", "desktop.ini" };
+
+        private ILogger privateLogger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilesAndFolders"/> class.
+        /// </summary>
+        /// <param name="logger">The Logger interface.</param>
+        public FilesAndFolders(ILogger logger)
+        {
+            this.privateLogger = logger;
+        }
 
         /// <summary>
         /// Gets a directory size based on a path.
@@ -79,6 +90,8 @@ namespace EUC.Profile.Buddy.Common.File
         {
             var treeView = new List<TreeSize>();
 
+            this.privateLogger.LogAsync($"Building Folder Treeview for {rootFolder}");
+
             DirectoryInfo root = new DirectoryInfo(rootFolder);
             DirectoryInfo[] directories = root.GetDirectories();
             foreach (DirectoryInfo subdirectory in directories)
@@ -90,6 +103,7 @@ namespace EUC.Profile.Buddy.Common.File
                     directoryItem.RawSize = this.DirectorySize(subdirectory);
                     directoryItem.Size = this.FormatFileSize(this.DirectorySize(subdirectory));
                     treeView.Add(directoryItem);
+                    this.privateLogger.LogAsync($"Adding Treeview directory item {directoryItem.FolderName} [{directoryItem.Size}]");
                 }
             }
 
@@ -115,8 +129,9 @@ namespace EUC.Profile.Buddy.Common.File
         {
             var treeView = new List<TreeSize>();
 
-            DirectoryInfo root = new DirectoryInfo(rootFolder);
+            this.privateLogger.LogAsync($"Building File Treeview for {rootFolder}");
 
+            DirectoryInfo root = new DirectoryInfo(rootFolder);
             FileInfo[] files = root.GetFiles();
 
             foreach (FileInfo subFile in files)
@@ -128,6 +143,7 @@ namespace EUC.Profile.Buddy.Common.File
                     directoryItem.RawSize = subFile.Length;
                     directoryItem.Size = this.FormatFileSize((long)directoryItem.RawSize);
                     treeView.Add(directoryItem);
+                    this.privateLogger.LogAsync($"Adding Treeview file item {directoryItem.FolderName} [{directoryItem.Size}]");
                 }
             }
 
@@ -143,6 +159,12 @@ namespace EUC.Profile.Buddy.Common.File
             }
         }
 
+        /// <summary>
+        /// Checks if a folder is in the include filter.
+        /// </summary>
+        /// <param name="folderName">The root folder to build the tree from.</param>
+        /// <param name="folders">Boolean value to sort results.</param>
+        /// <returns>A <see cref="bool"/>.</returns>
         private bool CheckFolderFilter(string folderName, List<string> folders)
         {
             var found = false;
@@ -159,13 +181,19 @@ namespace EUC.Profile.Buddy.Common.File
             return found;
         }
 
-        private bool CheckFileFilter(string folderName, List<string> folders)
+        /// <summary>
+        /// Checks if a file is in the include filter.
+        /// </summary>
+        /// <param name="folderName">The root folder to build the tree from.</param>
+        /// <param name="files">Boolean value to sort results.</param>
+        /// <returns>A <see cref="bool"/>.</returns>
+        private bool CheckFileFilter(string folderName, List<string> files)
         {
             var found = false;
 
-            foreach (string folder in folders)
+            foreach (string file in files)
             {
-                if (folderName.ToLower().Contains(folder.ToLower()))
+                if (folderName.ToLower().Contains(file.ToLower()))
                 {
                     found = true;
                     break;

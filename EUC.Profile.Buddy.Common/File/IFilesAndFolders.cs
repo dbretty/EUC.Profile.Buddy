@@ -32,6 +32,13 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="sorted">Boolean value to sort results.</param>
         /// <returns>A <see cref="string"/>.</returns>
         public List<TreeSize> BuildTreeSizeFolders(string rootFolder, bool sorted = true);
+
+        /// <summary>
+        /// Builds a file tree size list.
+        /// </summary>
+        /// <param name="rootFolder">The root folder to build the tree from.</param>
+        /// <param name="sorted">Boolean value to sort results.</param>
+        /// <returns>A <see cref="string"/>.</returns>
         public List<TreeSize> BuildTreeSizeFiles(string rootFolder, bool sorted = true);
     }
 }

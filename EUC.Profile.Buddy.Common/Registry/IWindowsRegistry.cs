@@ -3,7 +3,6 @@
 // </copyright>
 namespace EUC.Profile.Buddy.Common.Registry
 {
-    using EUC.Profile.Buddy.Common.Registry.Model;
     using Microsoft.Win32;
 
     /// <summary>
@@ -37,5 +36,7 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
         /// <returns>A <see cref="bool"/> or NONE if successfull.</returns>
         public bool CreateRegistryKey(string valueKey, RegistryHive registryHive);
+
+        public bool GetRegistryKey(string valueKey, RegistryHive registryHive);
     }
 }

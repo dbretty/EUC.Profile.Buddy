@@ -5,8 +5,9 @@ namespace EUC.Profile.Buddy.GUI
     using EUC.Profile.Buddy.Common.User;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.File;
-    using EUC.Profile.Buddy.Common.File.Model;
-    using Microsoft.VisualBasic.ApplicationServices;
+    using EUC.Profile.Buddy.Common.Registry;
+    using System.Windows.Forms;
+    using System.ComponentModel;
 
     /// <summary>
     /// Class to handle FormMain.
@@ -23,19 +24,19 @@ namespace EUC.Profile.Buddy.GUI
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-
+            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - this.Width, Screen.PrimaryScreen.WorkingArea.Height - this.Height);
             ILogger logger = new Logger();
-            logger.LogAsync("Starting Application");
-
-            logger.LogAsync("Building User Object");
-            IUserDetail user = new UserDetail();
-
+            IWindowsRegistry registry = new WindowsRegistry(logger);
+            IFilesAndFolders filesAndFolders = new FilesAndFolders(logger);
+            IUserDetail user = new UserDetail(logger, registry, filesAndFolders);
+            logger.LogAsync("Application Started");
             GUIElements.SetMouseBusy();
             GUIElements.MinimizeApplication(this, this.NotifyMain);
             GUIElements.UpdateLabel(lblUserName, user.UserName);
             GUIElements.UpdateLabel(lblProfileDirectory, user.ProfileDirectory);
             GUIElements.UpdateLabel(lblProfileSize, user.ProfileSize);
             GUIElements.UpdateLabel(lblCurrentDirectory, user.ProfileDirectory);
+            GUIElements.UpdateLabel(lblProfileType, user.UserProfileType.ToString());
             GUIElements.UpdateFolderDataGrid(user.ProfileDirectory, this.dgUserProfileFolders);
             GUIElements.SetMouseNotBusy();
 
@@ -78,6 +79,7 @@ namespace EUC.Profile.Buddy.GUI
         {
             GUIElements.SetMouseBusy();
             GUIElements.UpdateFolderDataGrid(this.lblProfileDirectory.Text, this.dgUserProfileFolders);
+            GUIElements.UpdateLabel(lblCurrentDirectory, this.lblProfileDirectory.Text);
             GUIElements.SetMouseNotBusy();
         }
 
@@ -125,6 +127,14 @@ namespace EUC.Profile.Buddy.GUI
                 GUIElements.UpdateLabel(lblCurrentDirectory, currentValue);
                 GUIElements.SetMouseNotBusy();
             }
+        }
+
+        private void pctHome_Click(object sender, EventArgs e)
+        {
+            GUIElements.SetMouseBusy();
+            GUIElements.UpdateFolderDataGrid(this.lblProfileDirectory.Text, this.dgUserProfileFolders);
+            GUIElements.UpdateLabel(lblCurrentDirectory, this.lblProfileDirectory.Text);
+            GUIElements.SetMouseNotBusy();
         }
     }
 }
