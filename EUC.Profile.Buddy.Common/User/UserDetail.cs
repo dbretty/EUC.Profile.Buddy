@@ -4,8 +4,6 @@
 namespace EUC.Profile.Buddy.Common.User
 {
     using EUC.Profile.Buddy.Common.File;
-    using EUC.Profile.Buddy.Common.Logging;
-    using EUC.Profile.Buddy.Common.Logging.Model;
     using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.User.Model;
     using Microsoft.Win32;
@@ -28,22 +26,11 @@ namespace EUC.Profile.Buddy.Common.User
         private const string CPMKey = "ServiceActive";
         private const string CPMRoot = "Software\\Policies\\Citrix\\UserProfileManager";
 
-
-        private ILogger privateLogger;
-        private IWindowsRegistry privateRegistry;
-        private IFilesAndFolders privateFilesAndFolders;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDetail"/> class.
         /// </summary>
-        /// <param name="logger">The Logger interface.</param>
-        /// <param name="registry">The Registry interface.</param>
-        /// <param name="filesAndFolders">The Files and Folders interface.</param>
-        public UserDetail(ILogger logger, IWindowsRegistry registry, IFilesAndFolders filesAndFolders)
+        public UserDetail()
         {
-            this.privateLogger = logger;
-            this.privateRegistry = registry;
-            this.privateFilesAndFolders = filesAndFolders;
             this.GetUserData();
         }
 
@@ -83,7 +70,7 @@ namespace EUC.Profile.Buddy.Common.User
         public ProfileType? UserProfileType { get; set; }
 
         /// <summary>
-        /// Update the profile size for the user.
+        /// Updates the profile size for the user.
         /// </summary>
         /// <param name="profileDirectory">The Profile Directory to get the size for.</param>
         /// <returns>A <see cref="string"/> with the profile size.</returns>
@@ -91,12 +78,10 @@ namespace EUC.Profile.Buddy.Common.User
         {
             ArgumentException.ThrowIfNullOrEmpty(profileDirectory, nameof(profileDirectory));
 
-            this.privateLogger.LogAsync($"Getting Profile Size: {this.ProfileDirectory}");
+            IFilesAndFolders filesAndFolders = new FilesAndFolders();
 
-            var profileSize = this.privateFilesAndFolders.FormatFileSize((long)this.privateFilesAndFolders.DirectorySize(new DirectoryInfo(profileDirectory)));
+            var profileSize = filesAndFolders.FormatFileSize((long)filesAndFolders.DirectorySize(new DirectoryInfo(profileDirectory)));
             this.ProfileSize = profileSize;
-
-            this.privateLogger.LogAsync($"Profile Size Calculated To: {this.ProfileSize}");
 
             return profileSize;
         }
@@ -104,15 +89,17 @@ namespace EUC.Profile.Buddy.Common.User
         /// <summary>
         /// Gets the User Profile Data.
         /// </summary>
-        public void GetUserData()
+        private void GetUserData()
         {
             if (OperatingSystem.IsWindows())
             {
-                this.UserName = (string?)this.privateRegistry.GetRegistryValue(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.Domain = (string?)this.privateRegistry.GetRegistryValue(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.ProfileDirectory = (string?)this.privateRegistry.GetRegistryValue(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.AppDataLocal = (string?)this.privateRegistry.GetRegistryValue(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.AppDataRoaming = (string?)this.privateRegistry.GetRegistryValue(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                IWindowsRegistry windowsRegistry = new WindowsRegistry();
+
+                this.UserName = (string?)windowsRegistry.GetRegistryValue(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.Domain = (string?)windowsRegistry.GetRegistryValue(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.ProfileDirectory = (string?)windowsRegistry.GetRegistryValue(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.AppDataLocal = (string?)windowsRegistry.GetRegistryValue(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.AppDataRoaming = (string?)windowsRegistry.GetRegistryValue(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
                 if (this.ProfileDirectory is not null)
                 {
                     this.ProfileSize = this.UpdateProfileSize(this.ProfileDirectory);
@@ -124,55 +111,41 @@ namespace EUC.Profile.Buddy.Common.User
 
                 this.GetProfileType();
             }
-            else
-            {
-                this.privateLogger.LogAsync("Not a Windows Operating System", LogLevel.ERROR);
-                this.privateLogger.LogAsync("Setting User Parameters to INVALID");
-                this.UserName = "INVALID";
-                this.Domain = "INVALID";
-                this.ProfileDirectory = "INVALID";
-                this.AppDataLocal = "INVALID";
-                this.AppDataRoaming = "INVALID";
-                this.ProfileSize = "0 GB";
-                this.UserProfileType = ProfileType.Local;
-            }
         }
 
+        /// <summary>
+        /// Gets the User Profile Type.
+        /// </summary>
         private void GetProfileType()
         {
+            IWindowsRegistry windowsRegistry = new WindowsRegistry();
             var profileTypeFound = false;
 
-            if (this.privateRegistry.GetRegistryKey(FSLogixRoot, RegistryHive.LocalMachine))
+            if (windowsRegistry.GetRegistryKey(FSLogixRoot, RegistryHive.LocalMachine))
             {
-                var fslValue = this.privateRegistry.GetRegistryValue(FSLogixKey, FSLogixRoot, RegistryHive.LocalMachine);
+                var fslValue = windowsRegistry.GetRegistryValue(FSLogixKey, FSLogixRoot, RegistryHive.LocalMachine);
                 if (fslValue is not null)
                 {
                     switch (fslValue)
                     {
                         case FSLogixValue:
                             this.UserProfileType = ProfileType.FSLogix;
-                            this.privateLogger.LogAsync($"Profile Type: {ProfileType.FSLogix.ToString()}");
                             profileTypeFound = true;
-                            break;
-                        default:
                             break;
                     }
                 }
             }
 
-            if (this.privateRegistry.GetRegistryKey(CPMRoot, RegistryHive.LocalMachine))
+            if (windowsRegistry.GetRegistryKey(CPMRoot, RegistryHive.LocalMachine))
             {
-                var cpmValue = this.privateRegistry.GetRegistryValue(CPMKey, CPMRoot, RegistryHive.LocalMachine);
+                var cpmValue = windowsRegistry.GetRegistryValue(CPMKey, CPMRoot, RegistryHive.LocalMachine);
                 if (cpmValue is not null)
                 {
                     switch (cpmValue)
                     {
                         case CPMValue:
                             this.UserProfileType = ProfileType.Citrix;
-                            this.privateLogger.LogAsync($"Profile Type: {ProfileType.Citrix.ToString()}");
                             profileTypeFound = true;
-                            break;
-                        default:
                             break;
                     }
                 }
@@ -180,7 +153,6 @@ namespace EUC.Profile.Buddy.Common.User
 
             if (!profileTypeFound)
             {
-                this.privateLogger.LogAsync($"Profile Type: {ProfileType.Local.ToString()}");
                 this.UserProfileType = ProfileType.Local;
             }
         }

@@ -4,12 +4,12 @@
 
 namespace EUC.Profile.Buddy.GUI.Classes
 {
+    using System.ComponentModel;
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.File.Model;
     using EUC.Profile.Buddy.Common.Logging;
-    using EUC.Profile.Buddy.Common.Registry;
-    using EUC.Profile.Buddy.Common.User;
-    using Microsoft.VisualBasic.ApplicationServices;
+    using EUC.Profile.Buddy.Common.Profile;
+    using EUC.Profile.Buddy.Common.Registry.Model;
 
     /// <summary>
     /// Class to manage GUI Operations specific to Windows Forms.
@@ -17,7 +17,6 @@ namespace EUC.Profile.Buddy.GUI.Classes
     public class GUIElements
     {
         private const string ApplicationTitle = "EUC Profile Buddy";
-        private const string BaloonTip = "Application has been minimized to the system tray, double click the icon to view profile details";
         private const int BaloonTipTimeout = 1000;
 
         /// <summary>
@@ -54,12 +53,16 @@ namespace EUC.Profile.Buddy.GUI.Classes
         /// </summary>
         /// <param name="form">The form to minimize.</param>
         /// <param name="notifyIcon">The Notification Icon.</param>
-        public static void MinimizeApplication(Form form, NotifyIcon notifyIcon)
+        /// <param name="userName">The username.</param>
+        /// <param name="profileDirectory">The Profile Directory.</param>
+        public static void MinimizeApplication(Form form, NotifyIcon notifyIcon, string userName, string profileDirectory)
         {
+            var baloonTip = $"EUC Profile Buddy has been minimized to the system tray. Double click the icon to see profile details";
+            var baloonTitle = $"{userName} - {profileDirectory}";
             notifyIcon.Visible = true;
-            notifyIcon.Text = ApplicationTitle;
-            notifyIcon.BalloonTipTitle = ApplicationTitle;
-            notifyIcon.BalloonTipText = BaloonTip;
+            notifyIcon.Text = baloonTitle;
+            notifyIcon.BalloonTipTitle = baloonTitle;
+            notifyIcon.BalloonTipText = baloonTip;
             form.ShowInTaskbar = false;
             form.WindowState = FormWindowState.Minimized;
             form.Hide();
@@ -67,9 +70,9 @@ namespace EUC.Profile.Buddy.GUI.Classes
         }
 
         /// <summary>
-        /// Minimize the application.
+        /// Restore the application.
         /// </summary>
-        /// <param name="form">The form to minimize.</param>
+        /// <param name="form">The form to restore.</param>
         /// <param name="notifyIcon">The Notification Icon.</param>
         public static void RestoreApplication(Form form, NotifyIcon notifyIcon)
         {
@@ -92,23 +95,21 @@ namespace EUC.Profile.Buddy.GUI.Classes
         /// <summary>
         /// Update Folder Size DataGrid.
         /// </summary>
-        /// <param name="folder">The Label to Update.</param>
-        /// <param name="dataGridView">The Text for the Label.</param>
+        /// <param name="folder">The root folder.</param>
+        /// <param name="dataGridView">The data grid view.</param>
         public static void UpdateFolderDataGrid(string folder, DataGridView dataGridView)
         {
-            ILogger logger = new Logger();
-            IFilesAndFolders filesAndFolders = new FilesAndFolders(logger);
+            IFilesAndFolders filesAndFolders = new FilesAndFolders();
+
             dataGridView.Rows.Clear();
 
             List<TreeSize> profileFolders = filesAndFolders.BuildTreeSizeFolders(folder);
-
             foreach (var localFolder in profileFolders)
             {
                 dataGridView.Rows.Add(localFolder.FolderName, localFolder.Size);
             }
 
             List<TreeSize> profileFiles = filesAndFolders.BuildTreeSizeFiles(folder);
-
             foreach (var localFile in profileFiles)
             {
                 dataGridView.Rows.Add(localFile.FolderName, localFile.Size);
@@ -129,6 +130,98 @@ namespace EUC.Profile.Buddy.GUI.Classes
         public static void SetMouseNotBusy()
         {
             Cursor.Current = Cursors.Default;
+        }
+
+        /// <summary>
+        /// Update Profile Detail DataGrid.
+        /// </summary>
+        /// <param name="profileType">The Profile Type.</param>
+        /// <param name="dataGridView">The Datagrid to update.</param>
+        public static void UpdateProfileDetailDataGrid(string profileType, DataGridView dataGridView)
+        {
+            IProfile profile = new Profile();
+
+            dataGridView.Rows.Clear();
+
+            var profileDetail = new List<RegistryPathValue>();
+
+            switch (profileType)
+            {
+                case "Local":
+                    profileDetail = profile.GetProfileDetails("Local");
+                    break;
+                case "Citrix":
+                    profileDetail = profile.GetProfileDetails("Citrix");
+                    break;
+                case "FSLogix":
+                    profileDetail = profile.GetProfileDetails("FSLogix");
+                    break;
+            }
+
+            foreach (var localValue in profileDetail)
+            {
+                dataGridView.Rows.Add(localValue.Key, localValue.Value);
+            }
+        }
+
+        /// <summary>
+        /// Update Folder Redirection Detail DataGrid.
+        /// </summary>
+        /// <param name="dataGridView">The datagrid view.</param>
+        public static void UpdateFolderRedirectionDataGrid(DataGridView dataGridView)
+        {
+            IProfile profile = new Profile();
+
+            dataGridView.Rows.Clear();
+
+            var folderRedirectionDetail = new List<RegistryPathValue>();
+            folderRedirectionDetail = profile.GetFolderRedirectionDetails();
+
+            dataGridView.Rows.Clear();
+
+            foreach (var localValue in folderRedirectionDetail)
+            {
+                dataGridView.Rows.Add(localValue.Key, localValue.Value);
+            }
+        }
+
+        /// <summary>
+        /// Sort a datagrid view.
+        /// </summary>
+        /// <param name="dataGridView">The datagrid view.</param>
+        /// <param name="clickedButton">The button clicked to sort.</param>
+        public static void SortDataGrid(DataGridView dataGridView, Button clickedButton)
+        {
+            switch (clickedButton.Text)
+            {
+                case "Asc":
+                    dataGridView.Sort(dataGridView.Columns[0], ListSortDirection.Ascending);
+                    clickedButton.Text = "Desc";
+                    break;
+                case "Desc":
+                    dataGridView.Sort(dataGridView.Columns[0], ListSortDirection.Descending);
+                    clickedButton.Text = "Asc";
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Size a datagrid view.
+        /// </summary>
+        /// <param name="dataGridView">The datagrid view.</param>
+        public static void SizeDataGrid(DataGridView dataGridView)
+        {
+            for (int i = 0; i < dataGridView.Columns.Count; i++)
+            {
+                if (i == (dataGridView.Columns.Count - 1))
+                {
+                    dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+                else
+                {
+                    dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                }
+            }
         }
     }
 }

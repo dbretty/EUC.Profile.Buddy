@@ -11,7 +11,7 @@ namespace EUC.Profile.Buddy.Common.File
     using System.IO;
     using System.Linq;
     using EUC.Profile.Buddy.Common.File.Model;
-    using EUC.Profile.Buddy.Common.Logging;
+    using Microsoft.Win32;
 
     /// <summary>
     /// Files and Folders Class.
@@ -21,17 +21,6 @@ namespace EUC.Profile.Buddy.Common.File
         private readonly List<string> folderFilter = new List<string>() { "AppData", "Cookies", "Desktop", "Favorites", "Local AppData", "Personal", "Recent", "Start Menu", "Templates" };
         private readonly List<string> fileFilter = new List<string>() { "ntuser", "desktop.ini" };
 
-        private ILogger privateLogger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FilesAndFolders"/> class.
-        /// </summary>
-        /// <param name="logger">The Logger interface.</param>
-        public FilesAndFolders(ILogger logger)
-        {
-            this.privateLogger = logger;
-        }
-
         /// <summary>
         /// Gets a directory size based on a path.
         /// </summary>
@@ -39,6 +28,8 @@ namespace EUC.Profile.Buddy.Common.File
         /// <returns>A <see cref="long"/>.</returns>
         public long DirectorySize(DirectoryInfo directory)
         {
+            ArgumentNullException.ThrowIfNull(directory, nameof(directory));
+
             try
             {
                 long size = 0;
@@ -69,6 +60,8 @@ namespace EUC.Profile.Buddy.Common.File
         /// <returns>A <see cref="string"/>.</returns>
         public string FormatFileSize(long bytes)
         {
+            ArgumentNullException.ThrowIfNull(bytes, nameof(bytes));
+
             var unit = 1024;
             if (bytes < unit)
             {
@@ -88,9 +81,9 @@ namespace EUC.Profile.Buddy.Common.File
         /// <returns>A <see cref="string"/>.</returns>
         public List<TreeSize> BuildTreeSizeFolders(string rootFolder, bool sorted = true)
         {
-            var treeView = new List<TreeSize>();
+            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
 
-            this.privateLogger.LogAsync($"Building Folder Treeview for {rootFolder}");
+            var treeView = new List<TreeSize>();
 
             DirectoryInfo root = new DirectoryInfo(rootFolder);
             DirectoryInfo[] directories = root.GetDirectories();
@@ -103,7 +96,6 @@ namespace EUC.Profile.Buddy.Common.File
                     directoryItem.RawSize = this.DirectorySize(subdirectory);
                     directoryItem.Size = this.FormatFileSize(this.DirectorySize(subdirectory));
                     treeView.Add(directoryItem);
-                    this.privateLogger.LogAsync($"Adding Treeview directory item {directoryItem.FolderName} [{directoryItem.Size}]");
                 }
             }
 
@@ -127,9 +119,9 @@ namespace EUC.Profile.Buddy.Common.File
         /// <returns>A <see cref="string"/>.</returns>
         public List<TreeSize> BuildTreeSizeFiles(string rootFolder, bool sorted = true)
         {
-            var treeView = new List<TreeSize>();
+            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
 
-            this.privateLogger.LogAsync($"Building File Treeview for {rootFolder}");
+            var treeView = new List<TreeSize>();
 
             DirectoryInfo root = new DirectoryInfo(rootFolder);
             FileInfo[] files = root.GetFiles();
@@ -143,7 +135,6 @@ namespace EUC.Profile.Buddy.Common.File
                     directoryItem.RawSize = subFile.Length;
                     directoryItem.Size = this.FormatFileSize((long)directoryItem.RawSize);
                     treeView.Add(directoryItem);
-                    this.privateLogger.LogAsync($"Adding Treeview file item {directoryItem.FolderName} [{directoryItem.Size}]");
                 }
             }
 
@@ -167,6 +158,9 @@ namespace EUC.Profile.Buddy.Common.File
         /// <returns>A <see cref="bool"/>.</returns>
         private bool CheckFolderFilter(string folderName, List<string> folders)
         {
+            ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));
+            ArgumentNullException.ThrowIfNull(folders, nameof(folders));
+
             var found = false;
 
             foreach (string folder in folders)
@@ -189,6 +183,9 @@ namespace EUC.Profile.Buddy.Common.File
         /// <returns>A <see cref="bool"/>.</returns>
         private bool CheckFileFilter(string folderName, List<string> files)
         {
+            ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));
+            ArgumentNullException.ThrowIfNull(files, nameof(files));
+
             var found = false;
 
             foreach (string file in files)

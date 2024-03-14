@@ -3,6 +3,7 @@
 // </copyright>
 namespace EUC.Profile.Buddy.Common.Registry
 {
+    using EUC.Profile.Buddy.Common.Registry.Model;
     using Microsoft.Win32;
 
     /// <summary>
@@ -37,6 +38,20 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <returns>A <see cref="bool"/> or NONE if successfull.</returns>
         public bool CreateRegistryKey(string valueKey, RegistryHive registryHive);
 
+        /// <summary>
+        /// Gets Registry Key.
+        /// </summary>
+        /// <param name="valueKey">The key the value resides in.</param>
+        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
+        /// <returns>A <see cref="bool"/>.</returns>
         public bool GetRegistryKey(string valueKey, RegistryHive registryHive);
+
+        /// <summary>
+        /// Builds a registry Path, Key and Value list.
+        /// </summary>
+        /// <param name="rootPath">The root path to build the list from.</param>
+        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
+        /// <returns>A <see cref="List"/>.</returns>
+        public List<RegistryPathValue> GetRegistryPathValue(string[] rootPath, RegistryHive registryHive);
     }
 }

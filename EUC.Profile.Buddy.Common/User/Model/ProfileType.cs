@@ -3,8 +3,6 @@
 // </copyright>
 namespace EUC.Profile.Buddy.Common.User.Model
 {
-    using System.ComponentModel;
-
     /// <summary>
     /// Options for ProfileType.
     /// </summary>

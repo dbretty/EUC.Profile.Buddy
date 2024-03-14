@@ -5,6 +5,7 @@
 namespace EUC.Profile.Buddy.Common.Logging
 {
     using EUC.Profile.Buddy.Common.Logging.Model;
+    using EUC.Profile.Buddy.Common.User.Model;
 
     /// <summary>
     /// Class to do logging.
@@ -33,6 +34,8 @@ namespace EUC.Profile.Buddy.Common.Logging
         /// <returns>The Task.</returns>
         public async Task LogAsync(string logMessage, LogLevel logLevel = LogLevel.INFO, LogType logType = LogType.FILE)
         {
+            ArgumentException.ThrowIfNullOrEmpty(logMessage, nameof(logMessage));
+
             using (StreamWriter streamWriter = new (this.fullLogFile, true))
             {
                 await streamWriter.WriteLineAsync($"{DateTime.Now:dd/MM/yyyy HH:mm:ss}[{logLevel}] {logMessage}");

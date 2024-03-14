@@ -4,8 +4,8 @@
 namespace EUC.Profile.Buddy.Common.Registry
 {
     using System.Security;
-    using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Registry.Exceptions;
+    using EUC.Profile.Buddy.Common.Registry.Model;
     using Microsoft.Win32;
 
     /// <summary>
@@ -13,17 +13,6 @@ namespace EUC.Profile.Buddy.Common.Registry
     /// </summary>
     public class WindowsRegistry : IWindowsRegistry
     {
-        private ILogger privateLogger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WindowsRegistry"/> class.
-        /// </summary>
-        /// <param name="logger">The Logger interface.</param>
-        public WindowsRegistry(ILogger logger)
-        {
-            this.privateLogger = logger;
-        }
-
         /// <summary>
         /// Gets a value from the registry.
         /// </summary>
@@ -35,6 +24,8 @@ namespace EUC.Profile.Buddy.Common.Registry
         {
             ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
             ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
             if (!OperatingSystem.IsWindows())
             {
                 throw new InvalidOperatingSystemException();
@@ -63,7 +54,6 @@ namespace EUC.Profile.Buddy.Common.Registry
                             }
                             else
                             {
-                                this.privateLogger.LogAsync($"Registry value for {valueName} retrieved: {localValue}");
                                 return localValue;
                             }
                         }
@@ -111,7 +101,6 @@ namespace EUC.Profile.Buddy.Common.Registry
                             else
                             {
                                 localFullKey.SetValue(valueName, valueData);
-                                this.privateLogger.LogAsync($"Registry value set for {valueName}: {valueData}");
                                 return true;
                             }
                         }
@@ -129,7 +118,7 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// </summary>
         /// <param name="valueKey">The key the value resides in.</param>
         /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
-        /// <returns>A <see cref="bool"/> or NONE if successfull.</returns>
+        /// <returns>A <see cref="bool"/>.</returns>
         public bool CreateRegistryKey(string valueKey, RegistryHive registryHive)
         {
             ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
@@ -155,7 +144,6 @@ namespace EUC.Profile.Buddy.Common.Registry
                             try
                             {
                                 localKey.CreateSubKey(valueKey, true);
-                                this.privateLogger.LogAsync($"Registry key created {valueKey}");
                                 return true;
                             }
                             catch
@@ -172,6 +160,12 @@ namespace EUC.Profile.Buddy.Common.Registry
             }
         }
 
+        /// <summary>
+        /// Gets Registry Key.
+        /// </summary>
+        /// <param name="valueKey">The key the value resides in.</param>
+        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
+        /// <returns>A <see cref="bool"/>.</returns>
         public bool GetRegistryKey(string valueKey, RegistryHive registryHive)
         {
             ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
@@ -201,6 +195,48 @@ namespace EUC.Profile.Buddy.Common.Registry
                             return false;
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Builds a registry Path, Key and Value list.
+        /// </summary>
+        /// <param name="rootPath">The root path to build the list from.</param>
+        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
+        /// <returns>A <see cref="List"/>.</returns>
+        public List<RegistryPathValue> GetRegistryPathValue(string[] rootPath, RegistryHive registryHive)
+        {
+            ArgumentNullException.ThrowIfNull(rootPath, nameof(rootPath));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
+            using (RegistryKey? localKey = GetRegistryHive(registryHive))
+            {
+                if (localKey is null)
+                {
+                    throw new InvalidRootKeyException();
+                }
+                else
+                {
+                    var regPathValue = new List<RegistryPathValue>();
+                    foreach (var key in rootPath)
+                    {
+                        RegistryKey? localFullKey = localKey.OpenSubKey(key, false);
+                        if (localFullKey is not null)
+                        {
+                            foreach (string value in localFullKey.GetValueNames())
+                            {
+                                RegistryPathValue localValue = new RegistryPathValue();
+                                localValue.Path = localFullKey.Name;
+                                localValue.Key = value;
+                                object? localValueDetail = localFullKey.GetValue(value);
+                                localValue.Value = localValueDetail;
+                                regPathValue.Add(localValue);
+                            }
+                        }
+                    }
+
+                    return regPathValue;
                 }
             }
         }

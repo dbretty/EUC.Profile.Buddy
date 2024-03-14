@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:EUC.Profile.Buddy.Common.Registry.WindowsRegistry.GetRegistryHive(Microsoft.Win32.RegistryHive)~Microsoft.Win32.RegistryKey")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Not relevant in this solution")]

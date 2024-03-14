@@ -56,9 +56,13 @@
             lblCurrentDirectory = new Label();
             btnBack = new Button();
             btnHome = new Button();
-            button3 = new Button();
+            btnProfileDetail = new Button();
             lblProfileType = new Label();
             label9 = new Label();
+            lblAppDataRoaming = new Label();
+            label10 = new Label();
+            lblAppDataLocal = new Label();
+            label12 = new Label();
             ContextMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).BeginInit();
@@ -130,7 +134,7 @@
             pictureBox1.Image = Properties.Resources.profile;
             pictureBox1.Location = new Point(12, 12);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(84, 82);
+            pictureBox1.Size = new Size(66, 65);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 3;
             pictureBox1.TabStop = false;
@@ -140,7 +144,7 @@
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(64, 64, 64);
-            label1.Location = new Point(102, 41);
+            label1.Location = new Point(86, 25);
             label1.Name = "label1";
             label1.Size = new Size(207, 32);
             label1.TabIndex = 4;
@@ -150,11 +154,11 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Segoe UI", 10F);
             label2.ForeColor = Color.FromArgb(64, 64, 64);
-            label2.Location = new Point(47, 124);
+            label2.Location = new Point(48, 87);
             label2.Name = "label2";
-            label2.Size = new Size(95, 21);
+            label2.Size = new Size(84, 19);
             label2.TabIndex = 5;
             label2.Text = "User Name: ";
             label2.TextAlign = ContentAlignment.MiddleRight;
@@ -162,11 +166,11 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Segoe UI", 10F);
             label3.ForeColor = Color.FromArgb(64, 64, 64);
-            label3.Location = new Point(48, 186);
+            label3.Location = new Point(52, 136);
             label3.Name = "label3";
-            label3.Size = new Size(94, 21);
+            label3.Size = new Size(81, 19);
             label3.TabIndex = 6;
             label3.Text = "Profile Size: ";
             label3.TextAlign = ContentAlignment.MiddleRight;
@@ -174,11 +178,11 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.Font = new Font("Segoe UI", 10F);
             label4.ForeColor = Color.FromArgb(64, 64, 64);
-            label4.Location = new Point(12, 155);
+            label4.Location = new Point(18, 111);
             label4.Name = "label4";
-            label4.Size = new Size(130, 21);
+            label4.Size = new Size(114, 19);
             label4.TabIndex = 7;
             label4.Text = "Profile Directory: ";
             label4.TextAlign = ContentAlignment.MiddleRight;
@@ -186,11 +190,11 @@
             // lblProfileSize
             // 
             lblProfileSize.AutoSize = true;
-            lblProfileSize.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblProfileSize.Font = new Font("Segoe UI", 10F);
             lblProfileSize.ForeColor = Color.FromArgb(64, 64, 64);
-            lblProfileSize.Location = new Point(148, 186);
+            lblProfileSize.Location = new Point(138, 136);
             lblProfileSize.Name = "lblProfileSize";
-            lblProfileSize.Size = new Size(100, 21);
+            lblProfileSize.Size = new Size(84, 19);
             lblProfileSize.TabIndex = 8;
             lblProfileSize.Text = "lblProfileSize";
             lblProfileSize.TextAlign = ContentAlignment.MiddleLeft;
@@ -198,11 +202,11 @@
             // lblUserName
             // 
             lblUserName.AutoSize = true;
-            lblUserName.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblUserName.Font = new Font("Segoe UI", 10F);
             lblUserName.ForeColor = Color.FromArgb(64, 64, 64);
-            lblUserName.Location = new Point(148, 124);
+            lblUserName.Location = new Point(138, 87);
             lblUserName.Name = "lblUserName";
-            lblUserName.Size = new Size(101, 21);
+            lblUserName.Size = new Size(87, 19);
             lblUserName.TabIndex = 9;
             lblUserName.Text = "lblUserName";
             lblUserName.TextAlign = ContentAlignment.MiddleLeft;
@@ -210,11 +214,11 @@
             // lblProfileDirectory
             // 
             lblProfileDirectory.AutoSize = true;
-            lblProfileDirectory.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblProfileDirectory.Font = new Font("Segoe UI", 10F);
             lblProfileDirectory.ForeColor = Color.FromArgb(64, 64, 64);
-            lblProfileDirectory.Location = new Point(148, 155);
+            lblProfileDirectory.Location = new Point(138, 111);
             lblProfileDirectory.Name = "lblProfileDirectory";
-            lblProfileDirectory.Size = new Size(136, 21);
+            lblProfileDirectory.Size = new Size(117, 19);
             lblProfileDirectory.TabIndex = 10;
             lblProfileDirectory.Text = "lblProfileDirectory";
             lblProfileDirectory.TextAlign = ContentAlignment.MiddleLeft;
@@ -228,14 +232,14 @@
             dgUserProfileFolders.Columns.AddRange(new DataGridViewColumn[] { Folder, Size });
             dgUserProfileFolders.ContextMenuStrip = ContextFolders;
             dgUserProfileFolders.EditMode = DataGridViewEditMode.EditProgrammatically;
-            dgUserProfileFolders.Location = new Point(12, 313);
+            dgUserProfileFolders.Location = new Point(12, 295);
             dgUserProfileFolders.MultiSelect = false;
             dgUserProfileFolders.Name = "dgUserProfileFolders";
             dgUserProfileFolders.ReadOnly = true;
             dgUserProfileFolders.RowHeadersVisible = false;
             dgUserProfileFolders.ScrollBars = ScrollBars.Vertical;
             dgUserProfileFolders.ShowEditingIcon = false;
-            dgUserProfileFolders.Size = new Size(495, 332);
+            dgUserProfileFolders.Size = new Size(495, 347);
             dgUserProfileFolders.TabIndex = 11;
             // 
             // Folder
@@ -280,7 +284,7 @@
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.ForeColor = Color.FromArgb(64, 64, 64);
-            label5.Location = new Point(9, 320);
+            label5.Location = new Point(9, 332);
             label5.Name = "label5";
             label5.Size = new Size(0, 21);
             label5.TabIndex = 12;
@@ -291,7 +295,7 @@
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.FromArgb(64, 64, 64);
-            label6.Location = new Point(420, 274);
+            label6.Location = new Point(420, 286);
             label6.Name = "label6";
             label6.Size = new Size(0, 21);
             label6.TabIndex = 13;
@@ -300,11 +304,11 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label7.Font = new Font("Segoe UI", 10F);
             label7.ForeColor = Color.FromArgb(64, 64, 64);
-            label7.Location = new Point(4, 247);
+            label7.Location = new Point(11, 238);
             label7.Name = "label7";
-            label7.Size = new Size(138, 21);
+            label7.Size = new Size(123, 19);
             label7.TabIndex = 14;
             label7.Text = "Current Directory: ";
             label7.TextAlign = ContentAlignment.MiddleRight;
@@ -312,11 +316,11 @@
             // lblCurrentDirectory
             // 
             lblCurrentDirectory.AutoSize = true;
-            lblCurrentDirectory.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblCurrentDirectory.Font = new Font("Segoe UI", 10F);
             lblCurrentDirectory.ForeColor = Color.FromArgb(64, 64, 64);
-            lblCurrentDirectory.Location = new Point(149, 247);
+            lblCurrentDirectory.Location = new Point(139, 238);
             lblCurrentDirectory.Name = "lblCurrentDirectory";
-            lblCurrentDirectory.Size = new Size(144, 21);
+            lblCurrentDirectory.Size = new Size(126, 19);
             lblCurrentDirectory.TabIndex = 15;
             lblCurrentDirectory.Text = "lblCurrentDirectory";
             lblCurrentDirectory.TextAlign = ContentAlignment.MiddleLeft;
@@ -328,7 +332,7 @@
             btnBack.FlatAppearance.MouseOverBackColor = Color.Silver;
             btnBack.FlatStyle = FlatStyle.Flat;
             btnBack.ForeColor = Color.FromArgb(64, 64, 64);
-            btnBack.Location = new Point(12, 283);
+            btnBack.Location = new Point(12, 265);
             btnBack.Name = "btnBack";
             btnBack.Size = new Size(34, 24);
             btnBack.TabIndex = 16;
@@ -343,7 +347,7 @@
             btnHome.FlatAppearance.MouseOverBackColor = Color.Silver;
             btnHome.FlatStyle = FlatStyle.Flat;
             btnHome.ForeColor = Color.FromArgb(64, 64, 64);
-            btnHome.Location = new Point(52, 283);
+            btnHome.Location = new Point(52, 265);
             btnHome.Name = "btnHome";
             btnHome.Size = new Size(57, 24);
             btnHome.TabIndex = 17;
@@ -351,28 +355,29 @@
             btnHome.UseVisualStyleBackColor = false;
             btnHome.Click += btnHome_Click;
             // 
-            // button3
+            // btnProfileDetail
             // 
-            button3.BackColor = Color.White;
-            button3.FlatAppearance.BorderColor = Color.SteelBlue;
-            button3.FlatAppearance.MouseOverBackColor = Color.Silver;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.ForeColor = Color.FromArgb(64, 64, 64);
-            button3.Location = new Point(115, 283);
-            button3.Name = "button3";
-            button3.Size = new Size(57, 24);
-            button3.TabIndex = 18;
-            button3.Text = "Info";
-            button3.UseVisualStyleBackColor = false;
+            btnProfileDetail.BackColor = Color.White;
+            btnProfileDetail.FlatAppearance.BorderColor = Color.SteelBlue;
+            btnProfileDetail.FlatAppearance.MouseOverBackColor = Color.Silver;
+            btnProfileDetail.FlatStyle = FlatStyle.Flat;
+            btnProfileDetail.ForeColor = Color.FromArgb(64, 64, 64);
+            btnProfileDetail.Location = new Point(115, 265);
+            btnProfileDetail.Name = "btnProfileDetail";
+            btnProfileDetail.Size = new Size(57, 24);
+            btnProfileDetail.TabIndex = 18;
+            btnProfileDetail.Text = "Info";
+            btnProfileDetail.UseVisualStyleBackColor = false;
+            btnProfileDetail.Click += btnProfileDetail_Click;
             // 
             // lblProfileType
             // 
             lblProfileType.AutoSize = true;
-            lblProfileType.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblProfileType.Font = new Font("Segoe UI", 10F);
             lblProfileType.ForeColor = Color.FromArgb(64, 64, 64);
-            lblProfileType.Location = new Point(149, 216);
+            lblProfileType.Location = new Point(139, 161);
             lblProfileType.Name = "lblProfileType";
-            lblProfileType.Size = new Size(104, 21);
+            lblProfileType.Size = new Size(89, 19);
             lblProfileType.TabIndex = 20;
             lblProfileType.Text = "lblProfileType";
             lblProfileType.TextAlign = ContentAlignment.MiddleLeft;
@@ -380,14 +385,62 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label9.Font = new Font("Segoe UI", 10F);
             label9.ForeColor = Color.FromArgb(64, 64, 64);
-            label9.Location = new Point(44, 216);
+            label9.Location = new Point(48, 161);
             label9.Name = "label9";
-            label9.Size = new Size(98, 21);
+            label9.Size = new Size(86, 19);
             label9.TabIndex = 19;
             label9.Text = "Profile Type: ";
             label9.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lblAppDataRoaming
+            // 
+            lblAppDataRoaming.AutoSize = true;
+            lblAppDataRoaming.Font = new Font("Segoe UI", 10F);
+            lblAppDataRoaming.ForeColor = Color.FromArgb(64, 64, 64);
+            lblAppDataRoaming.Location = new Point(139, 212);
+            lblAppDataRoaming.Name = "lblAppDataRoaming";
+            lblAppDataRoaming.Size = new Size(131, 19);
+            lblAppDataRoaming.TabIndex = 24;
+            lblAppDataRoaming.Text = "lblAppDataRoaming";
+            lblAppDataRoaming.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 10F);
+            label10.ForeColor = Color.FromArgb(64, 64, 64);
+            label10.Location = new Point(6, 212);
+            label10.Name = "label10";
+            label10.Size = new Size(128, 19);
+            label10.TabIndex = 23;
+            label10.Text = "AppData Roaming: ";
+            label10.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lblAppDataLocal
+            // 
+            lblAppDataLocal.AutoSize = true;
+            lblAppDataLocal.Font = new Font("Segoe UI", 10F);
+            lblAppDataLocal.ForeColor = Color.FromArgb(64, 64, 64);
+            lblAppDataLocal.Location = new Point(139, 186);
+            lblAppDataLocal.Name = "lblAppDataLocal";
+            lblAppDataLocal.Size = new Size(108, 19);
+            lblAppDataLocal.TabIndex = 22;
+            lblAppDataLocal.Text = "lblAppDataLocal";
+            lblAppDataLocal.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 10F);
+            label12.ForeColor = Color.FromArgb(64, 64, 64);
+            label12.Location = new Point(29, 186);
+            label12.Name = "label12";
+            label12.Size = new Size(105, 19);
+            label12.TabIndex = 21;
+            label12.Text = "AppData Local: ";
+            label12.TextAlign = ContentAlignment.MiddleRight;
             // 
             // FormMain
             // 
@@ -396,9 +449,13 @@
             BackColor = Color.White;
             ClientSize = new Size(519, 689);
             ControlBox = false;
+            Controls.Add(lblAppDataRoaming);
+            Controls.Add(label10);
+            Controls.Add(lblAppDataLocal);
+            Controls.Add(label12);
             Controls.Add(lblProfileType);
             Controls.Add(label9);
-            Controls.Add(button3);
+            Controls.Add(btnProfileDetail);
             Controls.Add(btnHome);
             Controls.Add(btnBack);
             Controls.Add(lblCurrentDirectory);
@@ -453,11 +510,15 @@
         private Label lblCurrentDirectory;
         private Button btnBack;
         private Button btnHome;
-        private Button button3;
+        private Button btnProfileDetail;
         private ContextMenuStrip ContextFolders;
         private ToolStripMenuItem drilldownToolStripMenuItem;
         private ToolStripMenuItem backToolStripMenuItem;
         private Label lblProfileType;
         private Label label9;
+        private Label lblAppDataRoaming;
+        private Label label10;
+        private Label lblAppDataLocal;
+        private Label label12;
     }
 }

@@ -4,7 +4,6 @@
 
 namespace EUC.Profile.Buddy.Common.User
 {
-    using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.User.Model;
 
     /// <summary>
@@ -53,10 +52,5 @@ namespace EUC.Profile.Buddy.Common.User
         /// <param name="profileDirectory">The Profile Directory to get the size for.</param>
         /// <returns>A <see cref="string"/> with the profile size.</returns>
         public string UpdateProfileSize(string profileDirectory);
-
-        /// <summary>
-        /// Gets the data the user.
-        /// </summary>
-        public void GetUserData();
     }
 }
