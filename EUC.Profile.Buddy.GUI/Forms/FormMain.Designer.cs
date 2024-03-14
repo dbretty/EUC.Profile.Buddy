@@ -63,10 +63,20 @@
             label10 = new Label();
             lblAppDataLocal = new Label();
             label12 = new Label();
+            ContextActions = new ContextMenuStrip(components);
+            temporaryDataToolStripMenuItem = new ToolStripMenuItem();
+            clearTToolStripMenuItem = new ToolStripMenuItem();
+            browsersToolStripMenuItem = new ToolStripMenuItem();
+            resetMicrosoftEdgeToolStripMenuItem = new ToolStripMenuItem();
+            resetGoogleChromeToolStripMenuItem = new ToolStripMenuItem();
+            cmbActions = new ComboBox();
+            btnGo = new Button();
+            deleteToolStripMenuItem = new ToolStripMenuItem();
             ContextMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).BeginInit();
             ContextFolders.SuspendLayout();
+            ContextActions.SuspendLayout();
             SuspendLayout();
             // 
             // NotifyMain
@@ -261,21 +271,21 @@
             // 
             // ContextFolders
             // 
-            ContextFolders.Items.AddRange(new ToolStripItem[] { drilldownToolStripMenuItem, backToolStripMenuItem });
+            ContextFolders.Items.AddRange(new ToolStripItem[] { drilldownToolStripMenuItem, backToolStripMenuItem, deleteToolStripMenuItem });
             ContextFolders.Name = "ContextFolders";
-            ContextFolders.Size = new Size(126, 48);
+            ContextFolders.Size = new Size(181, 92);
             // 
             // drilldownToolStripMenuItem
             // 
             drilldownToolStripMenuItem.Name = "drilldownToolStripMenuItem";
-            drilldownToolStripMenuItem.Size = new Size(125, 22);
+            drilldownToolStripMenuItem.Size = new Size(180, 22);
             drilldownToolStripMenuItem.Text = "Drilldown";
             drilldownToolStripMenuItem.Click += drilldownToolStripMenuItem_Click;
             // 
             // backToolStripMenuItem
             // 
             backToolStripMenuItem.Name = "backToolStripMenuItem";
-            backToolStripMenuItem.Size = new Size(125, 22);
+            backToolStripMenuItem.Size = new Size(180, 22);
             backToolStripMenuItem.Text = "Back";
             backToolStripMenuItem.Click += backToolStripMenuItem_Click;
             // 
@@ -442,6 +452,77 @@
             label12.Text = "AppData Local: ";
             label12.TextAlign = ContentAlignment.MiddleRight;
             // 
+            // ContextActions
+            // 
+            ContextActions.Items.AddRange(new ToolStripItem[] { temporaryDataToolStripMenuItem, browsersToolStripMenuItem });
+            ContextActions.Name = "ContextActions";
+            ContextActions.Size = new Size(158, 48);
+            // 
+            // temporaryDataToolStripMenuItem
+            // 
+            temporaryDataToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { clearTToolStripMenuItem });
+            temporaryDataToolStripMenuItem.Name = "temporaryDataToolStripMenuItem";
+            temporaryDataToolStripMenuItem.Size = new Size(157, 22);
+            temporaryDataToolStripMenuItem.Text = "Temporary Data";
+            // 
+            // clearTToolStripMenuItem
+            // 
+            clearTToolStripMenuItem.Name = "clearTToolStripMenuItem";
+            clearTToolStripMenuItem.Size = new Size(160, 22);
+            clearTToolStripMenuItem.Text = "Clear TEMP Files";
+            // 
+            // browsersToolStripMenuItem
+            // 
+            browsersToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { resetMicrosoftEdgeToolStripMenuItem, resetGoogleChromeToolStripMenuItem });
+            browsersToolStripMenuItem.Name = "browsersToolStripMenuItem";
+            browsersToolStripMenuItem.Size = new Size(157, 22);
+            browsersToolStripMenuItem.Text = "Browsers";
+            // 
+            // resetMicrosoftEdgeToolStripMenuItem
+            // 
+            resetMicrosoftEdgeToolStripMenuItem.Name = "resetMicrosoftEdgeToolStripMenuItem";
+            resetMicrosoftEdgeToolStripMenuItem.Size = new Size(189, 22);
+            resetMicrosoftEdgeToolStripMenuItem.Text = "Reset Microsoft Edge";
+            // 
+            // resetGoogleChromeToolStripMenuItem
+            // 
+            resetGoogleChromeToolStripMenuItem.Name = "resetGoogleChromeToolStripMenuItem";
+            resetGoogleChromeToolStripMenuItem.Size = new Size(189, 22);
+            resetGoogleChromeToolStripMenuItem.Text = "Reset Google Chrome";
+            // 
+            // cmbActions
+            // 
+            cmbActions.FlatStyle = FlatStyle.Flat;
+            cmbActions.Font = new Font("Segoe UI", 12F);
+            cmbActions.Location = new Point(14, 651);
+            cmbActions.Name = "cmbActions";
+            cmbActions.Size = new Size(453, 29);
+            cmbActions.Sorted = true;
+            cmbActions.TabIndex = 27;
+            cmbActions.Text = "Select Action";
+            // 
+            // btnGo
+            // 
+            btnGo.BackColor = Color.White;
+            btnGo.FlatAppearance.BorderColor = Color.SteelBlue;
+            btnGo.FlatAppearance.MouseOverBackColor = Color.Silver;
+            btnGo.FlatStyle = FlatStyle.Flat;
+            btnGo.ForeColor = Color.FromArgb(64, 64, 64);
+            btnGo.Location = new Point(473, 650);
+            btnGo.Name = "btnGo";
+            btnGo.Size = new Size(34, 30);
+            btnGo.TabIndex = 28;
+            btnGo.Text = "Go";
+            btnGo.UseVisualStyleBackColor = false;
+            btnGo.Click += btnGo_Click;
+            // 
+            // deleteToolStripMenuItem
+            // 
+            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            deleteToolStripMenuItem.Size = new Size(180, 22);
+            deleteToolStripMenuItem.Text = "Delete";
+            deleteToolStripMenuItem.Click += deleteToolStripMenuItem_Click;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -449,6 +530,8 @@
             BackColor = Color.White;
             ClientSize = new Size(519, 689);
             ControlBox = false;
+            Controls.Add(btnGo);
+            Controls.Add(cmbActions);
             Controls.Add(lblAppDataRoaming);
             Controls.Add(label10);
             Controls.Add(lblAppDataLocal);
@@ -482,6 +565,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).EndInit();
             ContextFolders.ResumeLayout(false);
+            ContextActions.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -520,5 +604,14 @@
         private Label label10;
         private Label lblAppDataLocal;
         private Label label12;
+        private ContextMenuStrip ContextActions;
+        private ToolStripMenuItem temporaryDataToolStripMenuItem;
+        private ToolStripMenuItem clearTToolStripMenuItem;
+        private ToolStripMenuItem browsersToolStripMenuItem;
+        private ToolStripMenuItem resetMicrosoftEdgeToolStripMenuItem;
+        private ToolStripMenuItem resetGoogleChromeToolStripMenuItem;
+        private ComboBox cmbActions;
+        private Button btnGo;
+        private ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

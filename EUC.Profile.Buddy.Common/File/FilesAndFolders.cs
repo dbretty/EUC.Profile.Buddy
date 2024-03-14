@@ -22,6 +22,24 @@ namespace EUC.Profile.Buddy.Common.File
         private readonly List<string> fileFilter = new List<string>() { "ntuser", "desktop.ini" };
 
         /// <summary>
+        /// Deletes a folder.
+        /// </summary>
+        /// <param name="folderName">The root folder to build the tree from.</param>
+        public void DeleteFolder(string folderName)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));
+
+            try
+            {
+                Directory.Delete(folderName, true);
+            }
+            catch (Exception e)
+            {
+                // Add Error Logging
+            }
+        }
+
+        /// <summary>
         /// Gets a directory size based on a path.
         /// </summary>
         /// <param name="directory">The DirectoryInfo object to size.</param>

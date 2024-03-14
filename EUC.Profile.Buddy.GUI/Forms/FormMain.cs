@@ -8,9 +8,13 @@ namespace EUC.Profile.Buddy.GUI
     using EUC.Profile.Buddy.Common.Registry;
     using System.Windows.Forms;
     using EUC.Profile.Buddy.GUI.Forms;
+    using EUC.Profile.Buddy.Common.Profile;
 
     public partial class FormMain : Form
     {
+        IUserDetail user = new UserDetail();
+        IProfile profile = new Profile();
+
         public FormMain()
         {
             this.InitializeComponent();
@@ -19,7 +23,9 @@ namespace EUC.Profile.Buddy.GUI
         private void FormMain_Load(object sender, EventArgs e)
         {
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - this.Width, Screen.PrimaryScreen.WorkingArea.Height - this.Height);
-            IUserDetail user = new UserDetail();
+
+
+
             GUIElements.SetMouseBusy();
             GUIElements.MinimizeApplication(this, this.NotifyMain, user.UserName, user.ProfileDirectory);
             GUIElements.UpdateLabel(lblUserName, user.UserName);
@@ -32,6 +38,10 @@ namespace EUC.Profile.Buddy.GUI
             GUIElements.UpdateFolderDataGrid(user.ProfileDirectory, this.dgUserProfileFolders);
             GUIElements.SizeDataGrid(this.dgUserProfileFolders);
             GUIElements.SetMouseNotBusy();
+            GUIElements.LoadActions(this.cmbActions, profile);
+
+
+
 
         }
 
@@ -134,6 +144,35 @@ namespace EUC.Profile.Buddy.GUI
         {
             FormDetail formDetail = new FormDetail(this.lblProfileType.Text, this.lblUserName.Text, this.lblProfileDirectory.Text);
             formDetail.ShowDialog();
+        }
+
+        private void btnGo_Click(object sender, EventArgs e)
+        {
+            GUIElements.SetMouseBusy();
+            GUIElements.ExecuteAction(this.cmbActions, this.lblProfileDirectory.Text);
+            user.UpdateProfileSize(user.ProfileDirectory);
+            GUIElements.UpdateLabel(lblProfileSize, user.ProfileSize);
+            GUIElements.UpdateFolderDataGrid(user.ProfileDirectory, this.dgUserProfileFolders);
+            GUIElements.SetMouseNotBusy();
+            GUIElements.DisplayInformationMessage($"Action {this.cmbActions.Text} Completed");
+            GUIElements.LoadActions(this.cmbActions, profile);
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dgUserProfileFolders.CurrentCell.ColumnIndex == 0)
+            {
+                var folderToDelete = this.dgUserProfileFolders.CurrentCell.Value;
+                DialogResult dialogResult = GUIElements.DisplayYesNoMessage($"Are you sure you want to delete {folderToDelete}?");
+                if (dialogResult == DialogResult.Yes)
+                {
+                    IFilesAndFolders filesAndFolders = new FilesAndFolders();
+                    filesAndFolders.DeleteFolder((string)folderToDelete);
+                    user.UpdateProfileSize(user.ProfileDirectory);
+                    GUIElements.UpdateLabel(lblProfileSize, user.ProfileSize);
+                    GUIElements.UpdateFolderDataGrid(this.lblCurrentDirectory.Text, this.dgUserProfileFolders);
+                }
+            }
         }
     }
 }

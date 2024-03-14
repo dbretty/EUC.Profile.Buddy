@@ -4,8 +4,10 @@
 
 namespace EUC.Profile.Buddy.Common.Profile
 {
+    using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.Registry.Model;
+    using EUC.Profile.Buddy.Common.User;
     using Microsoft.Win32;
 
     /// <summary>
@@ -13,10 +15,29 @@ namespace EUC.Profile.Buddy.Common.Profile
     /// </summary>
     public class Profile : IProfile
     {
+        private readonly string[] tempFolders =
+        {
+            "AppData\\Local\\Temp",
+            "AppData\\Roaming\\Temp",
+            "AppData\\Local\\Microsoft\\Windows\\GameExplorer",
+            "AppData\\Local\\Microsoft\\Windows\\WER",
+            "AppData\\Local\\Microsoft\\Windows\\CrashReports",
+            "AppData\\Local\\Microsoft\\MSOIdentityCRL\\Tracing",
+            "AppData\\Local\\CrashDumps",
+            "AppData\\Local\\Package Cache",
+            "AppData\\Local\\D3DSCache",
+            "AppData\\Local\\Microsoft\\Windows\\WebCache.old",
+        };
+
         private string[] shellFolders = { "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders" };
         private string[] citrixRootKey = { "Software\\Policies\\Citrix\\UserProfileManager" };
         private string[] fslogixRootKey = { "Software\\FSLogix\\Profiles" };
         private string[] localRootKey = { "Volatile Environment" };
+
+        /// <summary>
+        /// Gets or sets the Actions.
+        /// </summary>
+        public string[] Actions { get; set; } = { "Clear Temporary Data", "Run Custom Scripts" };
 
         /// <summary>
         /// Gets the profile details from the registry.
@@ -60,6 +81,28 @@ namespace EUC.Profile.Buddy.Common.Profile
             folderRedirectionDetails = registry.GetRegistryPathValue(this.shellFolders, RegistryHive.LocalMachine);
 
             return folderRedirectionDetails;
+        }
+
+        /// <summary>
+        /// Execute a profile action.
+        /// </summary>
+        /// <param name="actionDescription">The Action Description.</param>
+        /// <param name="profileDirectory">The Profile Directory.</param>
+        public void ExecuteAction(string actionDescription, string profileDirectory)
+        {
+            switch (actionDescription)
+            {
+                case "Clear Temporary Data":
+                    IFilesAndFolders filesAndFolders = new FilesAndFolders();
+                    foreach (var subFolder in tempFolders)
+                    {
+                        filesAndFolders.DeleteFolder(Path.Join(profileDirectory, subFolder));
+                    }
+
+                    break;
+                case "Run Custom Scripts":
+                    break;
+            }
         }
     }
 }

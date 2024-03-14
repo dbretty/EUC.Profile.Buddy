@@ -5,11 +5,13 @@
 namespace EUC.Profile.Buddy.GUI.Classes
 {
     using System.ComponentModel;
+    using System.Drawing.Text;
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.File.Model;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Profile;
     using EUC.Profile.Buddy.Common.Registry.Model;
+    using Microsoft.Win32;
 
     /// <summary>
     /// Class to manage GUI Operations specific to Windows Forms.
@@ -222,6 +224,37 @@ namespace EUC.Profile.Buddy.GUI.Classes
                     dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
                 }
             }
+        }
+
+        /// <summary>
+        /// Loads the Actions.
+        /// </summary>
+        /// <param name="comboBox">The datagrid view.</param>
+        /// <param name="profile">The profile.</param>
+        public static void LoadActions(ComboBox comboBox, IProfile profile)
+        {
+            comboBox.Items.Clear();
+
+            if (profile != null)
+            {
+                foreach (var action in profile.Actions)
+                {
+                    comboBox.Items.Add(action);
+                }
+            }
+
+            comboBox.Text = "Select Action";
+        }
+
+        /// <summary>
+        /// Execute the Actions.
+        /// </summary>
+        /// <param name="comboBox">The datagrid view.</param>
+        /// /// <param name="profileDirectory">The profile directory.</param>
+        public static void ExecuteAction(ComboBox comboBox, string profileDirectory)
+        {
+            IProfile profile = new Profile();
+            profile.ExecuteAction(comboBox.Text, profileDirectory);
         }
     }
 }

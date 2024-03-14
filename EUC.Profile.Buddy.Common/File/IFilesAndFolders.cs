@@ -40,5 +40,12 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="sorted">Boolean value to sort results.</param>
         /// <returns>A <see cref="string"/>.</returns>
         public List<TreeSize> BuildTreeSizeFiles(string rootFolder, bool sorted = true);
+
+        /// <summary>
+        /// Deletes a folder.
+        /// </summary>
+        /// <param name="folderName">The root folder to build the tree from.</param>
+        /// <param name="profileDirectory">The Profile Directory.</param>
+        public void DeleteFolder(string folderName);
     }
 }

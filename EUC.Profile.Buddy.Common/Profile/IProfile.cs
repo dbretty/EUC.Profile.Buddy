@@ -11,6 +11,11 @@ namespace EUC.Profile.Buddy.Common.Profile
     public interface IProfile
     {
         /// <summary>
+        /// Gets The Actions.
+        /// </summary>
+        public string[]? Actions { get; }
+
+        /// <summary>
         /// Gets the folder redirection details from the registry.
         /// </summary>
         /// <returns>A <see cref="List"/>.</returns>
@@ -22,5 +27,11 @@ namespace EUC.Profile.Buddy.Common.Profile
         /// <param name="profileType">The type of user profile.</param>
         /// <returns>A <see cref="List"/>.</returns>
         List<RegistryPathValue> GetProfileDetails(string profileType);
+
+        /// <summary>
+        /// Execute a profile action.
+        /// </summary>
+        /// <param name="actionDescription">The Action Description.</param>
+        public void ExecuteAction(string actionDescription, string profileDirectory);
     }
 }
