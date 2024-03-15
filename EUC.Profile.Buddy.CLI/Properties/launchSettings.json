@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EUC.Profile.Buddy.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "ClearTemp"
+    }
+  }
+}

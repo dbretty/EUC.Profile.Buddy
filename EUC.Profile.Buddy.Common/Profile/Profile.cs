@@ -7,7 +7,6 @@ namespace EUC.Profile.Buddy.Common.Profile
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.Registry.Model;
-    using EUC.Profile.Buddy.Common.User;
     using Microsoft.Win32;
 
     /// <summary>

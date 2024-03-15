@@ -5,13 +5,10 @@
 namespace EUC.Profile.Buddy.GUI.Classes
 {
     using System.ComponentModel;
-    using System.Drawing.Text;
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.File.Model;
-    using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Profile;
     using EUC.Profile.Buddy.Common.Registry.Model;
-    using Microsoft.Win32;
 
     /// <summary>
     /// Class to manage GUI Operations specific to Windows Forms.
