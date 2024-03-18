@@ -1,5 +1,5 @@
-﻿// <copyright file="IFilesAndFolders.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="IFilesAndFolders.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 
 namespace EUC.Profile.Buddy.Common.File
@@ -19,6 +19,13 @@ namespace EUC.Profile.Buddy.Common.File
         public long DirectorySize(DirectoryInfo directory);
 
         /// <summary>
+        /// Gets a directory size based on a path (Async).
+        /// </summary>
+        /// <param name="directory">The DirectoryInfo object to size.</param>
+        /// <returns>A <see cref="Task"/>.</returns>
+        public Task<long> DirectorySizeAsync(DirectoryInfo directory);
+
+        /// <summary>
         /// Formats the folder size from byte to a readable number.
         /// </summary>
         /// <param name="bytes">The Folder Size in Bytes.</param>
@@ -34,6 +41,14 @@ namespace EUC.Profile.Buddy.Common.File
         public List<TreeSize> BuildTreeSizeFolders(string rootFolder, bool sorted = true);
 
         /// <summary>
+        /// Builds a directory tree size list (Async).
+        /// </summary>
+        /// <param name="rootFolder">The root folder to build the tree from.</param>
+        /// <param name="sorted">Boolean value to sort results.</param>
+        /// <returns>A <see cref="Task"/>.</returns>
+        public Task<List<TreeSize>> BuildTreeSizeFoldersAsync(string rootFolder, bool sorted = true);
+
+        /// <summary>
         /// Builds a file tree size list.
         /// </summary>
         /// <param name="rootFolder">The root folder to build the tree from.</param>
@@ -42,10 +57,18 @@ namespace EUC.Profile.Buddy.Common.File
         public List<TreeSize> BuildTreeSizeFiles(string rootFolder, bool sorted = true);
 
         /// <summary>
+        /// Builds a file tree size list.
+        /// </summary>
+        /// <param name="rootFolder">The root folder to build the tree from.</param>
+        /// <param name="sorted">Boolean value to sort results.</param>
+        /// <returns>A <see cref="Task"/>.</returns>
+        public Task<List<TreeSize>> BuildTreeSizeFilesAsync(string rootFolder, bool sorted = true);
+
+        /// <summary>
         /// Deletes a folder.
         /// </summary>
         /// <param name="folderName">The root folder to build the tree from.</param>
-        /// <param name="profileDirectory">The Profile Directory.</param>
-        public void DeleteFolder(string folderName);
+        /// <returns>A <see cref="Task"/>.</returns>
+        public Task DeleteFolderAsync(string folderName);
     }
 }

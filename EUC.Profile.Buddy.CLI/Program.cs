@@ -12,19 +12,7 @@ namespace EUC.Profile.Buddy.CLI
             IUserDetail user = new UserDetail();
             await Console.Out.WriteLineAsync($"User Name: {user.UserName}");
             await Console.Out.WriteLineAsync($"Profile Directory: {user.ProfileDirectory}");
-            if (args.Length > 0)
-            {
-                var command = args[0];
 
-                switch (command)
-                {
-                    case "ClearTemp":
-                        await Console.Out.WriteLineAsync("Clearing Temp Data");
-                        IProfile profile = new EUC.Profile.Buddy.Common.Profile.Profile();
-                        profile.ExecuteAction("Clear Temporary Data", user.ProfileDirectory);
-                        break;
-                }
-            }
             
         }
     }

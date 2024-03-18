@@ -1,7 +1,6 @@
-﻿// <copyright file="IUserDetail.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="IUserDetail.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
-
 namespace EUC.Profile.Buddy.Common.User
 {
     using EUC.Profile.Buddy.Common.User.Model;
@@ -44,7 +43,12 @@ namespace EUC.Profile.Buddy.Common.User
         /// <summary>
         /// Gets the Profile Type.
         /// </summary>
-        public ProfileType? UserProfileType { get; }
+        public string? UserProfileType { get; }
+
+        /// <summary>
+        /// Gets the Profile Definition.
+        /// </summary>
+        public ProfileTypeDefinition ProfileDefinition { get; }
 
         /// <summary>
         /// Update the profile size for the user.
@@ -52,5 +56,12 @@ namespace EUC.Profile.Buddy.Common.User
         /// <param name="profileDirectory">The Profile Directory to get the size for.</param>
         /// <returns>A <see cref="string"/> with the profile size.</returns>
         public string UpdateProfileSize(string profileDirectory);
+
+        /// <summary>
+        /// Update the profile size for the user (async).
+        /// </summary>
+        /// <param name="profileDirectory">The Profile Directory to get the size for.</param>
+        /// <returns>A <see cref="Task"/> with the profile size.</returns>
+        public Task<string> UpdateProfileSizeAsync(string profileDirectory);
     }
 }

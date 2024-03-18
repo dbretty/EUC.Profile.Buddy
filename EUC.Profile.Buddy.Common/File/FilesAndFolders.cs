@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="FilesAndFolders.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="FilesAndFolders.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 // <author>Dave Brett</author>
 //-----------------------------------------------------------------------
@@ -11,7 +11,6 @@ namespace EUC.Profile.Buddy.Common.File
     using System.IO;
     using System.Linq;
     using EUC.Profile.Buddy.Common.File.Model;
-    using Microsoft.Win32;
 
     /// <summary>
     /// Files and Folders Class.
@@ -21,17 +20,14 @@ namespace EUC.Profile.Buddy.Common.File
         private readonly List<string> folderFilter = new List<string>() { "AppData", "Cookies", "Desktop", "Favorites", "Local AppData", "Personal", "Recent", "Start Menu", "Templates" };
         private readonly List<string> fileFilter = new List<string>() { "ntuser", "desktop.ini" };
 
-        /// <summary>
-        /// Deletes a folder.
-        /// </summary>
-        /// <param name="folderName">The root folder to build the tree from.</param>
-        public void DeleteFolder(string folderName)
+        /// <inheritdoc/>
+        public async Task DeleteFolderAsync(string folderName)
         {
             ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));
 
             try
             {
-                Directory.Delete(folderName, true);
+                await Task.Run(() => Directory.Delete(folderName, true));
             }
             catch (Exception e)
             {
@@ -71,11 +67,15 @@ namespace EUC.Profile.Buddy.Common.File
             }
         }
 
-        /// <summary>
-        /// Formats the folder size from byte to a readable number.
-        /// </summary>
-        /// <param name="bytes">The Folder Size in Bytes.</param>
-        /// <returns>A <see cref="string"/>.</returns>
+        /// <inheritdoc/>
+        public async Task<long> DirectorySizeAsync(DirectoryInfo directory)
+        {
+            ArgumentNullException.ThrowIfNull(directory, nameof(directory));
+
+            return await Task.Run(() => this.DirectorySize(directory));
+        }
+
+        /// <inheritdoc/>
         public string FormatFileSize(long bytes)
         {
             ArgumentNullException.ThrowIfNull(bytes, nameof(bytes));
@@ -91,18 +91,12 @@ namespace EUC.Profile.Buddy.Common.File
             return $"{bytes / Math.Pow(unit, exp):F2} {"KMGTPE"[exp - 1]}B";
         }
 
-        /// <summary>
-        /// Builds a directory tree size list.
-        /// </summary>
-        /// <param name="rootFolder">The root folder to build the tree from.</param>
-        /// <param name="sorted">Boolean value to sort results.</param>
-        /// <returns>A <see cref="string"/>.</returns>
+        /// <inheritdoc/>
         public List<TreeSize> BuildTreeSizeFolders(string rootFolder, bool sorted = true)
         {
             ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
 
             var treeView = new List<TreeSize>();
-
             DirectoryInfo root = new DirectoryInfo(rootFolder);
             DirectoryInfo[] directories = root.GetDirectories();
             foreach (DirectoryInfo subdirectory in directories)
@@ -129,12 +123,14 @@ namespace EUC.Profile.Buddy.Common.File
             }
         }
 
-        /// <summary>
-        /// Builds a directory tree size list.
-        /// </summary>
-        /// <param name="rootFolder">The root folder to build the tree from.</param>
-        /// <param name="sorted">Boolean value to sort results.</param>
-        /// <returns>A <see cref="string"/>.</returns>
+        /// <inheritdoc/>
+        public async Task<List<TreeSize>> BuildTreeSizeFoldersAsync(string rootFolder, bool sorted = true)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
+            return await Task.Run(() => this.BuildTreeSizeFolders(rootFolder, sorted = true));
+        }
+
+        /// <inheritdoc/>
         public List<TreeSize> BuildTreeSizeFiles(string rootFolder, bool sorted = true)
         {
             ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
@@ -166,6 +162,13 @@ namespace EUC.Profile.Buddy.Common.File
             {
                 return treeView;
             }
+        }
+
+        /// <inheritdoc/>
+        public async Task<List<TreeSize>> BuildTreeSizeFilesAsync(string rootFolder, bool sorted = true)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
+            return await Task.Run(() => this.BuildTreeSizeFiles(rootFolder, sorted = true));
         }
 
         /// <summary>

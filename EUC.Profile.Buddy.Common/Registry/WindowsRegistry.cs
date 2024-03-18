@@ -1,9 +1,8 @@
-﻿// <copyright file="WindowsRegistry.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="WindowsRegistry.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 namespace EUC.Profile.Buddy.Common.Registry
 {
-    using System.Security;
     using EUC.Profile.Buddy.Common.Registry.Exceptions;
     using EUC.Profile.Buddy.Common.Registry.Model;
     using Microsoft.Win32;
@@ -13,13 +12,7 @@ namespace EUC.Profile.Buddy.Common.Registry
     /// </summary>
     public class WindowsRegistry : IWindowsRegistry
     {
-        /// <summary>
-        /// Gets a value from the registry.
-        /// </summary>
-        /// <param name="valueName">The value name to obtain.</param>
-        /// <param name="valueKey">The key the value resides in.</param>
-        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
-        /// <returns>A <see cref="object"/>.</returns>
+        /// <inheritdoc/>
         public object? GetRegistryValue(string valueName, string valueKey, RegistryHive registryHive)
         {
             ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
@@ -62,110 +55,17 @@ namespace EUC.Profile.Buddy.Common.Registry
             }
         }
 
-        /// <summary>
-        /// Sets a value in the registry.
-        /// </summary>
-        /// <param name="valueName">The value name to obtain.</param>
-        /// <param name="valueKey">The key the value resides in.</param>
-        /// <param name="valueData">The value data to write.</param>
-        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
-        /// <returns>A <see cref="bool"/>.</returns>
-        public bool SetRegistryValue(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        /// <inheritdoc/>
+        public async Task<object?> GetRegistryValueAsync(string valueName, string valueKey, RegistryHive registryHive)
         {
             ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
             ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-            ArgumentNullException.ThrowIfNull(valueData, nameof(valueData));
             ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
 
-            if (!OperatingSystem.IsWindows())
-            {
-                throw new InvalidOperatingSystemException();
-            }
-            else
-            {
-                using (RegistryKey? localKey = GetRegistryHive(registryHive))
-                {
-                    if (localKey is null)
-                    {
-                        throw new InvalidRootKeyException();
-                    }
-                    else
-                    {
-                        try
-                        {
-                            RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
-                            if (localFullKey is null)
-                            {
-                                throw new InvalidKeyException();
-                            }
-                            else
-                            {
-                                localFullKey.SetValue(valueName, valueData);
-                                return true;
-                            }
-                        }
-                        catch (SecurityException ex)
-                        {
-                            throw new SecurityException(ex.Message);
-                        }
-                    }
-                }
-            }
+            return await Task.Run(() => this.GetRegistryValue(valueName, valueKey, registryHive));
         }
 
-        /// <summary>
-        /// Creates a new Registry Key.
-        /// </summary>
-        /// <param name="valueKey">The key the value resides in.</param>
-        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
-        /// <returns>A <see cref="bool"/>.</returns>
-        public bool CreateRegistryKey(string valueKey, RegistryHive registryHive)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
-
-            if (!OperatingSystem.IsWindows())
-            {
-                throw new InvalidOperatingSystemException();
-            }
-            else
-            {
-                using (RegistryKey? localKey = GetRegistryHive(registryHive))
-                {
-                    if (localKey is null)
-                    {
-                        throw new InvalidRootKeyException();
-                    }
-                    else
-                    {
-                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
-                        if (localFullKey is null)
-                        {
-                            try
-                            {
-                                localKey.CreateSubKey(valueKey, true);
-                                return true;
-                            }
-                            catch
-                            {
-                                throw new SecurityException();
-                            }
-                        }
-                        else
-                        {
-                            throw new InvalidKeyException("Registry Key already exists");
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets Registry Key.
-        /// </summary>
-        /// <param name="valueKey">The key the value resides in.</param>
-        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
-        /// <returns>A <see cref="bool"/>.</returns>
+        /// <inheritdoc/>
         public bool GetRegistryKey(string valueKey, RegistryHive registryHive)
         {
             ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
@@ -199,12 +99,7 @@ namespace EUC.Profile.Buddy.Common.Registry
             }
         }
 
-        /// <summary>
-        /// Builds a registry Path, Key and Value list.
-        /// </summary>
-        /// <param name="rootPath">The root path to build the list from.</param>
-        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
-        /// <returns>A <see cref="List"/>.</returns>
+        /// <inheritdoc/>
         public List<RegistryPathValue> GetRegistryPathValue(string[] rootPath, RegistryHive registryHive)
         {
             ArgumentNullException.ThrowIfNull(rootPath, nameof(rootPath));
@@ -239,6 +134,15 @@ namespace EUC.Profile.Buddy.Common.Registry
                     return regPathValue;
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public async Task<List<RegistryPathValue>> GetRegistryPathValueAsync(string[] rootPath, RegistryHive registryHive)
+        {
+            ArgumentNullException.ThrowIfNull(rootPath, nameof(rootPath));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
+            return await Task.Run(() => this.GetRegistryPathValue(rootPath, registryHive));
         }
 
         /// <summary>

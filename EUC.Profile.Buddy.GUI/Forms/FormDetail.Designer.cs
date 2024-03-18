@@ -42,6 +42,8 @@
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
             btnExit = new Button();
+            lblStatus = new Label();
+            pbMain = new ProgressBar();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgProfileDetails).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgFolderRedirection).BeginInit();
@@ -172,7 +174,7 @@
             dgFolderRedirection.ReadOnly = true;
             dgFolderRedirection.RowHeadersVisible = false;
             dgFolderRedirection.ShowEditingIcon = false;
-            dgFolderRedirection.Size = new Size(699, 219);
+            dgFolderRedirection.Size = new Size(699, 194);
             dgFolderRedirection.TabIndex = 19;
             // 
             // dataGridViewTextBoxColumn1
@@ -207,12 +209,34 @@
             btnExit.UseVisualStyleBackColor = false;
             btnExit.Click += btnExit_Click;
             // 
+            // lblStatus
+            // 
+            lblStatus.Font = new Font("Segoe UI", 10F);
+            lblStatus.ForeColor = Color.FromArgb(64, 64, 64);
+            lblStatus.Location = new Point(9, 661);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(239, 19);
+            lblStatus.TabIndex = 33;
+            lblStatus.Text = "Ready";
+            lblStatus.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // pbMain
+            // 
+            pbMain.ForeColor = Color.SteelBlue;
+            pbMain.Location = new Point(257, 664);
+            pbMain.Name = "pbMain";
+            pbMain.Size = new Size(454, 16);
+            pbMain.Style = ProgressBarStyle.Marquee;
+            pbMain.TabIndex = 32;
+            // 
             // FormDetail
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(723, 689);
+            Controls.Add(lblStatus);
+            Controls.Add(pbMain);
             Controls.Add(btnExit);
             Controls.Add(btnFolderRedirectionSort);
             Controls.Add(label3);
@@ -249,5 +273,7 @@
         private DataGridViewTextBoxColumn Value;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private Label lblStatus;
+        private ProgressBar pbMain;
     }
 }

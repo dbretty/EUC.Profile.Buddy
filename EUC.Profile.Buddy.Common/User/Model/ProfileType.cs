@@ -1,26 +1,31 @@
-﻿// <copyright file="ProfileType.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="ProfileType.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
+
 namespace EUC.Profile.Buddy.Common.User.Model
 {
     /// <summary>
-    /// Options for ProfileType.
+    /// Class to hold the Profile Type.
     /// </summary>
-    public enum ProfileType
+    public class ProfileType
     {
         /// <summary>
-        /// Represents Local.
+        /// Gets or Sets the Profile Type Label.
         /// </summary>
-        Local,
+        public string? ProfileTypeLabel { get; set; }
 
         /// <summary>
-        /// Represents FSLogix.
+        /// Gets or Sets the PolicyTypeDefinition.
         /// </summary>
-        FSLogix,
+        public ProfileTypeDefinition ProfileTypeDefinition { get; set; }
 
         /// <summary>
-        /// Represents Citrix Profile Management.
+        /// Gets or Sets the Profile Type Label.
         /// </summary>
-        Citrix,
+        /// <returns>A <see cref="string"/> with the profile size.</returns>
+        public override string? ToString()
+        {
+            return this.ProfileTypeLabel;
+        }
     }
 }

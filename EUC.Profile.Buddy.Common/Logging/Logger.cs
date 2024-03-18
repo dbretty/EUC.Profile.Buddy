@@ -1,11 +1,10 @@
-﻿// <copyright file="Logger.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="Logger.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 
 namespace EUC.Profile.Buddy.Common.Logging
 {
     using EUC.Profile.Buddy.Common.Logging.Model;
-    using EUC.Profile.Buddy.Common.User.Model;
 
     /// <summary>
     /// Class to do logging.

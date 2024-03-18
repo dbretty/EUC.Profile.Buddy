@@ -1,5 +1,5 @@
-﻿// <copyright file="UserDetail.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="UserDetail.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 namespace EUC.Profile.Buddy.Common.User
 {
@@ -13,17 +13,64 @@ namespace EUC.Profile.Buddy.Common.User
     /// </summary>
     public class UserDetail : IUserDetail
     {
+        /// <summary>
+        /// Volatile environment registry location.
+        /// </summary>
         private const string VolatileEnvironmentValue = "Volatile Environment";
+
+        /// <summary>
+        /// Volatile environment Username location.
+        /// </summary>
         private const string UserNameValue = "USERNAME";
+
+        /// <summary>
+        /// Volatile environment Domain location.
+        /// </summary>
         private const string UserDomainValue = "USERDOMAIN";
+
+        /// <summary>
+        /// Volatile environment User Profile location.
+        /// </summary>
         private const string UserProfileDirectoryValue = "USERPROFILE";
+
+        /// <summary>
+        /// Volatile environment Local AppData location.
+        /// </summary>
         private const string UserLocalAppDataValue = "LOCALAPPDATA";
+
+        /// <summary>
+        /// Volatile environment Roaming AppData location.
+        /// </summary>
         private const string UserRoamingAppDataValue = "APPDATA";
+
+        /// <summary>
+        /// FSLogix Enabled Value.
+        /// </summary>
         private const int FSLogixValue = 1;
+
+        /// <summary>
+        /// FSLogix Key Value.
+        /// </summary>
         private const string FSLogixKey = "Enabled";
+
+        /// <summary>
+        /// FSLogix Registry Location.
+        /// </summary>
         private const string FSLogixRoot = "Software\\FSLogix\\Profiles";
+
+        /// <summary>
+        /// CPM Enabled Value.
+        /// </summary>
         private const int CPMValue = 1;
+
+        /// <summary>
+        /// CPM Key Value.
+        /// </summary>
         private const string CPMKey = "ServiceActive";
+
+        /// <summary>
+        /// CPM Registry Location.
+        /// </summary>
         private const string CPMRoot = "Software\\Policies\\Citrix\\UserProfileManager";
 
         /// <summary>
@@ -35,74 +82,102 @@ namespace EUC.Profile.Buddy.Common.User
         }
 
         /// <summary>
-        /// Gets or sets the UserName.
+        /// Gets or sets the ProfileTypes.
         /// </summary>
+        public ProfileType[] ProfileType { get; set; } =
+            {
+                new ProfileType
+                {
+                    ProfileTypeLabel = "Local",
+                    ProfileTypeDefinition = ProfileTypeDefinition.Local,
+                },
+                new ProfileType
+                {
+                    ProfileTypeLabel = "Citrix",
+                    ProfileTypeDefinition = ProfileTypeDefinition.Citrix,
+                },
+                new ProfileType
+                {
+                    ProfileTypeLabel = "FSLogix",
+                    ProfileTypeDefinition = ProfileTypeDefinition.FSLogix,
+                },
+            };
+
+        /// <inheritdoc/>
         public string? UserName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Domain.
-        /// </summary>
+        /// <inheritdoc/>
         public string? Domain { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Profile Directory.
-        /// </summary>
+        /// <inheritdoc/>
         public string? ProfileDirectory { get; set; }
 
-        /// <summary>
-        /// Gets or sets the AppData Local.
-        /// </summary>
+        /// <inheritdoc/>
         public string? AppDataLocal { get; set; }
 
-        /// <summary>
-        /// Gets or sets the AppData Roaming.
-        /// </summary>
+        /// <inheritdoc/>
         public string? AppDataRoaming { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Profile Size.
-        /// </summary>
+        /// <inheritdoc/>
         public string? ProfileSize { get; set; }
 
-        /// <summary>
-        /// Gets or sets the User Profile Type.
-        /// </summary>
-        public ProfileType? UserProfileType { get; set; }
+        /// <inheritdoc/>
+        public string? UserProfileType { get; set; }
 
-        /// <summary>
-        /// Updates the profile size for the user.
-        /// </summary>
-        /// <param name="profileDirectory">The Profile Directory to get the size for.</param>
-        /// <returns>A <see cref="string"/> with the profile size.</returns>
+        /// <inheritdoc/>
+        public ProfileTypeDefinition ProfileDefinition { get; set; }
+
+        /// <inheritdoc/>
         public string UpdateProfileSize(string profileDirectory)
         {
             ArgumentException.ThrowIfNullOrEmpty(profileDirectory, nameof(profileDirectory));
 
             IFilesAndFolders filesAndFolders = new FilesAndFolders();
 
-            var profileSize = filesAndFolders.FormatFileSize((long)filesAndFolders.DirectorySize(new DirectoryInfo(profileDirectory)));
+            var profileSizeRaw = filesAndFolders.DirectorySizeAsync(new DirectoryInfo(profileDirectory));
+            long profileSizeLong = profileSizeRaw.GetAwaiter().GetResult();
+            var profileSize = filesAndFolders.FormatFileSize(profileSizeLong);
+
             this.ProfileSize = profileSize;
 
             return profileSize;
         }
 
+        /// <inheritdoc/>
+        public async Task<string> UpdateProfileSizeAsync(string profileDirectory)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(profileDirectory, nameof(profileDirectory));
+
+            return await Task.Run(() => this.UpdateProfileSize(profileDirectory));
+        }
+
         /// <summary>
         /// Gets the User Profile Data.
         /// </summary>
-        private void GetUserData()
+        private async void GetUserData()
         {
             if (OperatingSystem.IsWindows())
             {
                 IWindowsRegistry windowsRegistry = new WindowsRegistry();
 
-                this.UserName = (string?)windowsRegistry.GetRegistryValue(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.Domain = (string?)windowsRegistry.GetRegistryValue(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.ProfileDirectory = (string?)windowsRegistry.GetRegistryValue(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.AppDataLocal = (string?)windowsRegistry.GetRegistryValue(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.AppDataRoaming = (string?)windowsRegistry.GetRegistryValue(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                var userNameTask = await windowsRegistry.GetRegistryValueAsync(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.UserName = (string?)userNameTask;
+
+                var domainTask = await windowsRegistry.GetRegistryValueAsync(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.Domain = (string?)domainTask;
+
+                var profileDirectoryTask = await windowsRegistry.GetRegistryValueAsync(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.ProfileDirectory = (string?)profileDirectoryTask;
+
+                var localAppDataTask = await windowsRegistry.GetRegistryValueAsync(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.AppDataLocal = (string?)localAppDataTask;
+
+                var roamingAppDataTask = await windowsRegistry.GetRegistryValueAsync(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+                this.AppDataRoaming = (string?)roamingAppDataTask;
+
                 if (this.ProfileDirectory is not null)
                 {
-                    this.ProfileSize = this.UpdateProfileSize(this.ProfileDirectory);
+                    this.ProfileSize = await this.UpdateProfileSizeAsync(this.ProfileDirectory);
                 }
                 else
                 {
@@ -129,7 +204,8 @@ namespace EUC.Profile.Buddy.Common.User
                     switch (fslValue)
                     {
                         case FSLogixValue:
-                            this.UserProfileType = ProfileType.FSLogix;
+                            this.UserProfileType = ProfileTypeDefinition.FSLogix.ToString();
+                            this.ProfileDefinition = ProfileTypeDefinition.FSLogix;
                             profileTypeFound = true;
                             break;
                     }
@@ -144,7 +220,8 @@ namespace EUC.Profile.Buddy.Common.User
                     switch (cpmValue)
                     {
                         case CPMValue:
-                            this.UserProfileType = ProfileType.Citrix;
+                            this.UserProfileType = ProfileTypeDefinition.Citrix.ToString();
+                            this.ProfileDefinition = ProfileTypeDefinition.Citrix;
                             profileTypeFound = true;
                             break;
                     }
@@ -153,7 +230,8 @@ namespace EUC.Profile.Buddy.Common.User
 
             if (!profileTypeFound)
             {
-                this.UserProfileType = ProfileType.Local;
+                this.UserProfileType = ProfileTypeDefinition.Local.ToString();
+                this.ProfileDefinition = ProfileTypeDefinition.Local;
             }
         }
     }
