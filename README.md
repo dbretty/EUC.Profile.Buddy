@@ -6,4 +6,4 @@ Gives you as a user or administrator the ability to check on profile size and da
 
 ![](/Images/EUC.Profile.Buddy.png)
 
-For full information and documentation please visit [[this](https://bretty.me.uk/projects/EUC-Profile-Buddy/)](https://bretty.me.uk/projects/EUC-Profile-Buddy/).
+For full information and documentation please visit [https://bretty.me.uk/projects/EUC-Profile-Buddy/](https://bretty.me.uk/projects/EUC-Profile-Buddy/).
