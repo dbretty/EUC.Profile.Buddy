@@ -12,6 +12,13 @@ namespace EUC.Profile.Buddy.Common.File
     public interface IFilesAndFolders
     {
         /// <summary>
+        /// Checks for a Directory or File.
+        /// </summary>
+        /// <param name="path">The Path to the file or folder.</param>
+        /// <returns>A <see cref="bool"/>.</returns>
+        public bool CheckDirectory(string path);
+
+        /// <summary>
         /// Gets a directory size based on a path.
         /// </summary>
         /// <param name="directory">The DirectoryInfo object to size.</param>
@@ -67,8 +74,19 @@ namespace EUC.Profile.Buddy.Common.File
         /// <summary>
         /// Deletes a folder.
         /// </summary>
-        /// <param name="folderName">The root folder to build the tree from.</param>
+        /// <param name="folderName">The folder to delete.</param>
+        /// <param name="maxRetries">The max retires.</param>
+        /// <param name="millisecondsDelay">The ms delay before a retry.</param>
         /// <returns>A <see cref="Task"/>.</returns>
-        public Task DeleteFolderAsync(string folderName);
+        public Task DeleteFolderAsync(string folderName, int maxRetries = 10, int millisecondsDelay = 30);
+
+        /// <summary>
+        /// Deletes a folder.
+        /// </summary>
+        /// <param name="fileName">The root file to delete.</param>
+        /// <param name="maxRetries">The max retires.</param>
+        /// <param name="millisecondsDelay">The ms delay before a retry.</param>
+        /// <returns>A <see cref="Task"/>.</returns>
+        public Task DeleteFileAsync(string fileName, int maxRetries = 10, int millisecondsDelay = 30);
     }
 }

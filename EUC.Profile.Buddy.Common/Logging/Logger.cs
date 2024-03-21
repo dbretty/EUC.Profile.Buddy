@@ -24,13 +24,7 @@ namespace EUC.Profile.Buddy.Common.Logging
                 string.Format($"{DateTime.Now:yyyyMMdd}_{FileName}"));
         }
 
-        /// <summary>
-        /// Adds an entry to the log.
-        /// </summary>
-        /// <param name="logMessage">The message to send to the log.</param>
-        /// <param name="logLevel">The level of the log message (INFO, WARNING, ERROR, FATAL, DEBUG).</param>
-        /// <param name="logType">The type of Log entry to create (FILE).</param>
-        /// <returns>The Task.</returns>
+        /// <inheritdoc/>
         public async Task LogAsync(string logMessage, LogLevel logLevel = LogLevel.INFO, LogType logType = LogType.FILE)
         {
             ArgumentException.ThrowIfNullOrEmpty(logMessage, nameof(logMessage));

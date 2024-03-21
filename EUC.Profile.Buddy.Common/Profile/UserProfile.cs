@@ -5,13 +5,38 @@
 namespace EUC.Profile.Buddy.Common.Profile
 {
     using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Profile.Model;
+    using EUC.Profile.Buddy.Common.Registry;
 
     /// <summary>
     /// Class to get user profile information.
     /// </summary>
     public class UserProfile : IUserProfile
     {
+        /// <summary>
+        /// Private ILogger interface.
+        /// </summary>
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// Private ILogger interface.
+        /// </summary>
+        private readonly IFilesAndFolders filesAndFolders;
+
+        /// <summary>
+        /// Custom Scripts Location.
+        /// </summary>
+        private readonly string[] customScriptsLocation =
+        {
+            "AppData\\Local\\EUCProfileBuddy",
+        };
+
+        /// <summary>
+        /// Local Profile Management Keys.
+        /// </summary>
+        private readonly string customScriptExecutable = "powershell.exe";
+
         /// <summary>
         /// Temporary Files Location.
         /// </summary>
@@ -64,12 +89,19 @@ namespace EUC.Profile.Buddy.Common.Profile
         /// <summary>
         /// Initializes a new instance of the <see cref="UserProfile"/> class.
         /// </summary>
-        public UserProfile()
+        /// <param name="logger">The logging interface.</param>
+        /// <param name="filesAndFolders">The Files and Folders interface.</param>
+        public UserProfile(ILogger logger, IFilesAndFolders filesAndFolders)
         {
+            this.logger = logger;
+            this.filesAndFolders = filesAndFolders;
             this.ShellFolders = this.shellFolders;
             this.CitrixRootKey = this.citrixRootKey;
             this.FSLogixRootKey = this.fslogixRootKey;
             this.LocalRootKey = this.localRootKey;
+            this.CustomScriptsLocation = this.customScriptsLocation;
+            this.CustomScriptExecutable = this.customScriptExecutable;
+            this.TempFolders = this.tempFolders;
         }
 
         /// <summary>
@@ -84,8 +116,13 @@ namespace EUC.Profile.Buddy.Common.Profile
                 },
                 new ProfileAction
                 {
-                    ActionLabel = "run Custom Scripts",
+                    ActionLabel = "Run Custom Scripts",
                     ActionDefinition = ProfileActionDefinition.RunCustomScripts,
+                },
+                new ProfileAction
+                {
+                    ActionLabel = "Reset Microsoft Edge",
+                    ActionDefinition = ProfileActionDefinition.ResetEdge,
                 },
             };
 
@@ -102,24 +139,49 @@ namespace EUC.Profile.Buddy.Common.Profile
         public string[] LocalRootKey { get; set; }
 
         /// <inheritdoc/>
-        public async void ExecuteAction(ProfileActionDefinition actionDefinition, string profileDirectory)
+        public string[] CustomScriptsLocation { get; set; }
+
+        /// <inheritdoc/>
+        public string CustomScriptExecutable { get; set; }
+
+        /// <inheritdoc/>
+        public string[] TempFolders { get; set; }
+
+        /// <inheritdoc/>
+        public async void ExecuteAction(ProfileActionDefinition actionDefinition, string profileDirectory, IUserProfile userProfile)
         {
             switch (actionDefinition)
             {
                 case ProfileActionDefinition.ClearTempFiles:
-                    FilesAndFolders filesAndFolders = new FilesAndFolders();
-                    foreach (var subFolder in this.tempFolders)
+                    foreach (var subFolder in userProfile.TempFolders)
                     {
-                        await filesAndFolders.DeleteFolderAsync(Path.Join(profileDirectory, subFolder));
+                        await this.filesAndFolders.DeleteFolderAsync(Path.Join(profileDirectory, subFolder));
                     }
 
                     break;
                 case ProfileActionDefinition.RunCustomScripts:
+                    foreach (var customDirectory in this.CustomScriptsLocation)
+                    {
+                        if (this.filesAndFolders.CheckDirectory(Path.Join(profileDirectory, customDirectory)))
+                        {
+                            // await this.ExecuteCustomScriptAsync(customDirectory, profileDirectory);
+                        }
+                    }
+
                     break;
                 default:
                     // todo: log error;
                     break;
             }
         }
+
+        /// <summary>
+        /// Executes Custom Scripts.
+        /// </summary>
+        /// <param name="customScriptsLocation">The Custom Scripts Directory.</param>
+        /// <param name="userProfileDirectory">The User Profile Directorys.</param>
+        // private async Task ExecuteCustomScriptAsync(string customScriptsLocation, string userProfileDirectory)
+        // {
+        // }
     }
 }

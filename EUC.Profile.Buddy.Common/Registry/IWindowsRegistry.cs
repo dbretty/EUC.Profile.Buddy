@@ -52,5 +52,23 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
         /// <returns>A <see cref="Task"/>.</returns>
         public Task<List<RegistryPathValue>> GetRegistryPathValueAsync(string[] rootPath, RegistryHive registryHive);
+
+        /// <summary>
+        /// Creates a registry key.
+        /// </summary>
+        /// <param name="valueKey">The Key to create.</param>
+        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
+        /// <returns>A <see cref="bool"/>.</returns>
+        public bool CreateRegistryKey(string valueKey, RegistryHive registryHive);
+
+        /// <summary>
+        /// Sets a value in the registry.
+        /// </summary>
+        /// <param name="valueName">The value name to obtain.</param>
+        /// <param name="valueKey">The key the value resides in.</param>
+        /// <param name="valueData">The value data to write.</param>
+        /// <param name="registryHive">The registry root to query (HKLM, HKCU, HKCR).</param>
+        /// <returns>A <see cref="RegistryError"/> or a null value.</returns>
+        public bool SetRegistryValue(string valueName, string valueKey, object valueData, RegistryHive registryHive);
     }
 }

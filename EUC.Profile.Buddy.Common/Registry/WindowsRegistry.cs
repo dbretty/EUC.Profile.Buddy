@@ -3,15 +3,31 @@
 // </copyright>
 namespace EUC.Profile.Buddy.Common.Registry
 {
+    using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Registry.Exceptions;
     using EUC.Profile.Buddy.Common.Registry.Model;
     using Microsoft.Win32;
+    using System.Security;
 
     /// <summary>
     /// Class to read and write to the windows registry.
     /// </summary>
     public class WindowsRegistry : IWindowsRegistry
     {
+        /// <summary>
+        /// Private ILogger interface.
+        /// </summary>
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowsRegistry"/> class.
+        /// </summary>
+        /// <param name="logger">The logger to pass in.</param>
+        public WindowsRegistry(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         /// <inheritdoc/>
         public object? GetRegistryValue(string valueName, string valueKey, RegistryHive registryHive)
         {
@@ -143,6 +159,92 @@ namespace EUC.Profile.Buddy.Common.Registry
             ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
 
             return await Task.Run(() => this.GetRegistryPathValue(rootPath, registryHive));
+        }
+
+        /// <inheritdoc/>
+        public bool CreateRegistryKey(string valueKey, RegistryHive registryHive)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
+            if (!OperatingSystem.IsWindows())
+            {
+                throw new InvalidOperatingSystemException();
+            }
+            else
+            {
+                using (RegistryKey? localKey = GetRegistryHive(registryHive))
+                {
+                    if (localKey is null)
+                    {
+                        throw new InvalidRootKeyException();
+                    }
+                    else
+                    {
+                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
+                        if (localFullKey is null)
+                        {
+                            try
+                            {
+                                localKey.CreateSubKey(valueKey, true);
+                                return true;
+                            }
+                            catch
+                            {
+                                throw new SecurityException();
+                            }
+                        }
+                        else
+                        {
+                            throw new InvalidKeyException("Registry Key already exists");
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool SetRegistryValue(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
+            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
+            ArgumentNullException.ThrowIfNull(valueData, nameof(valueData));
+            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
+            if (!OperatingSystem.IsWindows())
+            {
+                throw new InvalidOperatingSystemException();
+            }
+            else
+            {
+                using (RegistryKey? localKey = GetRegistryHive(registryHive))
+                {
+                    if (localKey is null)
+                    {
+                        throw new InvalidRootKeyException();
+                    }
+                    else
+                    {
+                        try
+                        {
+                            RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
+                            if (localFullKey is null)
+                            {
+                                throw new InvalidKeyException();
+                            }
+                            else
+                            {
+                                localFullKey.SetValue(valueName, valueData);
+                                return true;
+                            }
+                        }
+                        catch (SecurityException ex)
+                        {
+                            throw new SecurityException(ex.Message);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

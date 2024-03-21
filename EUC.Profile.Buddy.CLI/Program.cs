@@ -9,11 +9,7 @@ namespace EUC.Profile.Buddy.CLI
     {
         public static async Task Main(string[] args)
         {
-            IUserDetail user = new UserDetail();
-            await Console.Out.WriteLineAsync($"User Name: {user.UserName}");
-            await Console.Out.WriteLineAsync($"Profile Directory: {user.ProfileDirectory}");
-
-            
+            await Console.Out.WriteLineAsync("Coming soon...");
         }
     }
 }

@@ -252,6 +252,7 @@ namespace EUC.Profile.Buddy.GUI
             dgUserProfileFolders.ShowEditingIcon = false;
             dgUserProfileFolders.Size = new Size(495, 314);
             dgUserProfileFolders.TabIndex = 11;
+            dgUserProfileFolders.CellDoubleClick += dgFoldersDoubleClick;
             // 
             // Folder
             // 
