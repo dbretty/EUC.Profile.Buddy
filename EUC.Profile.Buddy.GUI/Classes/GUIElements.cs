@@ -8,7 +8,6 @@ namespace EUC.Profile.Buddy.GUI.Classes
     using System.ComponentModel;
     using EUC.Profile.Buddy.Common.File.Model;
     using EUC.Profile.Buddy.Common.Profile;
-    using EUC.Profile.Buddy.Common.Profile.Model;
     using EUC.Profile.Buddy.Common.Registry.Model;
 
     /// <summary>
@@ -185,21 +184,6 @@ namespace EUC.Profile.Buddy.GUI.Classes
             }
 
             comboBox.Text = "Select Action";
-        }
-
-        /// <summary>
-        /// Execute the Actions.
-        /// </summary>
-        /// <param name="comboBox">The datagrid view.</param>
-        /// /// <param name="profileDirectory">The profile directory.</param>
-        public void ExecuteAction(ComboBox comboBox, string profileDirectory)
-        {
-            if (comboBox.SelectedItem is not null)
-            {
-                ProfileAction desiredAction = (ProfileAction)comboBox.SelectedItem;
-                UserProfile profile = new UserProfile();
-                profile.ExecuteAction(desiredAction.ActionDefinition, profileDirectory);
-            }
         }
     }
 }

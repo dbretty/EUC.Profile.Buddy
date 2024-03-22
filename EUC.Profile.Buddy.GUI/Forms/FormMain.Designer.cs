@@ -75,6 +75,7 @@ namespace EUC.Profile.Buddy.GUI
             btnGo = new Button();
             pbMain = new ProgressBar();
             lblStatus = new Label();
+            btnSettings = new Button();
             ContextMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).BeginInit();
@@ -252,6 +253,7 @@ namespace EUC.Profile.Buddy.GUI
             dgUserProfileFolders.ShowEditingIcon = false;
             dgUserProfileFolders.Size = new Size(495, 314);
             dgUserProfileFolders.TabIndex = 11;
+            dgUserProfileFolders.CellDoubleClick += dgFoldersDoubleClick;
             // 
             // Folder
             // 
@@ -541,6 +543,21 @@ namespace EUC.Profile.Buddy.GUI
             lblStatus.Text = "Ready";
             lblStatus.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // btnSettings
+            // 
+            btnSettings.BackColor = Color.FromArgb(224, 224, 224);
+            btnSettings.FlatAppearance.BorderSize = 0;
+            btnSettings.FlatAppearance.MouseOverBackColor = Color.Silver;
+            btnSettings.FlatStyle = FlatStyle.Flat;
+            btnSettings.ForeColor = Color.FromArgb(64, 64, 64);
+            btnSettings.Location = new Point(380, 6);
+            btnSettings.Name = "btnSettings";
+            btnSettings.Size = new Size(40, 24);
+            btnSettings.TabIndex = 32;
+            btnSettings.Text = "{}";
+            btnSettings.UseVisualStyleBackColor = false;
+            btnSettings.Click += btnSettings_Click;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -548,6 +565,7 @@ namespace EUC.Profile.Buddy.GUI
             BackColor = Color.White;
             ClientSize = new Size(519, 689);
             ControlBox = false;
+            Controls.Add(btnSettings);
             Controls.Add(lblStatus);
             Controls.Add(pbMain);
             Controls.Add(btnGo);
@@ -635,5 +653,6 @@ namespace EUC.Profile.Buddy.GUI
         private ToolStripMenuItem deleteToolStripMenuItem;
         private ProgressBar pbMain;
         private Label lblStatus;
+        private Button btnSettings;
     }
 }

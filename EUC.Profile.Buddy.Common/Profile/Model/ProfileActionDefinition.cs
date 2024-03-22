@@ -18,5 +18,10 @@ namespace EUC.Profile.Buddy.Common.Profile.Model
         /// Represents Run Custom Scripts.
         /// </summary>
         RunCustomScripts,
+
+        /// <summary>
+        /// Represents Reset Microsoft Edge.
+        /// </summary>
+        ResetEdge,
     }
 }

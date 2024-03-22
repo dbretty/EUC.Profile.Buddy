@@ -8,38 +8,148 @@
 namespace EUC.Profile.Buddy.Common.File
 {
     using System;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
     using EUC.Profile.Buddy.Common.File.Model;
+    using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Logging.Model;
 
     /// <summary>
     /// Files and Folders Class.
     /// </summary>
     public class FilesAndFolders : IFilesAndFolders
     {
+        /// <summary>
+        /// Private ILogger interface.
+        /// </summary>
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// Private folderFilterList.
+        /// </summary>
         private readonly List<string> folderFilter = new List<string>() { "AppData", "Cookies", "Desktop", "Favorites", "Local AppData", "Personal", "Recent", "Start Menu", "Templates" };
+
+        /// <summary>
+        /// Private File Filter List.
+        /// </summary>
         private readonly List<string> fileFilter = new List<string>() { "ntuser", "desktop.ini" };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilesAndFolders"/> class.
+        /// </summary>
+        /// <param name="logger">The logger to pass in.</param>
+        public FilesAndFolders(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         /// <inheritdoc/>
-        public async Task DeleteFolderAsync(string folderName)
+        public async Task DeleteFileAsync(string fileName, int maxRetries = 5, int millisecondsDelay = 10)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(fileName, nameof(fileName));
+
+            this.logger.LogAsync($"Deleting file: {fileName}");
+            await Task.Run(() =>
+            {
+                if (fileName == null)
+                {
+                    this.logger.LogAsync($"File not found - {fileName}", LogLevel.ERROR);
+                    throw new ArgumentNullException(nameof(fileName));
+                }
+
+                if (maxRetries < 1)
+                {
+                    this.logger.LogAsync($"Max Retries needs to be greater than 1", LogLevel.ERROR);
+                    throw new ArgumentOutOfRangeException(nameof(maxRetries));
+                }
+
+                if (millisecondsDelay < 1)
+                {
+                    this.logger.LogAsync($"Milisecond delay needs to be greater than 1", LogLevel.ERROR);
+                    throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
+                }
+
+                for (int i = 0; i < maxRetries; ++i)
+                {
+                    try
+                    {
+                        if (File.Exists(fileName))
+                        {
+                            File.Delete(fileName);
+                        }
+
+                        this.logger.LogAsync($"File deleted: {fileName}");
+                        return true;
+                    }
+                    catch (IOException)
+                    {
+                        Task.Delay(millisecondsDelay);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        Task.Delay(millisecondsDelay);
+                    }
+                }
+
+                this.logger.LogAsync($"File not deleted: {fileName}", LogLevel.WARNING);
+                return false;
+            });
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteFolderAsync(string folderName, int maxRetries = 5, int millisecondsDelay = 10)
         {
             ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));
 
-            try
+            await Task.Run(() =>
             {
-                await Task.Run(() => Directory.Delete(folderName, true));
-            }
-            catch (Exception e)
-            {
-                // Add Error Logging
-            }
+                if (folderName == null)
+                {
+                    this.logger.LogAsync($"Folder not found - {folderName}", LogLevel.ERROR);
+                    throw new ArgumentNullException(nameof(folderName));
+                }
+
+                if (maxRetries < 1)
+                {
+                    this.logger.LogAsync($"Max Retries needs to be greater than 1", LogLevel.ERROR);
+                    throw new ArgumentOutOfRangeException(nameof(maxRetries));
+                }
+
+                if (millisecondsDelay < 1)
+                {
+                    this.logger.LogAsync($"Milisecond delay needs to be greater than 1", LogLevel.ERROR);
+                    throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
+                }
+
+                for (int i = 0; i < maxRetries; ++i)
+                {
+                    try
+                    {
+                        if (Directory.Exists(folderName))
+                        {
+                            Directory.Delete(folderName, true);
+                        }
+
+                        this.logger.LogAsync($"Folder deleted: {folderName}");
+                        return true;
+                    }
+                    catch (IOException)
+                    {
+                        Task.Delay(millisecondsDelay);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        Task.Delay(millisecondsDelay);
+                    }
+                }
+
+                this.logger.LogAsync($"Folder not deleted: {folderName}", LogLevel.WARNING);
+                return false;
+            });
         }
 
-        /// <summary>
-        /// Gets a directory size based on a path.
-        /// </summary>
-        /// <param name="directory">The DirectoryInfo object to size.</param>
-        /// <returns>A <see cref="long"/>.</returns>
+        /// <inheritdoc/>
         public long DirectorySize(DirectoryInfo directory)
         {
             ArgumentNullException.ThrowIfNull(directory, nameof(directory));
@@ -96,7 +206,10 @@ namespace EUC.Profile.Buddy.Common.File
         {
             ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
 
+            this.logger.LogAsync($"Building folder tree size for: {rootFolder}");
+
             var treeView = new List<TreeSize>();
+
             DirectoryInfo root = new DirectoryInfo(rootFolder);
             DirectoryInfo[] directories = root.GetDirectories();
             foreach (DirectoryInfo subdirectory in directories)
@@ -113,6 +226,7 @@ namespace EUC.Profile.Buddy.Common.File
 
             if (sorted is true)
             {
+                this.logger.LogAsync($"Sorting folder treesize (descending) for: {rootFolder}");
                 var treeViewReturn = new List<TreeSize>();
                 treeViewReturn = treeView.OrderByDescending(x => x.RawSize).ToList();
                 return treeViewReturn;
@@ -135,6 +249,8 @@ namespace EUC.Profile.Buddy.Common.File
         {
             ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
 
+            this.logger.LogAsync($"Building file tree size for: {rootFolder}");
+
             var treeView = new List<TreeSize>();
 
             DirectoryInfo root = new DirectoryInfo(rootFolder);
@@ -154,6 +270,7 @@ namespace EUC.Profile.Buddy.Common.File
 
             if (sorted is true)
             {
+                this.logger.LogAsync($"Sorting file treesize (descending) for: {rootFolder}");
                 var treeViewReturn = new List<TreeSize>();
                 treeViewReturn = treeView.OrderByDescending(x => x.RawSize).ToList();
                 return treeViewReturn;
@@ -161,6 +278,22 @@ namespace EUC.Profile.Buddy.Common.File
             else
             {
                 return treeView;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool CheckDirectory(string path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            FileAttributes attributes = File.GetAttributes(path);
+            if (attributes.HasFlag(FileAttributes.Directory))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

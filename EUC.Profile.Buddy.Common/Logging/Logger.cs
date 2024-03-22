@@ -4,6 +4,8 @@
 
 namespace EUC.Profile.Buddy.Common.Logging
 {
+    using System.IO;
+    using System.Security;
     using EUC.Profile.Buddy.Common.Logging.Model;
 
     /// <summary>
@@ -12,6 +14,7 @@ namespace EUC.Profile.Buddy.Common.Logging
     public class Logger : ILogger
     {
         private const string FileName = "EUC.Profile.Buddy.Log.txt";
+        private const string LogPath = "EUCProfileBuddy";
         private string fullLogFile = string.Empty;
 
         /// <summary>
@@ -19,18 +22,28 @@ namespace EUC.Profile.Buddy.Common.Logging
         /// </summary>
         public Logger()
         {
+            string directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                LogPath);
+
             this.fullLogFile = Path.Combine(
-                Path.GetTempPath(),
+                directory,
                 string.Format($"{DateTime.Now:yyyyMMdd}_{FileName}"));
+
+            if (!Directory.Exists(directory))
+            {
+                try
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                catch
+                {
+                    throw new SecurityException();
+                }
+            }
         }
 
-        /// <summary>
-        /// Adds an entry to the log.
-        /// </summary>
-        /// <param name="logMessage">The message to send to the log.</param>
-        /// <param name="logLevel">The level of the log message (INFO, WARNING, ERROR, FATAL, DEBUG).</param>
-        /// <param name="logType">The type of Log entry to create (FILE).</param>
-        /// <returns>The Task.</returns>
+        /// <inheritdoc/>
         public async Task LogAsync(string logMessage, LogLevel logLevel = LogLevel.INFO, LogType logType = LogType.FILE)
         {
             ArgumentException.ThrowIfNullOrEmpty(logMessage, nameof(logMessage));

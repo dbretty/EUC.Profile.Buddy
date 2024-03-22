@@ -36,12 +36,12 @@ namespace EUC.Profile.Buddy.Common.User
         public string? AppDataRoaming { get; }
 
         /// <summary>
-        /// Gets or sets the Profile Size.
+        /// Gets The Profile Size.
         /// </summary>
-        public string? ProfileSize { get; set; }
+        public string? ProfileSize { get; }
 
         /// <summary>
-        /// Gets the Profile Type.
+        /// Gets The Profile Type.
         /// </summary>
         public string? UserProfileType { get; }
 

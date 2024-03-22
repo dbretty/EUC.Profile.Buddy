@@ -17,6 +17,11 @@ namespace EUC.Profile.Buddy.Common.Profile
         public string[] LocalRootKey { get; set; }
 
         /// <summary>
+        /// Gets or Sets The TempFolders.
+        /// </summary>
+        public string[] TempFolders { get; set; }
+
+        /// <summary>
         /// Gets or Sets The ShellFolders.
         /// </summary>
         public string[] ShellFolders { get; set; }
@@ -37,10 +42,21 @@ namespace EUC.Profile.Buddy.Common.Profile
         public ProfileAction[] ProfileActions { get; set; }
 
         /// <summary>
+        /// Gets or Sets The CustomScriptsLocation.
+        /// </summary>
+        public string CustomScriptsLocation { get; set; }
+
+        /// <summary>
+        /// Gets or Sets The CustomScript Executable.
+        /// </summary>
+        public string CustomScriptExecutable { get; set; }
+
+        /// <summary>
         /// Execute a profile action.
         /// </summary>
         /// <param name="actionDefinition">The Action Description.</param>
         /// <param name="profileDirectory">The Profile Directory.</param>
-        public void ExecuteAction(ProfileActionDefinition actionDefinition, string profileDirectory);
+        /// /// <param name="userProfile">The User Profile.</param>
+        public void ExecuteAction(ProfileActionDefinition actionDefinition, string profileDirectory, IUserProfile userProfile);
     }
 }

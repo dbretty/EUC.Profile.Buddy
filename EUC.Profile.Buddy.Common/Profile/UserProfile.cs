@@ -4,7 +4,9 @@
 
 namespace EUC.Profile.Buddy.Common.Profile
 {
+    using System.Diagnostics;
     using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Profile.Model;
 
     /// <summary>
@@ -12,6 +14,26 @@ namespace EUC.Profile.Buddy.Common.Profile
     /// </summary>
     public class UserProfile : IUserProfile
     {
+        /// <summary>
+        /// Private ILogger interface.
+        /// </summary>
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// Private ILogger interface.
+        /// </summary>
+        private readonly IFilesAndFolders filesAndFolders;
+
+        /// <summary>
+        /// Custom Scripts Location.
+        /// </summary>
+        private readonly string customScriptsLocation = "AppData\\Local\\EUCProfileBuddy";
+
+        /// <summary>
+        /// Local Profile Management Keys.
+        /// </summary>
+        private readonly string customScriptExecutable = "powershell.exe";
+
         /// <summary>
         /// Temporary Files Location.
         /// </summary>
@@ -62,14 +84,26 @@ namespace EUC.Profile.Buddy.Common.Profile
         };
 
         /// <summary>
+        /// Microsoft Edge Exe File.
+        /// </summary>
+        private readonly string msEdgeFile = "msedge";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UserProfile"/> class.
         /// </summary>
-        public UserProfile()
+        /// <param name="logger">The logging interface.</param>
+        /// <param name="filesAndFolders">The Files and Folders interface.</param>
+        public UserProfile(ILogger logger, IFilesAndFolders filesAndFolders)
         {
+            this.logger = logger;
+            this.filesAndFolders = filesAndFolders;
             this.ShellFolders = this.shellFolders;
             this.CitrixRootKey = this.citrixRootKey;
             this.FSLogixRootKey = this.fslogixRootKey;
             this.LocalRootKey = this.localRootKey;
+            this.CustomScriptsLocation = this.customScriptsLocation;
+            this.CustomScriptExecutable = this.customScriptExecutable;
+            this.TempFolders = this.tempFolders;
         }
 
         /// <summary>
@@ -84,8 +118,13 @@ namespace EUC.Profile.Buddy.Common.Profile
                 },
                 new ProfileAction
                 {
-                    ActionLabel = "run Custom Scripts",
+                    ActionLabel = "Run Custom Scripts",
                     ActionDefinition = ProfileActionDefinition.RunCustomScripts,
+                },
+                new ProfileAction
+                {
+                    ActionLabel = "Reset Microsoft Edge",
+                    ActionDefinition = ProfileActionDefinition.ResetEdge,
                 },
             };
 
@@ -102,24 +141,106 @@ namespace EUC.Profile.Buddy.Common.Profile
         public string[] LocalRootKey { get; set; }
 
         /// <inheritdoc/>
-        public async void ExecuteAction(ProfileActionDefinition actionDefinition, string profileDirectory)
+        public string CustomScriptsLocation { get; set; }
+
+        /// <inheritdoc/>
+        public string CustomScriptExecutable { get; set; }
+
+        /// <inheritdoc/>
+        public string[] TempFolders { get; set; }
+
+        /// <inheritdoc/>
+        public async void ExecuteAction(ProfileActionDefinition actionDefinition, string profileDirectory, IUserProfile userProfile)
         {
+            ArgumentException.ThrowIfNullOrEmpty(profileDirectory, nameof(profileDirectory));
+            ArgumentNullException.ThrowIfNull(actionDefinition, nameof(actionDefinition));
+            ArgumentNullException.ThrowIfNull(userProfile, nameof(userProfile));
+
             switch (actionDefinition)
             {
                 case ProfileActionDefinition.ClearTempFiles:
-                    FilesAndFolders filesAndFolders = new FilesAndFolders();
-                    foreach (var subFolder in this.tempFolders)
+                    this.logger.LogAsync($"Executing action: Clear Temp Files");
+                    foreach (var subFolder in userProfile.TempFolders)
                     {
-                        await filesAndFolders.DeleteFolderAsync(Path.Join(profileDirectory, subFolder));
+                        await this.filesAndFolders.DeleteFolderAsync(Path.Join(profileDirectory, subFolder));
                     }
+
+                    this.logger.LogAsync($"Completed action: Clear Temp Files");
 
                     break;
                 case ProfileActionDefinition.RunCustomScripts:
+                    if (this.filesAndFolders.CheckDirectory(Path.Join(profileDirectory, this.customScriptsLocation)))
+                    {
+                        this.logger.LogAsync($"Executing action: Run Custom Scripts");
+                        this.ExecuteCustomScriptAsync(Path.Join(profileDirectory, this.customScriptsLocation));
+                        this.logger.LogAsync($"Completed action: Run Custom Scripts");
+                    }
+
+                    break;
+                case ProfileActionDefinition.ResetEdge:
+                    this.logger.LogAsync($"Executing action: Reset Microsoft Edge");
+                    this.ResetMicrosoftEdge();
+                    this.logger.LogAsync($"Completed action: Reset Microsoft Edge");
                     break;
                 default:
                     // todo: log error;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Executes Custom Scripts.
+        /// </summary>
+        /// <param name="customScriptsLocation">The Custom Scripts Directory.</param>
+        private void ExecuteCustomScript(string customScriptsLocation)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(customScriptsLocation, nameof(customScriptsLocation));
+
+            var files = Directory.EnumerateFiles(customScriptsLocation, "*.ps1", SearchOption.AllDirectories);
+            if (files is not null)
+            {
+                foreach (var file in files)
+                {
+                    var startInfo = new ProcessStartInfo()
+                    {
+                        FileName = this.customScriptExecutable,
+                        Arguments = $"-NoProfile -ExecutionPolicy ByPass -File \"{file}\"",
+                        UseShellExecute = false,
+                    };
+                    Process.Start(startInfo);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Executes Custom Scripts (Async).
+        /// </summary>
+        /// <param name="customScriptsLocation">The Custom Scripts Directory.</param>
+        private async void ExecuteCustomScriptAsync(string customScriptsLocation)
+        {
+            ArgumentNullException.ThrowIfNull(customScriptsLocation, nameof(customScriptsLocation));
+
+            await Task.Run(() => this.ExecuteCustomScript(customScriptsLocation));
+        }
+
+        /// <summary>
+        /// Resets the Microsoft Edge Settings.
+        /// </summary>
+        private async void ResetMicrosoftEdge()
+        {
+            var msEdgeData = "Microsoft\\Edge";
+
+            string directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                msEdgeData);
+
+            Process[] processes = Process.GetProcessesByName(this.msEdgeFile);
+            foreach (var process in processes)
+            {
+                process.Kill();
+            }
+
+            await this.filesAndFolders.DeleteFolderAsync(directory);
         }
     }
 }
