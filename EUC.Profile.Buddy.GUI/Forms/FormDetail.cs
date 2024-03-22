@@ -17,11 +17,10 @@ namespace EUC.Profile.Buddy.GUI.Forms
 
         GUIElements guiElements = new GUIElements();
         IAppConfig EUCProfileBuddy = new AppConfig();
-        //IUserProfile profile = new UserProfile();
-        //IWindowsRegistry registry = new WindowsRegistry();
 
         public FormDetail(string userProfileType, ProfileTypeDefinition profileTypeDefinition, string userName, string profileDirectory)
         {
+            EUCProfileBuddy.Logger.LogAsync($"Loading profile information for: {EUCProfileBuddy.UserDetail.UserName}");
             InitializeComponent();
             this.userProfileType = userProfileType;
             this.userName = userName;
@@ -31,6 +30,7 @@ namespace EUC.Profile.Buddy.GUI.Forms
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+            EUCProfileBuddy.Logger.LogAsync($"Closing profile information screen");
             this.Close();
         }
 
@@ -47,14 +47,17 @@ namespace EUC.Profile.Buddy.GUI.Forms
             switch (profileTypeDefinition)
             {
                 case ProfileTypeDefinition.Local:
+                    EUCProfileBuddy.Logger.LogAsync($"Loading profile information: Local");
                     var profileDetails = await EUCProfileBuddy.Registry.GetRegistryPathValueAsync(EUCProfileBuddy.UserProfile.LocalRootKey, RegistryHive.CurrentUser);
                     guiElements.UpdateDataGridPathValue(profileDetails, this.dgProfileDetails);
                     break;
                 case ProfileTypeDefinition.Citrix:
+                    EUCProfileBuddy.Logger.LogAsync($"Loading profile information: Citrix Profile Management");
                     var citrixProfileDetails = await EUCProfileBuddy.Registry.GetRegistryPathValueAsync(EUCProfileBuddy.UserProfile.CitrixRootKey, RegistryHive.LocalMachine);
                     guiElements.UpdateDataGridPathValue(citrixProfileDetails, this.dgProfileDetails);
                     break;
                 case ProfileTypeDefinition.FSLogix:
+                    EUCProfileBuddy.Logger.LogAsync($"Loading profile information: Microsoft FSLogix");
                     var fslogixProfileDetails = await EUCProfileBuddy.Registry.GetRegistryPathValueAsync(EUCProfileBuddy.UserProfile.FSLogixRootKey, RegistryHive.LocalMachine);
                     guiElements.UpdateDataGridPathValue(fslogixProfileDetails, this.dgProfileDetails);
                     break;
@@ -62,6 +65,7 @@ namespace EUC.Profile.Buddy.GUI.Forms
                     break;
             }
 
+            EUCProfileBuddy.Logger.LogAsync($"Loading profile folder redirection information");
             var folderRefirectionDetails = await EUCProfileBuddy.Registry.GetRegistryPathValueAsync(EUCProfileBuddy.UserProfile.ShellFolders, RegistryHive.CurrentUser);
             guiElements.UpdateDataGridPathValue(folderRefirectionDetails, this.dgFolderRedirection);
 
@@ -73,11 +77,13 @@ namespace EUC.Profile.Buddy.GUI.Forms
 
         private void btnProfileDetailsSort_Click(object sender, EventArgs e)
         {
+            EUCProfileBuddy.Logger.LogAsync($"Sorting profile information data grid");
             guiElements.SortDataGrid(this.dgProfileDetails, this.btnProfileDetailsSort);
         }
 
         private void btnFolderRedirectionSort_Click(object sender, EventArgs e)
         {
+            EUCProfileBuddy.Logger.LogAsync($"Sorting folder redirection information data grid");
             guiElements.SortDataGrid(this.dgFolderRedirection, this.btnFolderRedirectionSort);
         }
 

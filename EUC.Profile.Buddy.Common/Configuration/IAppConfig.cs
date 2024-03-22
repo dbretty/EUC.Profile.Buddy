@@ -44,5 +44,15 @@ namespace EUC.Profile.Buddy.Common.Configuration
         /// Gets The Application Registry Key.
         /// </summary>
         string AppRegistryKey { get; }
+
+        /// <summary>
+        /// Gets or Sets The Application Registry Key.
+        /// </summary>
+        string LogLevel { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Clear Temp At Start.
+        /// </summary>
+        string ClearTempAtStart { get; set; }
     }
 }

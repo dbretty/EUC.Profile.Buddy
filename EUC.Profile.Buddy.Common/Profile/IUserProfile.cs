@@ -44,7 +44,7 @@ namespace EUC.Profile.Buddy.Common.Profile
         /// <summary>
         /// Gets or Sets The CustomScriptsLocation.
         /// </summary>
-        public string[] CustomScriptsLocation { get; set; }
+        public string CustomScriptsLocation { get; set; }
 
         /// <summary>
         /// Gets or Sets The CustomScript Executable.

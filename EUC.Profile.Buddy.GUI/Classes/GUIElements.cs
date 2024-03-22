@@ -8,7 +8,6 @@ namespace EUC.Profile.Buddy.GUI.Classes
     using System.ComponentModel;
     using EUC.Profile.Buddy.Common.File.Model;
     using EUC.Profile.Buddy.Common.Profile;
-    using EUC.Profile.Buddy.Common.Profile.Model;
     using EUC.Profile.Buddy.Common.Registry.Model;
 
     /// <summary>

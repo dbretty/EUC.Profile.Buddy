@@ -2,28 +2,22 @@
 namespace EUC.Profile.Buddy.GUI
 {
     using EUC.Profile.Buddy.GUI.Classes;
-    using EUC.Profile.Buddy.Common.User;
-    using EUC.Profile.Buddy.Common.File;
     using System.Windows.Forms;
     using EUC.Profile.Buddy.GUI.Forms;
-    using EUC.Profile.Buddy.Common.Profile;
     using System.IO;
     using EUC.Profile.Buddy.Common.Profile.Model;
-    using System.Configuration;
     using EUC.Profile.Buddy.Common.Configuration;
-    using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Logging.Model;
 
     public partial class FormMain : Form
     {
-        //IUserProfile profile = new UserProfile();
-        //IUserDetail user = new UserDetail();
         GUIElements guiElements = new GUIElements();
         IAppConfig EUCProfileBuddy = new AppConfig();
 
         public FormMain()
         {
             this.InitializeComponent();
-            
+
         }
 
         private async void FormMain_Load(object sender, EventArgs e)
@@ -35,12 +29,14 @@ namespace EUC.Profile.Buddy.GUI
             GUIElements.MinimizeApplication(this, this.NotifyMain, EUCProfileBuddy.UserDetail.UserName, EUCProfileBuddy.UserDetail.ProfileDirectory);
             EnableUi(false, "Getting user data");
 
+            EUCProfileBuddy.Logger.LogAsync($"Loading profile file and folder info for: {EUCProfileBuddy.UserDetail.UserName}");
             guiElements.ClearDataGrid(this.dgUserProfileFolders);
             var treeSizeFolders = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(EUCProfileBuddy.UserDetail.ProfileDirectory);
             guiElements.UpdateDataGrid(treeSizeFolders, this.dgUserProfileFolders);
             var treeSizeFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(EUCProfileBuddy.UserDetail.ProfileDirectory);
             guiElements.UpdateDataGrid(treeSizeFiles, this.dgUserProfileFolders);
 
+            EUCProfileBuddy.Logger.LogAsync($"Updating profile labels for: {EUCProfileBuddy.UserDetail.UserName}");
             guiElements.UpdateLabel(lblUserName, EUCProfileBuddy.UserDetail.UserName);
             guiElements.UpdateLabel(lblProfileDirectory, EUCProfileBuddy.UserDetail.ProfileDirectory);
             guiElements.UpdateLabel(lblProfileSize, EUCProfileBuddy.UserDetail.ProfileSize);
@@ -50,6 +46,13 @@ namespace EUC.Profile.Buddy.GUI
             guiElements.UpdateLabel(lblProfileType, EUCProfileBuddy.UserDetail.UserProfileType.ToString());
             guiElements.SizeDataGrid(this.dgUserProfileFolders);
             guiElements.LoadActions(this.cmbActions, EUCProfileBuddy.UserProfile);
+
+            if (EUCProfileBuddy.ClearTempAtStart == "Yes")
+            {
+                ProfileAction desiredAction = (ProfileAction)EUCProfileBuddy.UserProfile.ProfileActions[0];
+                EUCProfileBuddy.Logger.LogAsync($"Running startup action: Clear Temp At Start");
+                EUCProfileBuddy.UserProfile.ExecuteAction(desiredAction.ActionDefinition, this.lblProfileDirectory.Text, EUCProfileBuddy.UserProfile);
+            }
 
             EnableUi(true);
 
@@ -70,6 +73,7 @@ namespace EUC.Profile.Buddy.GUI
             DialogResult dialogResult = GUIElements.DisplayYesNoMessage("Are you sure you want to quit?");
             if (dialogResult == DialogResult.Yes)
             {
+                EUCProfileBuddy.Logger.LogAsync($"Stopping Application");
                 Application.Exit();
             }
         }
@@ -79,6 +83,7 @@ namespace EUC.Profile.Buddy.GUI
             DialogResult dialogResult = GUIElements.DisplayYesNoMessage("Are you sure you want to quit?");
             if (dialogResult == DialogResult.Yes)
             {
+                EUCProfileBuddy.Logger.LogAsync($"Stopping Application");
                 Application.Exit();
             }
         }
@@ -92,9 +97,12 @@ namespace EUC.Profile.Buddy.GUI
         {
             EnableUi(false, "Navigating to home directory");
 
+            EUCProfileBuddy.Logger.LogAsync($"Navigating to home directory");
+
             guiElements.ClearDataGrid(this.dgUserProfileFolders);
             guiElements.UpdateLabel(lblCurrentDirectory, this.lblProfileDirectory.Text);
 
+            EUCProfileBuddy.Logger.LogAsync($"Loading profile file and folder info ({EUCProfileBuddy.UserDetail.ProfileDirectory}) for: {EUCProfileBuddy.UserDetail.UserName}");
             var newFolders = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(EUCProfileBuddy.UserDetail.ProfileDirectory);
             guiElements.UpdateDataGrid(newFolders, this.dgUserProfileFolders);
             var newFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(EUCProfileBuddy.UserDetail.ProfileDirectory);
@@ -111,9 +119,12 @@ namespace EUC.Profile.Buddy.GUI
                 EnableUi(false, "Navigating back a directory");
                 var trimmedFolder = lastFolder.Substring(0, lastFolder.LastIndexOf("\\"));
 
+                EUCProfileBuddy.Logger.LogAsync($"Navigating back a directory");
+
                 guiElements.ClearDataGrid(this.dgUserProfileFolders);
                 guiElements.UpdateLabel(lblCurrentDirectory, trimmedFolder);
 
+                EUCProfileBuddy.Logger.LogAsync($"Loading profile file and folder info ({trimmedFolder}) for: {EUCProfileBuddy.UserDetail.UserName}");
                 var newFolders = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(trimmedFolder);
                 guiElements.UpdateDataGrid(newFolders, this.dgUserProfileFolders);
                 var newFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(trimmedFolder);
@@ -123,6 +134,7 @@ namespace EUC.Profile.Buddy.GUI
             }
             else
             {
+                EUCProfileBuddy.Logger.LogAsync($"User tried to navigate outside of the root profile folder directory.", LogLevel.WARNING);
                 GUIElements.DisplayCriticalMessage($"You cannot roam above the root User Profile directory of {this.lblProfileDirectory.Text}");
             }
         }
@@ -135,9 +147,12 @@ namespace EUC.Profile.Buddy.GUI
                 EnableUi(false, "Navigating back a directory");
                 var trimmedFolder = lastFolder.Substring(0, lastFolder.LastIndexOf("\\"));
 
+                EUCProfileBuddy.Logger.LogAsync($"Navigating back a directory");
+
                 guiElements.ClearDataGrid(this.dgUserProfileFolders);
                 guiElements.UpdateLabel(lblCurrentDirectory, trimmedFolder);
 
+                EUCProfileBuddy.Logger.LogAsync($"Loading profile file and folder info ({trimmedFolder}) for: {EUCProfileBuddy.UserDetail.UserName}");
                 var newFolders = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(trimmedFolder);
                 guiElements.UpdateDataGrid(newFolders, this.dgUserProfileFolders);
                 var newFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(trimmedFolder);
@@ -147,6 +162,7 @@ namespace EUC.Profile.Buddy.GUI
             }
             else
             {
+                EUCProfileBuddy.Logger.LogAsync($"User tried to navigate outside of the root profile folder directory.", LogLevel.WARNING);
                 GUIElements.DisplayCriticalMessage($"You cannot roam above the root User Profile directory of {this.lblProfileDirectory.Text}");
             }
         }
@@ -160,9 +176,12 @@ namespace EUC.Profile.Buddy.GUI
                 {
                     EnableUi(false, "Drilldown to folder");
 
+                    EUCProfileBuddy.Logger.LogAsync($"Drilldown to folder");
+
                     guiElements.ClearDataGrid(this.dgUserProfileFolders);
                     guiElements.UpdateLabel(lblCurrentDirectory, currentValue);
 
+                    EUCProfileBuddy.Logger.LogAsync($"Loading profile file and folder info ({currentValue}) for: {EUCProfileBuddy.UserDetail.UserName}");
                     var newFolders = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(currentValue);
                     guiElements.UpdateDataGrid(newFolders, this.dgUserProfileFolders);
                     var newFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(currentValue);
@@ -172,6 +191,7 @@ namespace EUC.Profile.Buddy.GUI
                 }
                 else
                 {
+                    EUCProfileBuddy.Logger.LogAsync($"User tried to drilldown into a file ({currentValue}).", LogLevel.WARNING);
                     GUIElements.DisplayCriticalMessage("Cannot drilldown into a file");
                 }
             }
@@ -180,7 +200,7 @@ namespace EUC.Profile.Buddy.GUI
         private void btnProfileDetail_Click(object sender, EventArgs e)
         {
             FormDetail formDetail = new FormDetail(EUCProfileBuddy.UserDetail.UserProfileType, EUCProfileBuddy.UserDetail.ProfileDefinition, this.lblUserName.Text, this.lblProfileDirectory.Text);
-
+            EUCProfileBuddy.Logger.LogAsync($"Showing profile details form for: {EUCProfileBuddy.UserDetail.UserName}");
             formDetail.ShowDialog();
         }
 
@@ -191,9 +211,12 @@ namespace EUC.Profile.Buddy.GUI
 
             ProfileAction desiredAction = (ProfileAction)this.cmbActions.SelectedItem;
 
+            EUCProfileBuddy.Logger.LogAsync($"Running action: {this.cmbActions.Text}");
             EUCProfileBuddy.UserProfile.ExecuteAction(desiredAction.ActionDefinition, this.lblProfileDirectory.Text, EUCProfileBuddy.UserProfile);
 
             GUIElements.DisplayInformationMessage($"Action: {this.cmbActions.Text} Completed");
+
+            guiElements.LoadActions(this.cmbActions, EUCProfileBuddy.UserProfile);
 
             EnableUi(true);
         }
@@ -206,11 +229,12 @@ namespace EUC.Profile.Buddy.GUI
                 DialogResult dialogResult = GUIElements.DisplayYesNoMessage($"Are you sure you want to delete {folderToDelete}?");
                 if (dialogResult == DialogResult.Yes)
                 {
-                    EnableUi(false, "Deleting folder");
+                    EnableUi(false, "Deleting file or folder");
 
                     string selectedItem = (string)folderToDelete;
                     if (selectedItem.IndexOf('\\') > 0)
                     {
+                        EUCProfileBuddy.Logger.LogAsync($"Deleting folder: {(string)folderToDelete}");
                         EUCProfileBuddy.FilesAndFolders.DeleteFolderAsync((string)folderToDelete);
                     }
                     else
@@ -218,6 +242,7 @@ namespace EUC.Profile.Buddy.GUI
                         var fileToDelete = Path.Combine(
                             this.lblCurrentDirectory.Text,
                             selectedItem);
+                        EUCProfileBuddy.Logger.LogAsync($"Deleting file: {fileToDelete}");
                         EUCProfileBuddy.FilesAndFolders.DeleteFileAsync(fileToDelete);
                     }
 
@@ -226,6 +251,7 @@ namespace EUC.Profile.Buddy.GUI
 
                     guiElements.ClearDataGrid(this.dgUserProfileFolders);
 
+                    EUCProfileBuddy.Logger.LogAsync($"Loading profile file and folder info ({this.lblCurrentDirectory.Text}) for: {EUCProfileBuddy.UserDetail.UserName}");
                     var newFolders = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(this.lblCurrentDirectory.Text);
                     guiElements.UpdateDataGrid(newFolders, this.dgUserProfileFolders);
                     var newFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(this.lblCurrentDirectory.Text);
@@ -268,9 +294,12 @@ namespace EUC.Profile.Buddy.GUI
                 {
                     EnableUi(false, "Drilldown to folder");
 
+                    EUCProfileBuddy.Logger.LogAsync($"Drilldown to folder");
+
                     guiElements.ClearDataGrid(this.dgUserProfileFolders);
                     guiElements.UpdateLabel(lblCurrentDirectory, currentValue);
 
+                    EUCProfileBuddy.Logger.LogAsync($"Loading profile file and folder info ({currentValue}) for: {EUCProfileBuddy.UserDetail.UserName}");
                     var newFolders = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(currentValue);
                     guiElements.UpdateDataGrid(newFolders, this.dgUserProfileFolders);
                     var newFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(currentValue);
@@ -280,9 +309,17 @@ namespace EUC.Profile.Buddy.GUI
                 }
                 else
                 {
+                    EUCProfileBuddy.Logger.LogAsync($"User tried to drilldown into a file ({currentValue}).", LogLevel.WARNING);
                     GUIElements.DisplayCriticalMessage("Cannot drilldown into a file");
                 }
             }
+        }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            FormSettings formSettings = new FormSettings(this);
+            EUCProfileBuddy.Logger.LogAsync($"Showing application settings screen");
+            formSettings.ShowDialog();
         }
     }
 }

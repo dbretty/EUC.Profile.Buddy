@@ -4,6 +4,8 @@
 
 namespace EUC.Profile.Buddy.Common.Logging
 {
+    using System.IO;
+    using System.Security;
     using EUC.Profile.Buddy.Common.Logging.Model;
 
     /// <summary>
@@ -12,6 +14,7 @@ namespace EUC.Profile.Buddy.Common.Logging
     public class Logger : ILogger
     {
         private const string FileName = "EUC.Profile.Buddy.Log.txt";
+        private const string LogPath = "EUCProfileBuddy";
         private string fullLogFile = string.Empty;
 
         /// <summary>
@@ -19,9 +22,25 @@ namespace EUC.Profile.Buddy.Common.Logging
         /// </summary>
         public Logger()
         {
+            string directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                LogPath);
+
             this.fullLogFile = Path.Combine(
-                Path.GetTempPath(),
+                directory,
                 string.Format($"{DateTime.Now:yyyyMMdd}_{FileName}"));
+
+            if (!Directory.Exists(directory))
+            {
+                try
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                catch
+                {
+                    throw new SecurityException();
+                }
+            }
         }
 
         /// <inheritdoc/>

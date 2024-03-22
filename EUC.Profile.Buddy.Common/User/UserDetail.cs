@@ -5,12 +5,13 @@ namespace EUC.Profile.Buddy.Common.User
 {
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Logging.Model;
     using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.User.Model;
     using Microsoft.Win32;
 
     /// <summary>
-    /// Class look after the UserDetail object.
+    /// Class for User Detail.
     /// </summary>
     public class UserDetail : IUserDetail
     {
@@ -80,19 +81,19 @@ namespace EUC.Profile.Buddy.Common.User
         private readonly ILogger logger;
 
         /// <summary>
-        /// Private ILogger interface.
+        /// Private IWindowsRegistry interface.
         /// </summary>
         private readonly IWindowsRegistry registry;
 
         /// <summary>
-        /// Private ILogger interface.
+        /// Private IFilesAndFolders interface.
         /// </summary>
         private readonly IFilesAndFolders filesAndFolders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDetail"/> class.
         /// </summary>
-        /// <param name="logger">The logging interface.</param>
+        /// <param name="logger">The Logging interface.</param>
         /// <param name="registry">The Registry interface.</param>
         /// <param name="filesAndFolders">The Files and Folders interface.</param>
         public UserDetail(ILogger logger, IWindowsRegistry registry, IFilesAndFolders filesAndFolders)
@@ -178,20 +179,27 @@ namespace EUC.Profile.Buddy.Common.User
         {
             if (OperatingSystem.IsWindows())
             {
+                this.logger.LogAsync("Getting User Details");
+
                 var userNameTask = await this.registry.GetRegistryValueAsync(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
                 this.UserName = (string?)userNameTask;
+                this.logger.LogAsync($"Username: {this.UserName}");
 
                 var domainTask = await this.registry.GetRegistryValueAsync(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
                 this.Domain = (string?)domainTask;
+                this.logger.LogAsync($"Domain: {this.Domain}");
 
                 var profileDirectoryTask = await this.registry.GetRegistryValueAsync(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
                 this.ProfileDirectory = (string?)profileDirectoryTask;
+                this.logger.LogAsync($"Profile Directory: {this.ProfileDirectory}");
 
                 var localAppDataTask = await this.registry.GetRegistryValueAsync(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
                 this.AppDataLocal = (string?)localAppDataTask;
+                this.logger.LogAsync($"Appdata Local: {this.AppDataLocal}");
 
                 var roamingAppDataTask = await this.registry.GetRegistryValueAsync(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
                 this.AppDataRoaming = (string?)roamingAppDataTask;
+                this.logger.LogAsync($"Appdata Roaming: {this.AppDataRoaming}");
 
                 if (this.ProfileDirectory is not null)
                 {
@@ -202,7 +210,14 @@ namespace EUC.Profile.Buddy.Common.User
                     this.ProfileSize = "0 GB";
                 }
 
+                this.logger.LogAsync($"Profile Size: {this.ProfileSize}");
+
                 this.GetProfileType();
+                this.logger.LogAsync($"Profile Type: {this.ProfileType}");
+            }
+            else
+            {
+                this.logger.LogAsync($"Operating system not supported", LogLevel.ERROR);
             }
         }
 

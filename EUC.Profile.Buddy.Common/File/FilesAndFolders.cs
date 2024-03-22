@@ -8,10 +8,12 @@
 namespace EUC.Profile.Buddy.Common.File
 {
     using System;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
     using EUC.Profile.Buddy.Common.File.Model;
     using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Logging.Model;
 
     /// <summary>
     /// Files and Folders Class.
@@ -47,20 +49,24 @@ namespace EUC.Profile.Buddy.Common.File
         {
             ArgumentException.ThrowIfNullOrEmpty(fileName, nameof(fileName));
 
+            this.logger.LogAsync($"Deleting file: {fileName}");
             await Task.Run(() =>
             {
                 if (fileName == null)
                 {
+                    this.logger.LogAsync($"File not found - {fileName}", LogLevel.ERROR);
                     throw new ArgumentNullException(nameof(fileName));
                 }
 
                 if (maxRetries < 1)
                 {
+                    this.logger.LogAsync($"Max Retries needs to be greater than 1", LogLevel.ERROR);
                     throw new ArgumentOutOfRangeException(nameof(maxRetries));
                 }
 
                 if (millisecondsDelay < 1)
                 {
+                    this.logger.LogAsync($"Milisecond delay needs to be greater than 1", LogLevel.ERROR);
                     throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
                 }
 
@@ -73,6 +79,7 @@ namespace EUC.Profile.Buddy.Common.File
                             File.Delete(fileName);
                         }
 
+                        this.logger.LogAsync($"File deleted: {fileName}");
                         return true;
                     }
                     catch (IOException)
@@ -85,6 +92,7 @@ namespace EUC.Profile.Buddy.Common.File
                     }
                 }
 
+                this.logger.LogAsync($"File not deleted: {fileName}", LogLevel.WARNING);
                 return false;
             });
         }
@@ -98,16 +106,19 @@ namespace EUC.Profile.Buddy.Common.File
             {
                 if (folderName == null)
                 {
+                    this.logger.LogAsync($"Folder not found - {folderName}", LogLevel.ERROR);
                     throw new ArgumentNullException(nameof(folderName));
                 }
 
                 if (maxRetries < 1)
                 {
+                    this.logger.LogAsync($"Max Retries needs to be greater than 1", LogLevel.ERROR);
                     throw new ArgumentOutOfRangeException(nameof(maxRetries));
                 }
 
                 if (millisecondsDelay < 1)
                 {
+                    this.logger.LogAsync($"Milisecond delay needs to be greater than 1", LogLevel.ERROR);
                     throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
                 }
 
@@ -120,6 +131,7 @@ namespace EUC.Profile.Buddy.Common.File
                             Directory.Delete(folderName, true);
                         }
 
+                        this.logger.LogAsync($"Folder deleted: {folderName}");
                         return true;
                     }
                     catch (IOException)
@@ -132,6 +144,7 @@ namespace EUC.Profile.Buddy.Common.File
                     }
                 }
 
+                this.logger.LogAsync($"Folder not deleted: {folderName}", LogLevel.WARNING);
                 return false;
             });
         }
@@ -193,7 +206,10 @@ namespace EUC.Profile.Buddy.Common.File
         {
             ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
 
+            this.logger.LogAsync($"Building folder tree size for: {rootFolder}");
+
             var treeView = new List<TreeSize>();
+
             DirectoryInfo root = new DirectoryInfo(rootFolder);
             DirectoryInfo[] directories = root.GetDirectories();
             foreach (DirectoryInfo subdirectory in directories)
@@ -210,6 +226,7 @@ namespace EUC.Profile.Buddy.Common.File
 
             if (sorted is true)
             {
+                this.logger.LogAsync($"Sorting folder treesize (descending) for: {rootFolder}");
                 var treeViewReturn = new List<TreeSize>();
                 treeViewReturn = treeView.OrderByDescending(x => x.RawSize).ToList();
                 return treeViewReturn;
@@ -232,6 +249,8 @@ namespace EUC.Profile.Buddy.Common.File
         {
             ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
 
+            this.logger.LogAsync($"Building file tree size for: {rootFolder}");
+
             var treeView = new List<TreeSize>();
 
             DirectoryInfo root = new DirectoryInfo(rootFolder);
@@ -251,6 +270,7 @@ namespace EUC.Profile.Buddy.Common.File
 
             if (sorted is true)
             {
+                this.logger.LogAsync($"Sorting file treesize (descending) for: {rootFolder}");
                 var treeViewReturn = new List<TreeSize>();
                 treeViewReturn = treeView.OrderByDescending(x => x.RawSize).ToList();
                 return treeViewReturn;
