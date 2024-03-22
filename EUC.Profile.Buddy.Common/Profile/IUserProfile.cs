@@ -56,7 +56,7 @@ namespace EUC.Profile.Buddy.Common.Profile
         /// </summary>
         /// <param name="actionDefinition">The Action Description.</param>
         /// <param name="profileDirectory">The Profile Directory.</param>
-        /// /// <param name="userProfile">The User Profile.</param>
+        /// <param name="userProfile">The User Profile.</param>
         public void ExecuteAction(ProfileActionDefinition actionDefinition, string profileDirectory, IUserProfile userProfile);
     }
 }
