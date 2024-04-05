@@ -30,6 +30,7 @@ namespace EUC.Profile.Buddy.Common.Logging
                 directory,
                 string.Format($"{DateTime.Now:yyyyMMdd}_{FileName}"));
 
+            // Move this to the Filesand Folder Class
             if (!Directory.Exists(directory))
             {
                 try
@@ -46,7 +47,10 @@ namespace EUC.Profile.Buddy.Common.Logging
         /// <inheritdoc/>
         public async Task LogAsync(string logMessage, LogLevel logLevel = LogLevel.INFO, LogType logType = LogType.FILE)
         {
-            ArgumentException.ThrowIfNullOrEmpty(logMessage, nameof(logMessage));
+            if (string.IsNullOrWhiteSpace(logMessage))
+            {
+                throw new ArgumentNullException();
+            }
 
             using (StreamWriter streamWriter = new (this.fullLogFile, true))
             {

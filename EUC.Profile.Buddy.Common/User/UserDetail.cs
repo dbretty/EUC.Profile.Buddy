@@ -153,7 +153,10 @@ namespace EUC.Profile.Buddy.Common.User
         /// <inheritdoc/>
         public string UpdateProfileSize(string profileDirectory)
         {
-            ArgumentException.ThrowIfNullOrEmpty(profileDirectory, nameof(profileDirectory));
+            if (string.IsNullOrWhiteSpace(profileDirectory))
+            {
+                throw new ArgumentNullException();
+            }
 
             var profileSizeRaw = this.filesAndFolders.DirectorySizeAsync(new DirectoryInfo(profileDirectory));
             long profileSizeLong = profileSizeRaw.GetAwaiter().GetResult();
@@ -167,7 +170,10 @@ namespace EUC.Profile.Buddy.Common.User
         /// <inheritdoc/>
         public async Task<string> UpdateProfileSizeAsync(string profileDirectory)
         {
-            ArgumentException.ThrowIfNullOrEmpty(profileDirectory, nameof(profileDirectory));
+            if (string.IsNullOrWhiteSpace(profileDirectory))
+            {
+                throw new ArgumentNullException();
+            }
 
             return await Task.Run(() => this.UpdateProfileSize(profileDirectory));
         }

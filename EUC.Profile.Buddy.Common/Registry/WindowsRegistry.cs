@@ -32,9 +32,10 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public object? GetRegistryValue(string valueName, string valueKey, RegistryHive registryHive)
         {
-            ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
-            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+            if (string.IsNullOrWhiteSpace(valueName) || string.IsNullOrWhiteSpace(valueKey))
+            {
+                throw new ArgumentNullException();
+            }
 
             if (!OperatingSystem.IsWindows())
             {
@@ -80,9 +81,10 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public async Task<object?> GetRegistryValueAsync(string valueName, string valueKey, RegistryHive registryHive)
         {
-            ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
-            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+            if (string.IsNullOrWhiteSpace(valueName) || string.IsNullOrWhiteSpace(valueKey))
+            {
+                throw new ArgumentNullException();
+            }
 
             return await Task.Run(() => this.GetRegistryValue(valueName, valueKey, registryHive));
         }
