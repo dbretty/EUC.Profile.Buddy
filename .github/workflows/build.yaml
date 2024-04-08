@@ -5,10 +5,12 @@ on:
     branches: ["main"]
     paths:
       - 'EUC.Profile.Buddy.Common/**' 
+      - 'EUC.Profile.Buddy.Common.Test/**' 
   pull_request:
     branches: ["main"]
     paths:
       - 'EUC.Profile.Buddy.Common/**'
+      - 'EUC.Profile.Buddy.Common.Test/**' 
 
 jobs:
   build:
