@@ -7,6 +7,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.Registry.Exceptions;
+    using EUC.Profile.Buddy.Common.Registry.Model;
     using Microsoft.Win32;
     using Moq;
     using NUnit.Framework;
@@ -85,6 +86,45 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
 
             // Assert
             Assert.That(response, Is.TypeOf<bool>());
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryKey completes.
+        /// </summary>
+        [Test]
+        public void RegistryPathValue_WithValidPath_ShouldSucceed()
+        {
+            // Arrange + Act
+            var rpv = new RegistryPathValue() { Path = "path" };
+
+            // Assert
+            Assert.That(rpv.Path, Is.EqualTo("path"));
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryKey completes.
+        /// </summary>
+        [Test]
+        public void RegistryPathValue_WithValidKey_ShouldSucceed()
+        {
+            // Arrange + Act
+            var rpv = new RegistryPathValue() { Key = "key" };
+
+            // Assert
+            Assert.That(rpv.Key, Is.EqualTo("key"));
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryKey completes.
+        /// </summary>
+        [Test]
+        public void RegistryPathValue_WithValidValue_ShouldSucceed()
+        {
+            // Arrange + Act
+            var rpv = new RegistryPathValue() { Value = "value" };
+
+            // Assert
+            Assert.That(rpv.Value, Is.EqualTo("value"));
         }
 
         /// <summary>
@@ -221,6 +261,126 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
 
             // Act + Assert
             Assert.ThrowsAsync<InvalidValueException>(async () => await mockRegistry.GetRegistryValueAsync("dummy value", this.RegistryKey, RegistryHive.LocalMachine));
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryValue Throws correctly.
+        /// </summary>
+        /// <param name="value">The registry value.</param>
+        /// <param name="key">The registry key.</param>
+        /// <param name="hive">The registry hive.</param>
+        [Test]
+        [TestCase("value", "key", 7)]
+        public void GetRegistryValue_WithInvalidRootKey_InvalidRootKeyException(string value, string key, RegistryHive hive)
+        {
+            // Arrange
+            var mockILogger = new Mock<ILogger>();
+            var mockRegistry = new WindowsRegistry(mockILogger.Object);
+
+            // Act + Assert
+            Assert.Throws<InvalidRootKeyException>(() => mockRegistry.GetRegistryValue(value, key, hive));
+        }
+
+        /// <summary>
+        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// </summary>
+        [Test]
+        public void InvalidRootKeyException_WithMessage_Throws()
+        {
+            // Arrange + Act
+            var ex = new InvalidRootKeyException("test message");
+
+            // Assert
+            if (ex.Message is not null)
+            {
+                Assert.That(ex.Message, Is.EqualTo("test message"));
+            }
+        }
+
+        /// <summary>
+        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// </summary>
+        [Test]
+        public void InvalidRootKeyException_WithMessageAndInnerException_Throws()
+        {
+            // Arrange + Act
+            var innerException = new Exception("inner");
+            var ex = new InvalidRootKeyException("test message", innerException);
+
+            // Assert
+            if (ex.Message is not null && ex.InnerException is not null)
+            {
+                Assert.That(ex.Message, Is.EqualTo("test message"));
+                Assert.That(ex.InnerException.Message, Is.EqualTo("inner"));
+            }
+        }
+
+        /// <summary>
+        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// </summary>
+        [Test]
+        public void InvalidKeyException_WithMessage_Throws()
+        {
+            // Arrange + Act
+            var ex = new InvalidKeyException("test message");
+
+            // Assert
+            if (ex.Message is not null)
+            {
+                Assert.That(ex.Message, Is.EqualTo("test message"));
+            }
+        }
+
+        /// <summary>
+        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// </summary>
+        [Test]
+        public void InvalidKeyException_WithMessageAndInnerException_Throws()
+        {
+            // Arrange + Act
+            var innerException = new Exception("inner");
+            var ex = new InvalidKeyException("test message", innerException);
+
+            // Assert
+            if (ex.Message is not null && ex.InnerException is not null)
+            {
+                Assert.That(ex.Message, Is.EqualTo("test message"));
+                Assert.That(ex.InnerException.Message, Is.EqualTo("inner"));
+            }
+        }
+
+        /// <summary>
+        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// </summary>
+        [Test]
+        public void InvalidValueException_WithMessage_Throws()
+        {
+            // Arrange + Act
+            var ex = new InvalidValueException("test message");
+
+            // Assert
+            if (ex.Message is not null)
+            {
+                Assert.That(ex.Message, Is.EqualTo("test message"));
+            }
+        }
+
+        /// <summary>
+        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// </summary>
+        [Test]
+        public void InvalidValueException_WithMessageAndInnerException_Throws()
+        {
+            // Arrange + Act
+            var innerException = new Exception("inner");
+            var ex = new InvalidValueException("test message", innerException);
+
+            // Assert
+            if (ex.Message is not null && ex.InnerException is not null)
+            {
+                Assert.That(ex.Message, Is.EqualTo("test message"));
+                Assert.That(ex.InnerException.Message, Is.EqualTo("inner"));
+            }
         }
     }
 }

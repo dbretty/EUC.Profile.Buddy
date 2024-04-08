@@ -5,7 +5,7 @@
 namespace EUC.Profile.Buddy.Common.Logging
 {
     using System.IO;
-    using System.Security;
+    using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Logging.Model;
 
     /// <summary>
@@ -22,6 +22,8 @@ namespace EUC.Profile.Buddy.Common.Logging
         /// </summary>
         public Logger()
         {
+            IFilesAndFolders filesAndFolders = new FilesAndFolders(this);
+
             string directory = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 LogPath);
@@ -30,18 +32,7 @@ namespace EUC.Profile.Buddy.Common.Logging
                 directory,
                 string.Format($"{DateTime.Now:yyyyMMdd}_{FileName}"));
 
-            // Move this to the Filesand Folder Class
-            if (!Directory.Exists(directory))
-            {
-                try
-                {
-                    Directory.CreateDirectory(directory);
-                }
-                catch
-                {
-                    throw new SecurityException();
-                }
-            }
+            filesAndFolders.CreateDirectory(directory);
         }
 
         /// <inheritdoc/>

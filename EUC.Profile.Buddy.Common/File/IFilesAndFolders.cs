@@ -88,5 +88,11 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="millisecondsDelay">The ms delay before a retry.</param>
         /// <returns>A <see cref="Task"/>.</returns>
         public Task DeleteFileAsync(string fileName, int maxRetries = 10, int millisecondsDelay = 30);
+
+        /// <summary>
+        /// Creates a folder.
+        /// </summary>
+        /// <param name="folder">The root folder to create.</param>
+        public void CreateDirectory(string folder);
     }
 }

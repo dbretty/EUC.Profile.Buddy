@@ -11,6 +11,7 @@ namespace EUC.Profile.Buddy.Common.File
     using System.Drawing;
     using System.IO;
     using System.Linq;
+    using System.Security;
     using EUC.Profile.Buddy.Common.File.Model;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Logging.Model;
@@ -302,6 +303,24 @@ namespace EUC.Profile.Buddy.Common.File
         {
             ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
             return await Task.Run(() => this.BuildTreeSizeFiles(rootFolder, sorted = true));
+        }
+
+        /// <inheritdoc/>
+        public void CreateDirectory(string folder)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(folder, nameof(folder));
+
+            if (!Directory.Exists(folder))
+            {
+                try
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                catch
+                {
+                    throw new SecurityException();
+                }
+            }
         }
 
         /// <summary>

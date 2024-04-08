@@ -37,41 +37,33 @@ namespace EUC.Profile.Buddy.Common.Registry
                 throw new ArgumentNullException();
             }
 
-            if (!OperatingSystem.IsWindows())
+            using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
-                this.logger.LogAsync($"Operating system not supported", LogLevel.ERROR);
-                throw new InvalidOperatingSystemException();
-            }
-            else
-            {
-                using (RegistryKey? localKey = GetRegistryHive(registryHive))
+                if (localKey is null)
                 {
-                    if (localKey is null)
+                    this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
+                    throw new InvalidRootKeyException();
+                }
+                else
+                {
+                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey);
+                    if (localFullKey is null)
                     {
-                        this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
-                        throw new InvalidRootKeyException();
+                        this.logger.LogAsync($"Registry path not found: {valueKey}", LogLevel.ERROR);
+                        throw new InvalidKeyException();
                     }
                     else
                     {
-                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey);
-                        if (localFullKey is null)
+                        object? localValue = localFullKey.GetValue(valueName);
+                        if (localValue is null)
                         {
-                            this.logger.LogAsync($"Registry path not found: {valueKey}", LogLevel.ERROR);
-                            throw new InvalidKeyException();
+                            this.logger.LogAsync($"Registry value not found: {valueName}", LogLevel.ERROR);
+                            throw new InvalidValueException();
                         }
                         else
                         {
-                            object? localValue = localFullKey.GetValue(valueName);
-                            if (localValue is null)
-                            {
-                                this.logger.LogAsync($"Registry value not found: {valueName}", LogLevel.ERROR);
-                                throw new InvalidValueException();
-                            }
-                            else
-                            {
-                                this.logger.LogAsync($"Registry value read: {valueKey} - {valueName} - {localValue}");
-                                return localValue;
-                            }
+                            this.logger.LogAsync($"Registry value read: {valueKey} - {valueName} - {localValue}");
+                            return localValue;
                         }
                     }
                 }
@@ -95,33 +87,25 @@ namespace EUC.Profile.Buddy.Common.Registry
             ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
             ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
 
-            if (!OperatingSystem.IsWindows())
+            using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
-                this.logger.LogAsync($"Operating system not supported", LogLevel.ERROR);
-                throw new InvalidOperatingSystemException();
-            }
-            else
-            {
-                using (RegistryKey? localKey = GetRegistryHive(registryHive))
+                if (localKey is null)
                 {
-                    if (localKey is null)
+                    this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
+                    throw new InvalidRootKeyException();
+                }
+                else
+                {
+                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, false);
+                    if (localFullKey is not null)
                     {
-                        this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
-                        throw new InvalidRootKeyException();
+                        this.logger.LogAsync($"Registry key found: {localFullKey}");
+                        return true;
                     }
                     else
                     {
-                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, false);
-                        if (localFullKey is not null)
-                        {
-                            this.logger.LogAsync($"Registry key found: {localFullKey}");
-                            return true;
-                        }
-                        else
-                        {
-                            this.logger.LogAsync($"Registry key not found: {localFullKey}", LogLevel.WARNING);
-                            return false;
-                        }
+                        this.logger.LogAsync($"Registry key not found: {localFullKey}", LogLevel.WARNING);
+                        return false;
                     }
                 }
             }
@@ -185,42 +169,34 @@ namespace EUC.Profile.Buddy.Common.Registry
             ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
             ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
 
-            if (!OperatingSystem.IsWindows())
+            using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
-                this.logger.LogAsync($"Operating system not supported", LogLevel.ERROR);
-                throw new InvalidOperatingSystemException();
-            }
-            else
-            {
-                using (RegistryKey? localKey = GetRegistryHive(registryHive))
+                if (localKey is null)
                 {
-                    if (localKey is null)
+                    this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
+                    throw new InvalidRootKeyException();
+                }
+                else
+                {
+                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
+                    if (localFullKey is null)
                     {
-                        this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
-                        throw new InvalidRootKeyException();
+                        try
+                        {
+                            localKey.CreateSubKey(valueKey, true);
+                            this.logger.LogAsync($"Registry key: {localKey} created");
+                            return true;
+                        }
+                        catch
+                        {
+                            this.logger.LogAsync($"Incorrect rights to create registry key: {localKey}", LogLevel.ERROR);
+                            throw new SecurityException();
+                        }
                     }
                     else
                     {
-                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
-                        if (localFullKey is null)
-                        {
-                            try
-                            {
-                                localKey.CreateSubKey(valueKey, true);
-                                this.logger.LogAsync($"Registry key: {localKey} created");
-                                return true;
-                            }
-                            catch
-                            {
-                                this.logger.LogAsync($"Incorrect rights to create registry key: {localKey}", LogLevel.ERROR);
-                                throw new SecurityException();
-                            }
-                        }
-                        else
-                        {
-                            this.logger.LogAsync($"Registry key already exists: {localKey}", LogLevel.ERROR);
-                            throw new InvalidKeyException("Registry Key already exists");
-                        }
+                        this.logger.LogAsync($"Registry key already exists: {localKey}", LogLevel.ERROR);
+                        throw new InvalidKeyException("Registry Key already exists");
                     }
                 }
             }
@@ -234,42 +210,34 @@ namespace EUC.Profile.Buddy.Common.Registry
             ArgumentNullException.ThrowIfNull(valueData, nameof(valueData));
             ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
 
-            if (!OperatingSystem.IsWindows())
+            using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
-                this.logger.LogAsync($"Operating system not supported", LogLevel.ERROR);
-                throw new InvalidOperatingSystemException();
-            }
-            else
-            {
-                using (RegistryKey? localKey = GetRegistryHive(registryHive))
+                if (localKey is null)
                 {
-                    if (localKey is null)
+                    this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
+                    throw new InvalidRootKeyException();
+                }
+                else
+                {
+                    try
                     {
-                        this.logger.LogAsync($"Invalid registry hive used. LocalMachine, CurrentUser are supported", LogLevel.ERROR);
-                        throw new InvalidRootKeyException();
+                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
+                        if (localFullKey is null)
+                        {
+                            this.logger.LogAsync($"Incorrect rights to the registry key: {localFullKey}", LogLevel.ERROR);
+                            throw new InvalidKeyException();
+                        }
+                        else
+                        {
+                            localFullKey.SetValue(valueName, valueData);
+                            this.logger.LogAsync($"Registry value created: {valueName} - {valueData}");
+                            return true;
+                        }
                     }
-                    else
+                    catch (SecurityException ex)
                     {
-                        try
-                        {
-                            RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
-                            if (localFullKey is null)
-                            {
-                                this.logger.LogAsync($"Incorrect rights to the registry key: {localFullKey}", LogLevel.ERROR);
-                                throw new InvalidKeyException();
-                            }
-                            else
-                            {
-                                localFullKey.SetValue(valueName, valueData);
-                                this.logger.LogAsync($"Registry value created: {valueName} - {valueData}");
-                                return true;
-                            }
-                        }
-                        catch (SecurityException ex)
-                        {
-                            this.logger.LogAsync($"Incorrect rights to oprn the registry path: {valueKey}", LogLevel.ERROR);
-                            throw new SecurityException(ex.Message);
-                        }
+                        this.logger.LogAsync($"Incorrect rights to oprn the registry path: {valueKey}", LogLevel.ERROR);
+                        throw new SecurityException(ex.Message);
                     }
                 }
             }
@@ -284,12 +252,15 @@ namespace EUC.Profile.Buddy.Common.Registry
         {
             RegistryKey? localKey = null;
 
-            if (OperatingSystem.IsWindows())
+            try
             {
                 localKey = RegistryKey.OpenBaseKey(registryHive, RegistryView.Registry64);
+                return localKey;
             }
-
-            return localKey;
+            catch (Exception)
+            {
+                return localKey;
+            }
         }
     }
 }
