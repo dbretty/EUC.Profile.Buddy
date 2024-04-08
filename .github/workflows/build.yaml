@@ -32,7 +32,15 @@ jobs:
         with:
           dotnet-version: |
             8.x
-      - name: "Restore/Build/Test"
-        run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
-      - name: Coveralls
-        uses: coverallsapp/github-action@v2
+      - name : coverlet
+        uses: b3b00/coverlet-action@1.2.5
+        with:
+          testProject: 'EUC.Profile.Buddy.Common.Test/EUC.Profile.Buddy.Common.Tests.csproj'
+          output: 'lcov.info'
+          outputFormat: 'lcov'
+          excludes: '[program]*,[test]test.*'
+      - name: coveralls      
+        uses: coverallsapp/github-action@v1.1.1
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN }} 
+          path-to-lcov: ${{steps.coverlet.outputs.coverageFile}} 
