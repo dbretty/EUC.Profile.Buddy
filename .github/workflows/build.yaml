@@ -39,8 +39,5 @@ jobs:
           output: 'lcov.info'
           outputFormat: 'lcov'
           excludes: '[program]*,[test]test.*'
-      - name: Report Coveralls (Windows)
-        if: startsWith(runner.os, 'Windows')
-        run: curl -sL https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-windows.zip | zcat > ./coveralls.exe && ./coveralls.exe
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      - name: Report Coveralls
+        uses: coverallsapp/github-action@v2
