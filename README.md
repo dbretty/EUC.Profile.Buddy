@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/dbretty/EUC.Profile.Buddy/badge.svg?branch=main)](https://coveralls.io/github/dbretty/EUC.Profile.Buddy?branch=main)
+
 # EUC Profile Buddy
 
 Windows application to automate the maintenance of your End User Computing (EUC) user profiles directly from the system tray or the command line. Includes user and admin options to effectively manage profile size, settings, backup and more.
