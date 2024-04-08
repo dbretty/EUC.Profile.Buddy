@@ -1,29 +1,25 @@
-name: "Main Build Process"
+name: "Build Process"
 
-# Runs on main branch commits, 
-# every commit in a pull request, any published release.
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'EUC.Profile.Buddy.Common/**' 
   pull_request:
     branches: ["main"]
-  release:
-    types: [published]
+    paths:
+      - 'EUC.Profile.Buddy.Common/**'
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 jobs:
   build:
     name: "Build & Test"
 
-    # Permissions this GitHub Action needs for other things in GitHub
     permissions: write-all
 
     runs-on: windows-latest
 
     steps:
-      - name: Check out the code
+      - name: Check Out Code Base
         uses: actions/checkout@v4
         with:
           fetch-depth: 0        
@@ -32,12 +28,12 @@ jobs:
         with:
           dotnet-version: |
             8.x
-      - name : coverlet
+      - name : Coverlet Testing
         uses: b3b00/coverlet-action@1.2.5
         with:
           testProject: 'EUC.Profile.Buddy.Common.Test/EUC.Profile.Buddy.Common.Tests.csproj'
           output: 'lcov.info'
           outputFormat: 'lcov'
           excludes: '[program]*,[test]test.*'
-      - name: Report Coveralls
+      - name: Coveralls Reporting
         uses: coverallsapp/github-action@v2
