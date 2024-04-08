@@ -14,7 +14,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Logging
     public class LoggerTests
     {
         /// <summary>
-        /// Test method to ensure WriteLogAsync completes.
+        /// Test method to ensure WriteLogAsync completes successfully.
         /// </summary>
         /// <param name="logMessage">The log message to pass in.</param>
         [Test]
