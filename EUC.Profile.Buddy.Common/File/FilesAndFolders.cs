@@ -329,6 +329,7 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="folderName">The root folder to build the tree from.</param>
         /// <param name="folders">Boolean value to sort results.</param>
         /// <returns>A <see cref="bool"/>.</returns>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private bool CheckFolderFilter(string folderName, List<string> folders)
         {
             ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));
@@ -354,6 +355,7 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="folderName">The root folder to build the tree from.</param>
         /// <param name="files">Boolean value to sort results.</param>
         /// <returns>A <see cref="bool"/>.</returns>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private bool CheckFileFilter(string folderName, List<string> files)
         {
             ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));

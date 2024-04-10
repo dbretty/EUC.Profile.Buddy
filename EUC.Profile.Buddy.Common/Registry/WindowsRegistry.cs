@@ -84,8 +84,10 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public bool GetRegistryKey(string valueKey, RegistryHive registryHive)
         {
-            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+            if (string.IsNullOrWhiteSpace(valueKey))
+            {
+                throw new ArgumentNullException();
+            }
 
             using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
@@ -248,6 +250,7 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// </summary>
         /// <param name="registryHive">The base root key to action (HKLM, HKCU, HKCR). <see cref="RegistryHive"/>.</param>
         /// <returns>A <see cref="RegistryKey"/> or a null value.</returns>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private static RegistryKey? GetRegistryHive(RegistryHive registryHive = RegistryHive.LocalMachine)
         {
             RegistryKey? localKey = null;

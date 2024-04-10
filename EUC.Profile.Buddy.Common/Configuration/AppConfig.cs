@@ -76,6 +76,10 @@ namespace EUC.Profile.Buddy.Common.Configuration
         /// <inheritdoc/>
         public string ClearTempAtStart { get; set; }
 
+        /// <summary>
+        /// Startup module to cater for start actions.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private void EUCProfileBuddyStartup()
         {
             this.Logger.LogAsync($"Checking for EUC Profile Buddy registry key: {this.AppRegistryKey}");

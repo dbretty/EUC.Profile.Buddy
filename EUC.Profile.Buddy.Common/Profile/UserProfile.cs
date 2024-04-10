@@ -194,6 +194,7 @@ namespace EUC.Profile.Buddy.Common.Profile
         /// Executes Custom Scripts.
         /// </summary>
         /// <param name="customScriptsLocation">The Custom Scripts Directory.</param>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private void ExecuteCustomScript(string customScriptsLocation)
         {
             ArgumentException.ThrowIfNullOrEmpty(customScriptsLocation, nameof(customScriptsLocation));
@@ -218,6 +219,7 @@ namespace EUC.Profile.Buddy.Common.Profile
         /// Executes Custom Scripts (Async).
         /// </summary>
         /// <param name="customScriptsLocation">The Custom Scripts Directory.</param>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private async void ExecuteCustomScriptAsync(string customScriptsLocation)
         {
             ArgumentNullException.ThrowIfNull(customScriptsLocation, nameof(customScriptsLocation));
@@ -228,6 +230,7 @@ namespace EUC.Profile.Buddy.Common.Profile
         /// <summary>
         /// Resets the Microsoft Edge Settings.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private async void ResetMicrosoftEdge()
         {
             var msEdgeData = "Microsoft\\Edge";

@@ -11,6 +11,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
     using Microsoft.Win32;
     using Moq;
     using NUnit.Framework;
+    using NUnit.Framework.Legacy;
 
     /// <summary>
     /// Class to do Registry unit tests.
@@ -92,38 +93,18 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         /// Test method to ensure GetRegistryKey completes.
         /// </summary>
         [Test]
-        public void RegistryPathValue_WithValidPath_ShouldSucceed()
+        public void RegistryPathValue_WithValidData_ShouldSucceed()
         {
             // Arrange + Act
-            var rpv = new RegistryPathValue() { Path = "path" };
+            var rpv = new RegistryPathValue() {
+                Path = "path",
+                Key = "key",
+                Value = "value",
+            };
 
             // Assert
             Assert.That(rpv.Path, Is.EqualTo("path"));
-        }
-
-        /// <summary>
-        /// Test method to ensure GetRegistryKey completes.
-        /// </summary>
-        [Test]
-        public void RegistryPathValue_WithValidKey_ShouldSucceed()
-        {
-            // Arrange + Act
-            var rpv = new RegistryPathValue() { Key = "key" };
-
-            // Assert
             Assert.That(rpv.Key, Is.EqualTo("key"));
-        }
-
-        /// <summary>
-        /// Test method to ensure GetRegistryKey completes.
-        /// </summary>
-        [Test]
-        public void RegistryPathValue_WithValidValue_ShouldSucceed()
-        {
-            // Arrange + Act
-            var rpv = new RegistryPathValue() { Value = "value" };
-
-            // Assert
             Assert.That(rpv.Value, Is.EqualTo("value"));
         }
 
@@ -165,6 +146,59 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
 
             // Act + Assert
             Assert.ThrowsAsync<ArgumentNullException>(async () => await mockRegistry.GetRegistryValueAsync(value, key, hive));
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryKey Fails with Null Key Values.
+        /// </summary>
+        /// <param name="key">The registry key.</param>
+        /// <param name="hive">The registry value.</param>
+        [Test]
+        [TestCase("", RegistryHive.LocalMachine)]
+        [TestCase(" ", RegistryHive.LocalMachine)]
+        [TestCase(null, RegistryHive.LocalMachine)]
+        public void GetRegistryKey_WithInvalidKey_ThrowArgumentNullOrEmpty(string key, RegistryHive hive)
+        {
+            // Arrange
+            var mockILogger = new Mock<ILogger>();
+            var mockRegistry = new WindowsRegistry(mockILogger.Object);
+
+            // Act + Assert
+            Assert.Throws<ArgumentNullException>(() => mockRegistry.GetRegistryKey(key, hive));
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryKey Throws correctly.
+        /// </summary>
+        /// <param name="key">The registry key.</param>
+        /// <param name="hive">The registry hive.</param>
+        [Test]
+        [TestCase("key", 7)]
+        public void GetRegistryKey_WithInvalidRootKey_InvalidRootKeyException(string key, RegistryHive hive)
+        {
+            // Arrange
+            var mockILogger = new Mock<ILogger>();
+            var mockRegistry = new WindowsRegistry(mockILogger.Object);
+
+            // Act + Assert
+            Assert.Throws<InvalidRootKeyException>(() => mockRegistry.GetRegistryKey(key, hive));
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryKey Fails with an invalid key path.
+        /// </summary>
+        [Test]
+        public void GetRegistryKey_WithInvalidKeyPath_ReturnsFalse()
+        {
+            // Arrange
+            var mockILogger = new Mock<ILogger>();
+            var mockRegistry = new WindowsRegistry(mockILogger.Object);
+
+            // Act + Assert
+            var response = mockRegistry.GetRegistryKey("dummy key", RegistryHive.LocalMachine);
+
+            // Assert
+            ClassicAssert.IsFalse(response);
         }
 
         /// <summary>

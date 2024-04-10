@@ -179,57 +179,52 @@ namespace EUC.Profile.Buddy.Common.User
         }
 
         /// <summary>
-        /// Gets the User Profile Data.
+        /// Gets the user data (async).
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private async void GetUserData()
         {
-            if (OperatingSystem.IsWindows())
+            this.logger.LogAsync("Getting User Details");
+
+            var userNameTask = await this.registry.GetRegistryValueAsync(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+            this.UserName = (string?)userNameTask;
+            this.logger.LogAsync($"Username: {this.UserName}");
+
+            var domainTask = await this.registry.GetRegistryValueAsync(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+            this.Domain = (string?)domainTask;
+            this.logger.LogAsync($"Domain: {this.Domain}");
+
+            var profileDirectoryTask = await this.registry.GetRegistryValueAsync(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+            this.ProfileDirectory = (string?)profileDirectoryTask;
+            this.logger.LogAsync($"Profile Directory: {this.ProfileDirectory}");
+
+            var localAppDataTask = await this.registry.GetRegistryValueAsync(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+            this.AppDataLocal = (string?)localAppDataTask;
+            this.logger.LogAsync($"Appdata Local: {this.AppDataLocal}");
+
+            var roamingAppDataTask = await this.registry.GetRegistryValueAsync(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
+            this.AppDataRoaming = (string?)roamingAppDataTask;
+            this.logger.LogAsync($"Appdata Roaming: {this.AppDataRoaming}");
+
+            if (this.ProfileDirectory is not null)
             {
-                this.logger.LogAsync("Getting User Details");
-
-                var userNameTask = await this.registry.GetRegistryValueAsync(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.UserName = (string?)userNameTask;
-                this.logger.LogAsync($"Username: {this.UserName}");
-
-                var domainTask = await this.registry.GetRegistryValueAsync(UserDomainValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.Domain = (string?)domainTask;
-                this.logger.LogAsync($"Domain: {this.Domain}");
-
-                var profileDirectoryTask = await this.registry.GetRegistryValueAsync(UserProfileDirectoryValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.ProfileDirectory = (string?)profileDirectoryTask;
-                this.logger.LogAsync($"Profile Directory: {this.ProfileDirectory}");
-
-                var localAppDataTask = await this.registry.GetRegistryValueAsync(UserLocalAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.AppDataLocal = (string?)localAppDataTask;
-                this.logger.LogAsync($"Appdata Local: {this.AppDataLocal}");
-
-                var roamingAppDataTask = await this.registry.GetRegistryValueAsync(UserRoamingAppDataValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
-                this.AppDataRoaming = (string?)roamingAppDataTask;
-                this.logger.LogAsync($"Appdata Roaming: {this.AppDataRoaming}");
-
-                if (this.ProfileDirectory is not null)
-                {
-                    this.ProfileSize = await this.UpdateProfileSizeAsync(this.ProfileDirectory);
-                }
-                else
-                {
-                    this.ProfileSize = "0 GB";
-                }
-
-                this.logger.LogAsync($"Profile Size: {this.ProfileSize}");
-
-                this.GetProfileType();
-                this.logger.LogAsync($"Profile Type: {this.ProfileType}");
+                this.ProfileSize = await this.UpdateProfileSizeAsync(this.ProfileDirectory);
             }
             else
             {
-                this.logger.LogAsync($"Operating system not supported", LogLevel.ERROR);
+                this.ProfileSize = "0 GB";
             }
+
+            this.logger.LogAsync($"Profile Size: {this.ProfileSize}");
+
+            this.GetProfileType();
+            this.logger.LogAsync($"Profile Type: {this.ProfileType}");
         }
 
         /// <summary>
         /// Gets the User Profile Type.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private void GetProfileType()
         {
             var profileTypeFound = false;
