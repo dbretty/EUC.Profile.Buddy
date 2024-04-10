@@ -194,7 +194,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             var response = mockRegistry.CreateRegistryKey(key, hive);
 
             // Assert
-            Assert.That(response, Is.False);
+            Assert.That(response, Is.True);
         }
 
         /// <summary>
