@@ -8,6 +8,7 @@ namespace EUC.Profile.Buddy.Common.Tests.User
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.User;
+    using EUC.Profile.Buddy.Common.User.Model;
     using Moq;
     using NUnit.Framework;
 
@@ -41,6 +42,29 @@ namespace EUC.Profile.Buddy.Common.Tests.User
             // Assert
             Assert.That(response, Is.EqualTo(mockSizeString));
             Mock.VerifyAll(mockFilesAndFolders);
+        }
+
+        /// <summary>
+        /// Checks that ProfileModel works.
+        /// </summary>
+        [Test]
+        public void ProfileType_WithValidData_ShouldReturnString()
+        {
+            // Arrange
+            var profileType = new ProfileType[]
+            {
+                new ProfileType
+                {
+                    ProfileTypeLabel = "Local",
+                    ProfileTypeDefinition = ProfileTypeDefinition.Local,
+                },
+            };
+
+            // Act
+            var response = profileType[0].ToString();
+
+            // Assert
+            Assert.That(response, Is.EqualTo("Local"));
         }
 
         /// <summary>
