@@ -214,7 +214,7 @@ namespace EUC.Profile.Buddy.Common.Registry
         public bool SetRegistryValue(string valueName, string valueKey, object valueData, RegistryHive registryHive)
         {
 
-            if (string.IsNullOrWhiteSpace(valueKey) || string.IsNullOrWhiteSpace(valueName) || string.IsNullOrWhiteSpace(valueData))
+            if (string.IsNullOrWhiteSpace(valueKey) || string.IsNullOrWhiteSpace(valueName))
             {
                 throw new ArgumentNullException();
             }

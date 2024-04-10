@@ -178,24 +178,6 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             Assert.That(response, Is.True);
         }
 
-
-        /// <summary>
-        /// Test method to ensure CreateRegistryKey Fails with Null Key Values.
-        /// </summary>
-        /// <param name="valueKey">The registry Key.</param>
-        /// <param name="hive">The registry hive.</param>
-        [Test]
-        [TestCase(null, RegistryHive.LocalMachine)]
-        public void SetRegistryValue_WithNullValue_ThrowArgumentNullException(string valueName, string valueKey, object valueData, RegistryHive registryHive)
-        {
-            // Arrange
-            var mockILogger = new Mock<ILogger>();
-            var mockRegistry = new WindowsRegistry(mockILogger.Object);
-
-            // Act + Assert
-            Assert.Throws<ArgumentNullException>(() => mockRegistry.CreateRegistryKey(valueKey, hive));
-        }
-
         /// <summary>
         /// Test method to ensure CreateRegistryKey Throws correctly.
         /// </summary>
