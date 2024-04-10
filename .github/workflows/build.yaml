@@ -2,7 +2,7 @@ name: "Build Process"
 
 on:
   push:
-    branches: ["main"]
+    branches:
     paths:
       - 'EUC.Profile.Buddy.Common/**' 
       - 'EUC.Profile.Buddy.Common.Test/**' 
