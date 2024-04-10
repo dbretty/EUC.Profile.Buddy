@@ -1,5 +1,5 @@
-﻿// <copyright file="TreeSize.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TreeSize.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 
 namespace EUC.Profile.Buddy.Common.File.Model

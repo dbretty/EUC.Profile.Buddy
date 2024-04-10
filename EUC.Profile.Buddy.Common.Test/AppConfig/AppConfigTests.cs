@@ -14,24 +14,25 @@ namespace EUC.Profile.Buddy.Common.Tests.AppConfig
     using NUnit.Framework;
 
     /// <summary>
-    /// Class to do logging unit tests.
+    /// Class to do AppConfig unit tests.
     /// </summary>
     [TestFixture]
     public class AppConfigTests
     {
         /// <summary>
-        /// Test method to ensure AppConfigTests completes.
+        /// Test method to ensure AppConfig with valid data succeeds.
         /// </summary>
         [Test]
-        public void AppConfig_WithValidData_ShouldSucceed()
+        public void AppConfig_WithValidPropertyValues_ShouldSucceed()
         {
-            // Arrange + Act
+            // Arrange
             var mockILogger = new Mock<ILogger>();
             var mockRegistry = new Mock<IWindowsRegistry>();
             var mockFilesAndFolders = new Mock<IFilesAndFolders>();
             var mockUserProfile = new Mock<IUserProfile>();
             var mockUserDetail = new Mock<IUserDetail>();
 
+            // Act
             var ac = new AppConfig()
             {
                 Logger = mockILogger.Object,

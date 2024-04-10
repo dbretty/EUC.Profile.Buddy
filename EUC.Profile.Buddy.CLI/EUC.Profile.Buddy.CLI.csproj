@@ -15,10 +15,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+	<AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EUC.Profile.Buddy.Common\EUC.Profile.Buddy.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Classes\" />
   </ItemGroup>
 
 </Project>

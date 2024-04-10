@@ -5,20 +5,19 @@
 namespace EUC.Profile.Buddy.Common.Tests.Profile
 {
     using EUC.Profile.Buddy.Common.Profile.Model;
-    using Moq;
     using NUnit.Framework;
 
     /// <summary>
-    /// Class to do user profile unit tests.
+    /// Class to do Profile unit tests.
     /// </summary>
     [TestFixture]
     public class ProfileTests
     {
         /// <summary>
-        /// Checks that ProfileModel works.
+        /// Checks that ProfileAction returns string value.
         /// </summary>
         [Test]
-        public void ProfileAction_WithValidData_ShouldReturnString()
+        public void ProfileAction_WithValidAction_ShouldReturnString()
         {
             // Arrange
             var profileAction = new ProfileAction[]

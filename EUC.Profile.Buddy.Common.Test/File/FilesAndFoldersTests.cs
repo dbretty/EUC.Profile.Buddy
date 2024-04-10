@@ -4,13 +4,7 @@
 
 namespace EUC.Profile.Buddy.Common.Tests.File
 {
-    using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.File.Model;
-    using EUC.Profile.Buddy.Common.Logging;
-    using EUC.Profile.Buddy.Common.Profile;
-    using EUC.Profile.Buddy.Common.Registry;
-    using EUC.Profile.Buddy.Common.User;
-    using Moq;
     using NUnit.Framework;
 
     /// <summary>
@@ -20,10 +14,10 @@ namespace EUC.Profile.Buddy.Common.Tests.File
     public class FilesAndFoldersTests
     {
         /// <summary>
-        /// Test method to ensure AppConfigTests completes.
+        /// Test method to ensure TreeSize with valid data succeeds.
         /// </summary>
         [Test]
-        public void TreeSize_WithValidData_ShouldSucceed()
+        public void TreeSize_WithValidPropertyValues_ShouldSucceed()
         {
             // Arrange + Act
             var ts = new TreeSize()

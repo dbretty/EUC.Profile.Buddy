@@ -12,8 +12,6 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
     using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Legacy;
-    using System.Runtime.CompilerServices;
-    using System.Security;
 
     /// <summary>
     /// Class to do Registry unit tests.
@@ -41,7 +39,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         public string RegistryValue { get; set; }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValue completes.
+        /// Test method to ensure GetRegistryValue with valid data succeeds.
         /// </summary>
         [Test]
         public void GetRegistryValue_WithValidValue_ShouldSucceed()
@@ -58,7 +56,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValueAsync completes.
+        /// Test method to ensure GetRegistryValueAsync with valid data succeeds.
         /// </summary>
         [Test]
         public void GetRegistryValueAsync_WithValidValue_ShouldSucceed()
@@ -75,7 +73,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryKey completes.
+        /// Test method to ensure GetRegistryKey with valid data succeeds.
         /// </summary>
         [Test]
         public void GetRegistryKey_WithValidValue_ShouldSucceed()
@@ -92,13 +90,14 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryKey completes.
+        /// Test method to ensure RegistryPathValue builds correctly.
         /// </summary>
         [Test]
-        public void RegistryPathValue_WithValidData_ShouldSucceed()
+        public void RegistryPathValue_WithValidPropertyValues_ShouldSucceed()
         {
             // Arrange + Act
-            var rpv = new RegistryPathValue() {
+            var rpv = new RegistryPathValue()
+            {
                 Path = "path",
                 Key = "key",
                 Value = "value",
@@ -111,10 +110,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Succeeds.
+        /// Test method to ensure GetRegistryPathValue with a valid key succeeds.
         /// </summary>
         [Test]
-        public void GetRegistryPathValue_WithValidKey_Succeeds()
+        public void GetRegistryPathValue_WithValidKey_ShouldSucceed()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -130,10 +129,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValueAsync Succeeds.
+        /// Test method to ensure GetRegistryPathValueAsync with a valid key succeeds.
         /// </summary>
         [Test]
-        public void GetRegistryPathValueAsync_WithValidKey_Succeeds()
+        public void GetRegistryPathValueAsync_WithValidKey_ShouldSucceed()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -149,10 +148,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure CreateRegistryKey Succeeds.
+        /// Test method to ensure CreateRegistryKey with a valid key succeeds.
         /// </summary>
         [Test]
-        public void CreateRegistryKey_WithValidKey_Succeeds()
+        public void CreateRegistryKey_WithValidKey_ShouldSucceed()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -179,12 +178,8 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// Test method to ensure SetRegistryValue with a valid data succeeds.
         /// </summary>
-        /// <param name="valueName">The registry rootPath.</param>
-        /// <param name="valueKey">The registry hive.</param>
-        /// <param name="valueData">The registry 1 rootPath.</param>
-        /// <param name="registryHive">The registry 1 hive.</param>
         [Test]
         public void SetRegistryValue_WithValidData_ShouldSucceed()
         {
@@ -204,15 +199,15 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// Test method to ensure SetRegistryValue with an invalid key returns false.
         /// </summary>
-        /// <param name="valueName">The registry rootPath.</param>
-        /// <param name="valueKey">The registry hive.</param>
-        /// <param name="valueData">The registry 1 rootPath.</param>
-        /// <param name="registryHive">The registry 1 hive.</param>
+        /// <param name="valueName">The registry value name.</param>
+        /// <param name="valueKey">The registry key.</param>
+        /// <param name="valueData">The registry value.</param>
+        /// <param name="registryHive">The registry hive.</param>
         [Test]
         [TestCase("value", "key", "data", RegistryHive.CurrentUser)]
-        public void SetRegistryValue_WithInvalidKey_ReturnsFalse(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        public void SetRegistryValue_WithInvalidKey_ShouldReturnFalse(string valueName, string valueKey, object valueData, RegistryHive registryHive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -226,15 +221,15 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// Test method to ensure SetRegistryValue with an invalid hive throws an error.
         /// </summary>
-        /// <param name="valueName">The registry rootPath.</param>
-        /// <param name="valueKey">The registry hive.</param>
-        /// <param name="valueData">The registry 1 rootPath.</param>
-        /// <param name="registryHive">The registry 1 hive.</param>
+        /// <param name="valueName">The registry value name.</param>
+        /// <param name="valueKey">The registry key.</param>
+        /// <param name="valueData">The registry value.</param>
+        /// <param name="registryHive">The registry hive.</param>
         [Test]
         [TestCase("value", "key", "data", 7)]
-        public void SetRegistryValue_WithInvalidRootKey_InvalidRootKeyException(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        public void SetRegistryValue_WithInvalidRootKey_ShouldThrowInvalidRootKeyException(string valueName, string valueKey, object valueData, RegistryHive registryHive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -245,16 +240,16 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure SetRegistryValue Throws correctly.
+        /// Test method to ensure SetRegistryValue with null data throws correctly.
         /// </summary>
-        /// <param name="valueName">The registry rootPath.</param>
-        /// <param name="valueKey">The registry hive.</param>
-        /// <param name="valueData">The registry 1 rootPath.</param>
-        /// <param name="registryHive">The registry 1 hive.</param>
+        /// <param name="valueName">The registry value name.</param>
+        /// <param name="valueKey">The registry key.</param>
+        /// <param name="valueData">The registry value.</param>
+        /// <param name="registryHive">The registry hive.</param>
         [Test]
         [TestCase(null, "key", "data", RegistryHive.CurrentUser)]
         [TestCase("value", null, "data", RegistryHive.CurrentUser)]
-        public void SetRegistryValue_WithNullData_ArgumentNullException(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        public void SetRegistryValue_WithNullData_ShouldThrowArgumentNullException(string valueName, string valueKey, object valueData, RegistryHive registryHive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -265,10 +260,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure CreateRegistryKey Throws correctly.
+        /// Test method to ensure CreateRegistryKey with an existing key throws correctly.
         /// </summary>
         [Test]
-        public void CreateRegistryKey_WithExistingKey_InvalidKeyException()
+        public void CreateRegistryKey_WithExistingKey_ShouldThrowInvalidKeyException()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -281,13 +276,13 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// Test method to ensure CreateRegistryKey with an invalid hive throws correctly.
         /// </summary>
         /// <param name="rootPath">The registry rootPath.</param>
         /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase("rootPath", 7)]
-        public void CreateRegistryKey_WithInvalidRootKey_InvalidRootKeyException(string rootPath, RegistryHive hive)
+        public void CreateRegistryKey_WithInvalidRootKey_ShouldThrowInvalidRootKeyException(string rootPath, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -298,13 +293,13 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure CreateRegistryKey Fails with Null Key Values.
+        /// Test method to ensure CreateRegistryKey fails with null key.
         /// </summary>
-        /// <param name="valueKey">The registry Key.</param>
+        /// <param name="valueKey">The registry key.</param>
         /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase(null, RegistryHive.LocalMachine)]
-        public void CreateRegistryKey_WithNullKey_ThrowArgumentNullException(string valueKey, RegistryHive hive)
+        public void CreateRegistryKey_WithNullKey_ShouldThrowArgumentNullException(string valueKey, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -315,13 +310,13 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Fails with Null Key Values.
+        /// Test method to ensure GetRegistryPathValue fails with null key.
         /// </summary>
         /// <param name="rootPath">The registry rootPath.</param>
         /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase(null, RegistryHive.LocalMachine)]
-        public void GetRegistryPathValue_WithNullRootPath_ThrowArgumentNullOrEmpty(string[] rootPath, RegistryHive hive)
+        public void GetRegistryPathValue_WithNullRootPath_ShouldThrowArgumentNullException(string[] rootPath, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -332,13 +327,13 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValueAsync Fails with Null Key Values.
+        /// Test method to ensure GetRegistryPathValueAsync fails with null key.
         /// </summary>
         /// <param name="rootPath">The registry rootPath.</param>
         /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase(null, RegistryHive.LocalMachine)]
-        public void GetRegistryPathValueAsync_WithNullRootPath_ThrowArgumentNullOrEmpty(string[] rootPath, RegistryHive hive)
+        public void GetRegistryPathValueAsync_WithNullRootPath_ShouldThrowArgumentNullException(string[] rootPath, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -349,13 +344,13 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// Test method to ensure GetRegistryPathValue with invalid hive throws.
         /// </summary>
         /// <param name="rootPath">The registry rootPath.</param>
         /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase(new[] { "rootPath" }, 7)]
-        public void GetRegistryPathValue_WithInvalidRootKey_InvalidRootKeyException(string[] rootPath, RegistryHive hive)
+        public void GetRegistryPathValue_WithInvalidRootKey_ShouldThrowInvalidRootKeyException(string[] rootPath, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -366,10 +361,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// Test method to ensure GetRegistryPathValue with an invalid key returns an empty array.
         /// </summary>
         [Test]
-        public void GetRegistryPathValue_WithInvalidKey_ReturnsNull()
+        public void GetRegistryPathValue_WithInvalidKey_ShouldReturnAnEmptyArray()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -385,7 +380,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValue Fails with Null Key Values.
+        /// Test method to ensure GetRegistryValue throws with null Key values.
         /// </summary>
         /// <param name="value">The registry value.</param>
         /// <param name="key">The registry key.</param>
@@ -394,7 +389,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         [TestCase("value", "", RegistryHive.LocalMachine)]
         [TestCase("value", " ", RegistryHive.LocalMachine)]
         [TestCase("value", null, RegistryHive.LocalMachine)]
-        public void GetRegistryValue_WithInValidKey_ThrowArgumentNullOrEmpty(string value, string key, RegistryHive hive)
+        public void GetRegistryValue_WithNullKey_ShouldThrowArgumentNullException(string value, string key, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -405,7 +400,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValueAsync Fails with Null Key Values.
+        /// Test method to ensure GetRegistryValueAsync throws with null Key values.
         /// </summary>
         /// <param name="value">The registry value.</param>
         /// <param name="key">The registry key.</param>
@@ -414,7 +409,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         [TestCase("value", "", RegistryHive.LocalMachine)]
         [TestCase("value", " ", RegistryHive.LocalMachine)]
         [TestCase("value", null, RegistryHive.LocalMachine)]
-        public void GetRegistryValueAsync_WithInValidKey_ThrowArgumentNullOrEmpty(string value, string key, RegistryHive hive)
+        public void GetRegistryValueAsync_WithNullKey_ShouldThrowArgumentNullException(string value, string key, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -425,15 +420,15 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryKey Fails with Null Key Values.
+        /// Test method to ensure GetRegistryKey throws with null Key values.
         /// </summary>
         /// <param name="key">The registry key.</param>
-        /// <param name="hive">The registry value.</param>
+        /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase("", RegistryHive.LocalMachine)]
         [TestCase(" ", RegistryHive.LocalMachine)]
         [TestCase(null, RegistryHive.LocalMachine)]
-        public void GetRegistryKey_WithInvalidKey_ThrowArgumentNullOrEmpty(string key, RegistryHive hive)
+        public void GetRegistryKey_WithNullKey_ShouldThrowArgumentNullException(string key, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -444,13 +439,13 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryKey Throws correctly.
+        /// Test method to ensure GetRegistryKey throws with invalid root key values.
         /// </summary>
         /// <param name="key">The registry key.</param>
         /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase("key", 7)]
-        public void GetRegistryKey_WithInvalidRootKey_InvalidRootKeyException(string key, RegistryHive hive)
+        public void GetRegistryKey_WithInvalidRootKey_ShouldThrowInvalidRootKeyException(string key, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -461,10 +456,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryKey Fails with an invalid key path.
+        /// Test method to ensure GetRegistryKey throws with an invalid key path.
         /// </summary>
         [Test]
-        public void GetRegistryKey_WithInvalidKeyPath_ReturnsFalse()
+        public void GetRegistryKey_WithInvalidKeyPath_ShouldReturnFalse()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -478,7 +473,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValue Fails with Null Values.
+        /// Test method to ensure GetRegistryValue throws with null values.
         /// </summary>
         /// <param name="value">The registry value.</param>
         /// <param name="key">The registry key.</param>
@@ -487,7 +482,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         [TestCase("", "key", RegistryHive.LocalMachine)]
         [TestCase(" ", "key", RegistryHive.LocalMachine)]
         [TestCase(null, "key", RegistryHive.LocalMachine)]
-        public void GetRegistryValue_WithInValidValue_ThrowArgumentNullOrEmpty(string value, string key, RegistryHive hive)
+        public void GetRegistryValue_WithNullValue_ShouldThrowArgumentNullException(string value, string key, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -498,7 +493,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValueAsync Fails with Null Values.
+        /// Test method to ensure GetRegistryValueAsync throws with null values.
         /// </summary>
         /// <param name="value">The registry value.</param>
         /// <param name="key">The registry key.</param>
@@ -507,7 +502,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         [TestCase("", "key", RegistryHive.LocalMachine)]
         [TestCase(" ", "key", RegistryHive.LocalMachine)]
         [TestCase(null, "key", RegistryHive.LocalMachine)]
-        public void GetRegistryValueAsync_WithInValidValue_ThrowArgumentNullOrEmpty(string value, string key, RegistryHive hive)
+        public void GetRegistryValueAsync_WithNullValue_ShouldThrowArgumentNullException(string value, string key, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -518,10 +513,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValue Fails with an invalid key path.
+        /// Test method to ensure GetRegistryValue throws with an invalid key path.
         /// </summary>
         [Test]
-        public void GetRegistryValue_WithInValidKeyPath_ThrowInvalidKeyException()
+        public void GetRegistryValue_WithInvalidKeyPath_ShouldThrowInvalidKeyException()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -532,10 +527,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValueAsync Fails with an invalid key path.
+        /// Test method to ensure GetRegistryValueAsync throws with an invalid key path.
         /// </summary>
         [Test]
-        public void GetRegistryValueAsync_WithInValidKeyPath_ThrowInvalidKeyException()
+        public void GetRegistryValueAsync_WithInvalidKeyPath_ShouldThrowInvalidKeyException()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -546,10 +541,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValue Fails with an invalid value path.
+        /// Test method to ensure GetRegistryValue throws with an invalid value.
         /// </summary>
         [Test]
-        public void GetRegistryValue_WithInValidValuePath_ThrowInvalidValueException()
+        public void GetRegistryValue_WithInvalidValue_ShouldThrowInvalidValueException()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -560,10 +555,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValueAsync Fails with an invalid value path.
+        /// Test method to ensure GetRegistryValueAsync throws with an invalid value.
         /// </summary>
         [Test]
-        public void GetRegistryValueAsync_WithInValidValuePath_ThrowInvalidValueException()
+        public void GetRegistryValueAsync_WithInvalidValue_ShouldThrowInvalidValueException()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -574,14 +569,14 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure GetRegistryValue Throws correctly.
+        /// Test method to ensure GetRegistryValue throws with an invalid root key.
         /// </summary>
         /// <param name="value">The registry value.</param>
         /// <param name="key">The registry key.</param>
         /// <param name="hive">The registry hive.</param>
         [Test]
         [TestCase("value", "key", 7)]
-        public void GetRegistryValue_WithInvalidRootKey_InvalidRootKeyException(string value, string key, RegistryHive hive)
+        public void GetRegistryValue_WithInvalidRootKey_ShouldThrowInvalidRootKeyException(string value, string key, RegistryHive hive)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -592,10 +587,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// Test method to ensure InvalidRootKeyException throws with a message correctly.
         /// </summary>
         [Test]
-        public void InvalidRootKeyException_WithMessage_Throws()
+        public void InvalidRootKeyException_WithMessage_ShouldThrowException()
         {
             // Arrange + Act
             var ex = new InvalidRootKeyException("test message");
@@ -611,7 +606,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         /// Test method to ensure InvalidRootKeyException Throws correctly.
         /// </summary>
         [Test]
-        public void InvalidRootKeyException_WithMessageAndInnerException_Throws()
+        public void InvalidRootKeyException_WithMessageAndInnerException_ShouldThrowException()
         {
             // Arrange + Act
             var innerException = new Exception("inner");
@@ -626,10 +621,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// Test method to ensure InvalidKeyException with message throws correctly.
         /// </summary>
         [Test]
-        public void InvalidKeyException_WithMessage_Throws()
+        public void InvalidKeyException_WithMessage_ShouldThrowException()
         {
             // Arrange + Act
             var ex = new InvalidKeyException("test message");
@@ -642,10 +637,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// Test method to ensure InvalidKeyException Throws correctly.
         /// </summary>
         [Test]
-        public void InvalidKeyException_WithMessageAndInnerException_Throws()
+        public void InvalidKeyException_WithMessageAndInnerException_ShouldThrowException()
         {
             // Arrange + Act
             var innerException = new Exception("inner");
@@ -660,10 +655,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// Test method to ensure InvalidValueException with message throws correctly.
         /// </summary>
         [Test]
-        public void InvalidValueException_WithMessage_Throws()
+        public void InvalidValueException_WithMessage_ShouldThrowException()
         {
             // Arrange + Act
             var ex = new InvalidValueException("test message");
@@ -676,10 +671,10 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure InvalidRootKeyException Throws correctly.
+        /// Test method to ensure InvalidValueException Throws correctly.
         /// </summary>
         [Test]
-        public void InvalidValueException_WithMessageAndInnerException_Throws()
+        public void InvalidValueException_WithMessageAndInnerException_ShouldThrowException()
         {
             // Arrange + Act
             var innerException = new Exception("inner");

@@ -13,7 +13,7 @@ namespace EUC.Profile.Buddy.Common.Tests.User
     using NUnit.Framework;
 
     /// <summary>
-    /// Class to do user detail unit tests.
+    /// Class to do User Detail unit tests.
     /// </summary>
     [TestFixture]
     public class UserDetailTests
@@ -101,7 +101,7 @@ namespace EUC.Profile.Buddy.Common.Tests.User
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
-        public void UpdateProfileSize_WithInvalidProfileDirectory_ThrowArgumentNullOrWhiteSpace(string profileDirectory)
+        public void UpdateProfileSize_WithInvalidProfileDirectory_ShouldThrowArgumentNullException(string profileDirectory)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
@@ -121,7 +121,7 @@ namespace EUC.Profile.Buddy.Common.Tests.User
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
-        public void UpdateProfileSizeAsync_WithInvalidProfileDirectory_ThrowArgumentNullOrWhiteSpace(string profileDirectory)
+        public void UpdateProfileSizeAsync_WithInvalidProfileDirectory_ShouldThrowArgumentNullException(string profileDirectory)
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
