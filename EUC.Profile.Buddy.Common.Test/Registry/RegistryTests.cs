@@ -191,7 +191,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             var hive = RegistryHive.LocalMachine;
 
             // Act + Assert
-            Assert.Throws<SecurityException>(() => mockRegistry.CreateRegistryKey(key, hive));
+            Assert.Throws<InvalidKeyException>(() => mockRegistry.CreateRegistryKey(key, hive));
         }
 
         /// <summary>

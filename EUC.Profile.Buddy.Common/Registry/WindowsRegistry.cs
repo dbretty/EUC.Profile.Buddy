@@ -198,7 +198,7 @@ namespace EUC.Profile.Buddy.Common.Registry
                         catch
                         {
                             this.logger.LogAsync($"Incorrect rights to create registry key: {localKey}", LogLevel.ERROR);
-                            throw new SecurityException();
+                            throw new InvalidKeyException("Invalid Rights");
                         }
                     }
                     else
