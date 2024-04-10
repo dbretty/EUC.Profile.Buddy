@@ -186,7 +186,7 @@ namespace EUC.Profile.Buddy.Common.Registry
                 }
                 else
                 {
-                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
+                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey);
                     if (localFullKey is null)
                     {
                         try
