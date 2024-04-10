@@ -190,8 +190,11 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             var key = "Software\\EUCProfileBuddy";
             var hive = RegistryHive.LocalMachine;
 
-            // Act + Assert
-            Assert.Throws<InvalidKeyException>(() => mockRegistry.CreateRegistryKey(key, hive));
+            // Act
+            var response = mockRegistry.CreateRegistryKey(key, hive);
+
+            // Assert
+            Assert.That(response, Is.False);
         }
 
         /// <summary>
@@ -206,11 +209,8 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             var key = "Software";
             var hive = RegistryHive.CurrentUser;
 
-            // Act
-            var response = mockRegistry.CreateRegistryKey(key, hive);
-
             // Act + Assert
-            Assert.That(response, Is.False);
+            Assert.Throws<InvalidKeyException>(() => mockRegistry.CreateRegistryKey(key, hive));
         }
 
         /// <summary>
