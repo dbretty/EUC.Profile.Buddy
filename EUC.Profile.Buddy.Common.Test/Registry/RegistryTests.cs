@@ -187,7 +187,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             // Arrange
             var mockILogger = new Mock<ILogger>();
             var mockRegistry = new WindowsRegistry(mockILogger.Object);
-            var key = this.RegistryKey;
+            var key = "Software\\EUCProfileBuddy";
             var hive = RegistryHive.LocalMachine;
 
             // Act + Assert
