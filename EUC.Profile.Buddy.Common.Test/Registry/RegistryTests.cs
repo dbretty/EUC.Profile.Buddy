@@ -206,8 +206,11 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             var key = "Software";
             var hive = RegistryHive.CurrentUser;
 
+            // Act
+            var response = mockRegistry.CreateRegistryKey(key, hive);
+
             // Act + Assert
-            Assert.Throws<InvalidKeyException>(() => mockRegistry.CreateRegistryKey(key, hive));
+            Assert.That(response, Is.False);
         }
 
         /// <summary>
