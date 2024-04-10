@@ -186,20 +186,12 @@ namespace EUC.Profile.Buddy.Common.Registry
                 }
                 else
                 {
-                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey);
+                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
                     if (localFullKey is null)
                     {
-                        try
-                        {
-                            localKey.CreateSubKey(valueKey, true);
-                            this.logger.LogAsync($"Registry key: {localKey} created");
-                            return true;
-                        }
-                        catch
-                        {
-                            this.logger.LogAsync($"Incorrect rights to create registry key: {localKey}", LogLevel.ERROR);
-                            return false;
-                        }
+                        localKey.CreateSubKey(valueKey, true);
+                        this.logger.LogAsync($"Registry key: {localKey} created");
+                        return true;
                     }
                     else
                     {
@@ -213,7 +205,6 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public bool SetRegistryValue(string valueName, string valueKey, object valueData, RegistryHive registryHive)
         {
-
             if (string.IsNullOrWhiteSpace(valueKey) || string.IsNullOrWhiteSpace(valueName))
             {
                 throw new ArgumentNullException();
@@ -228,25 +219,16 @@ namespace EUC.Profile.Buddy.Common.Registry
                 }
                 else
                 {
-                    try
+                    RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
+                    if (localFullKey is null)
                     {
-                        RegistryKey? localFullKey = localKey.OpenSubKey(valueKey, true);
-                        if (localFullKey is null)
-                        {
-                            this.logger.LogAsync($"Incorrect rights to the registry key: {localFullKey}", LogLevel.ERROR);
-                            throw new InvalidKeyException();
-                        }
-                        else
-                        {
-                            localFullKey.SetValue(valueName, valueData);
-                            this.logger.LogAsync($"Registry value created: {valueName} - {valueData}");
-                            return true;
-                        }
+                        return false;
                     }
-                    catch (SecurityException ex)
+                    else
                     {
-                        this.logger.LogAsync($"Incorrect rights to oprn the registry path: {valueKey}", LogLevel.ERROR);
-                        throw new SecurityException(ex.Message);
+                        localFullKey.SetValue(valueName, valueData);
+                        this.logger.LogAsync($"Registry value created: {valueName} - {valueData}");
+                        return true;
                     }
                 }
             }

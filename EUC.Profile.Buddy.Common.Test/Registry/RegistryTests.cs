@@ -179,22 +179,89 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
         }
 
         /// <summary>
-        /// Test method to ensure CreateRegistryKey Throws correctly.
+        /// Test method to ensure GetRegistryPathValue Throws correctly.
         /// </summary>
+        /// <param name="valueName">The registry rootPath.</param>
+        /// <param name="valueKey">The registry hive.</param>
+        /// <param name="valueData">The registry 1 rootPath.</param>
+        /// <param name="registryHive">The registry 1 hive.</param>
         [Test]
-        public void CreateRegistryKey_WithUnauthorizedKey_SecurityException()
+        public void SetRegistryValue_WithValidData_ShouldSucceed()
         {
             // Arrange
             var mockILogger = new Mock<ILogger>();
             var mockRegistry = new WindowsRegistry(mockILogger.Object);
-            var key = "Software\\EUCProfileBuddy";
-            var hive = RegistryHive.LocalMachine;
+            var valueData = 1;
+            var valueKey = this.RegistryKey;
+            var valueName = "EUCProfileBuddy";
+            var registryHive = RegistryHive.CurrentUser;
 
             // Act
-            var response = mockRegistry.CreateRegistryKey(key, hive);
+            var response = mockRegistry.SetRegistryValue(valueName, valueKey, valueData, registryHive);
 
             // Assert
             Assert.That(response, Is.True);
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// </summary>
+        /// <param name="valueName">The registry rootPath.</param>
+        /// <param name="valueKey">The registry hive.</param>
+        /// <param name="valueData">The registry 1 rootPath.</param>
+        /// <param name="registryHive">The registry 1 hive.</param>
+        [Test]
+        [TestCase("value", "key", "data", RegistryHive.CurrentUser)]
+        public void SetRegistryValue_WithInvalidKey_ReturnsFalse(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        {
+            // Arrange
+            var mockILogger = new Mock<ILogger>();
+            var mockRegistry = new WindowsRegistry(mockILogger.Object);
+
+            // Act
+            var response = mockRegistry.SetRegistryValue(valueName, valueKey, valueData, registryHive);
+
+            // Assert
+            Assert.That(response, Is.False);
+        }
+
+        /// <summary>
+        /// Test method to ensure GetRegistryPathValue Throws correctly.
+        /// </summary>
+        /// <param name="valueName">The registry rootPath.</param>
+        /// <param name="valueKey">The registry hive.</param>
+        /// <param name="valueData">The registry 1 rootPath.</param>
+        /// <param name="registryHive">The registry 1 hive.</param>
+        [Test]
+        [TestCase("value", "key", "data", 7)]
+        public void SetRegistryValue_WithInvalidRootKey_InvalidRootKeyException(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        {
+            // Arrange
+            var mockILogger = new Mock<ILogger>();
+            var mockRegistry = new WindowsRegistry(mockILogger.Object);
+
+            // Act + Assert
+            Assert.Throws<InvalidRootKeyException>(() => mockRegistry.SetRegistryValue(valueName, valueKey, valueData, registryHive));
+        }
+
+        /// <summary>
+        /// Test method to ensure SetRegistryValue Throws correctly.
+        /// </summary>
+        /// <param name="valueName">The registry rootPath.</param>
+        /// <param name="valueKey">The registry hive.</param>
+        /// <param name="valueData">The registry 1 rootPath.</param>
+        /// <param name="registryHive">The registry 1 hive.</param>
+        [Test]
+        [TestCase(null, "key", "data", RegistryHive.CurrentUser)]
+        [TestCase("value", null, "data", RegistryHive.CurrentUser)]
+        public void SetRegistryValue_WithNullData_ArgumentNullException(string valueName, string valueKey, object valueData, RegistryHive registryHive)
+        {
+            // Arrange
+            var mockILogger = new Mock<ILogger>();
+            var mockRegistry = new WindowsRegistry(mockILogger.Object);
+
+            // Act + Assert
+            Assert.Throws<ArgumentNullException>(() => mockRegistry.SetRegistryValue(valueName, valueKey, valueData, registryHive));
         }
 
         /// <summary>
