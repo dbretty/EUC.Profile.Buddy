@@ -116,8 +116,10 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public List<RegistryPathValue> GetRegistryPathValue(string[] rootPath, RegistryHive registryHive)
         {
-            ArgumentNullException.ThrowIfNull(rootPath, nameof(rootPath));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+            if (rootPath is null || rootPath.Length == 0)
+            {
+                throw new ArgumentNullException();
+            }
 
             using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
@@ -159,8 +161,10 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public async Task<List<RegistryPathValue>> GetRegistryPathValueAsync(string[] rootPath, RegistryHive registryHive)
         {
-            ArgumentNullException.ThrowIfNull(rootPath, nameof(rootPath));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+            if (rootPath is null || rootPath.Length == 0)
+            {
+                throw new ArgumentNullException();
+            }
 
             return await Task.Run(() => this.GetRegistryPathValue(rootPath, registryHive));
         }
@@ -168,8 +172,10 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public bool CreateRegistryKey(string valueKey, RegistryHive registryHive)
         {
-            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+            if (string.IsNullOrWhiteSpace(valueKey))
+            {
+                throw new ArgumentNullException();
+            }
 
             using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
@@ -207,10 +213,11 @@ namespace EUC.Profile.Buddy.Common.Registry
         /// <inheritdoc/>
         public bool SetRegistryValue(string valueName, string valueKey, object valueData, RegistryHive registryHive)
         {
-            ArgumentException.ThrowIfNullOrEmpty(valueName, nameof(valueName));
-            ArgumentException.ThrowIfNullOrEmpty(valueKey, nameof(valueKey));
-            ArgumentNullException.ThrowIfNull(valueData, nameof(valueData));
-            ArgumentNullException.ThrowIfNull(registryHive, nameof(registryHive));
+
+            if (string.IsNullOrWhiteSpace(valueKey) || string.IsNullOrWhiteSpace(valueName) || string.IsNullOrWhiteSpace(valueData))
+            {
+                throw new ArgumentNullException();
+            }
 
             using (RegistryKey? localKey = GetRegistryHive(registryHive))
             {
