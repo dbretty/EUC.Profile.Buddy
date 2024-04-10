@@ -203,7 +203,7 @@ namespace EUC.Profile.Buddy.Common.Tests.Registry
             // Arrange
             var mockILogger = new Mock<ILogger>();
             var mockRegistry = new WindowsRegistry(mockILogger.Object);
-            var key = "Microsoft";
+            var key = "Microsoft\\Software\\Policies\\";
             var hive = RegistryHive.CurrentUser;
 
             // Act + Assert
