@@ -1,5 +1,6 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Build Workflow](https://github.com/dbretty/EUC.Profile.Buddy/actions/workflows/build.yaml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/dbretty/EUC.Profile.Buddy/badge.svg?branch=main)](https://coveralls.io/github/dbretty/EUC.Profile.Buddy?branch=main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # EUC Profile Buddy
 
