@@ -46,19 +46,16 @@ namespace EUC.Profile.Buddy.Common.File
         }
 
         /// <inheritdoc/>
-        public async Task DeleteFileAsync(string fileName, int maxRetries = 5, int millisecondsDelay = 10)
+        public async Task<bool> DeleteFileAsync(string fileName, int maxRetries = 5, int millisecondsDelay = 10)
         {
-            ArgumentException.ThrowIfNullOrEmpty(fileName, nameof(fileName));
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new ArgumentNullException();
+            }
 
             this.logger.LogAsync($"Deleting file: {fileName}");
-            await Task.Run(() =>
+            var deleteTask = await Task.Run(() =>
             {
-                if (fileName == null)
-                {
-                    this.logger.LogAsync($"File not found - {fileName}", LogLevel.ERROR);
-                    throw new ArgumentNullException(nameof(fileName));
-                }
-
                 if (maxRetries < 1)
                 {
                     this.logger.LogAsync($"Max Retries needs to be greater than 1", LogLevel.ERROR);
@@ -71,46 +68,32 @@ namespace EUC.Profile.Buddy.Common.File
                     throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
                 }
 
-                for (int i = 0; i < maxRetries; ++i)
+                try
                 {
-                    try
-                    {
-                        if (File.Exists(fileName))
-                        {
-                            File.Delete(fileName);
-                        }
-
-                        this.logger.LogAsync($"File deleted: {fileName}");
-                        return true;
-                    }
-                    catch (IOException)
-                    {
-                        Task.Delay(millisecondsDelay);
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        Task.Delay(millisecondsDelay);
-                    }
+                    File.Delete(fileName);
+                    this.logger.LogAsync($"File deleted: {fileName}");
+                    return true;
                 }
-
-                this.logger.LogAsync($"File not deleted: {fileName}", LogLevel.WARNING);
-                return false;
+                catch (Exception)
+                {
+                    this.logger.LogAsync($"File not deleted: {fileName}", LogLevel.WARNING);
+                    return false;
+                }
             });
+
+            return deleteTask;
         }
 
         /// <inheritdoc/>
-        public async Task DeleteFolderAsync(string folderName, int maxRetries = 5, int millisecondsDelay = 10)
+        public async Task<bool> DeleteFolderAsync(string folderName, int maxRetries = 5, int millisecondsDelay = 10)
         {
-            ArgumentException.ThrowIfNullOrEmpty(folderName, nameof(folderName));
-
-            await Task.Run(() =>
+            if (string.IsNullOrWhiteSpace(folderName))
             {
-                if (folderName == null)
-                {
-                    this.logger.LogAsync($"Folder not found - {folderName}", LogLevel.ERROR);
-                    throw new ArgumentNullException(nameof(folderName));
-                }
+                throw new ArgumentNullException();
+            }
 
+            var deleteTask = await Task.Run(() =>
+            {
                 if (maxRetries < 1)
                 {
                     this.logger.LogAsync($"Max Retries needs to be greater than 1", LogLevel.ERROR);
@@ -123,31 +106,20 @@ namespace EUC.Profile.Buddy.Common.File
                     throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
                 }
 
-                for (int i = 0; i < maxRetries; ++i)
+                try
                 {
-                    try
-                    {
-                        if (Directory.Exists(folderName))
-                        {
-                            Directory.Delete(folderName, true);
-                        }
-
-                        this.logger.LogAsync($"Folder deleted: {folderName}");
-                        return true;
-                    }
-                    catch (IOException)
-                    {
-                        Task.Delay(millisecondsDelay);
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        Task.Delay(millisecondsDelay);
-                    }
+                    Directory.Delete(folderName, true);
+                    this.logger.LogAsync($"Folder deleted: {folderName}");
+                    return true;
                 }
-
-                this.logger.LogAsync($"Folder not deleted: {folderName}", LogLevel.WARNING);
-                return false;
+                catch (Exception)
+                {
+                    this.logger.LogAsync($"Folder not deleted: {folderName}", LogLevel.WARNING);
+                    return false;
+                }
             });
+
+            return deleteTask;
         }
 
         /// <inheritdoc/>
@@ -205,7 +177,10 @@ namespace EUC.Profile.Buddy.Common.File
         /// <inheritdoc/>
         public List<TreeSize> BuildTreeSizeFolders(string rootFolder, bool sorted = true)
         {
-            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
+            if (string.IsNullOrWhiteSpace(rootFolder))
+            {
+                throw new ArgumentNullException();
+            }
 
             this.logger.LogAsync($"Building folder tree size for: {rootFolder}");
 
@@ -241,14 +216,21 @@ namespace EUC.Profile.Buddy.Common.File
         /// <inheritdoc/>
         public async Task<List<TreeSize>> BuildTreeSizeFoldersAsync(string rootFolder, bool sorted = true)
         {
-            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
+            if (string.IsNullOrWhiteSpace(rootFolder))
+            {
+                throw new ArgumentNullException();
+            }
+
             return await Task.Run(() => this.BuildTreeSizeFolders(rootFolder, sorted = true));
         }
 
         /// <inheritdoc/>
         public List<TreeSize> BuildTreeSizeFiles(string rootFolder, bool sorted = true)
         {
-            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
+            if (string.IsNullOrWhiteSpace(rootFolder))
+            {
+                throw new ArgumentNullException();
+            }
 
             this.logger.LogAsync($"Building file tree size for: {rootFolder}");
 
@@ -285,7 +267,10 @@ namespace EUC.Profile.Buddy.Common.File
         /// <inheritdoc/>
         public bool CheckDirectory(string path)
         {
-            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentNullException();
+            }
 
             FileAttributes attributes = File.GetAttributes(path);
             if (attributes.HasFlag(FileAttributes.Directory))
@@ -301,25 +286,25 @@ namespace EUC.Profile.Buddy.Common.File
         /// <inheritdoc/>
         public async Task<List<TreeSize>> BuildTreeSizeFilesAsync(string rootFolder, bool sorted = true)
         {
-            ArgumentException.ThrowIfNullOrEmpty(rootFolder, nameof(rootFolder));
+            if (string.IsNullOrWhiteSpace(rootFolder))
+            {
+                throw new ArgumentNullException();
+            }
+
             return await Task.Run(() => this.BuildTreeSizeFiles(rootFolder, sorted = true));
         }
 
         /// <inheritdoc/>
         public void CreateDirectory(string folder)
         {
-            ArgumentException.ThrowIfNullOrEmpty(folder, nameof(folder));
+            if (string.IsNullOrWhiteSpace(folder))
+            {
+                throw new ArgumentNullException();
+            }
 
             if (!Directory.Exists(folder))
             {
-                try
-                {
-                    Directory.CreateDirectory(folder);
-                }
-                catch
-                {
-                    throw new SecurityException();
-                }
+                Directory.CreateDirectory(folder);
             }
         }
 
