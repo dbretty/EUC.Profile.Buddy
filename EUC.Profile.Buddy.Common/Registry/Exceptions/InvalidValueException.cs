@@ -1,5 +1,5 @@
-﻿// <copyright file="InvalidValueException.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="InvalidValueException.cs" company="bretty.me.uk">
+// Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 
 namespace EUC.Profile.Buddy.Common.Registry.Exceptions

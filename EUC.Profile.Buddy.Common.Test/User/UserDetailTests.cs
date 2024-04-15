@@ -6,9 +6,11 @@ namespace EUC.Profile.Buddy.Common.Tests.User
 {
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Profile;
     using EUC.Profile.Buddy.Common.Registry;
     using EUC.Profile.Buddy.Common.User;
     using EUC.Profile.Buddy.Common.User.Model;
+    using Microsoft.Win32;
     using Moq;
     using NUnit.Framework;
 
@@ -27,8 +29,16 @@ namespace EUC.Profile.Buddy.Common.Tests.User
             // Arrange
             var mockILogger = new Mock<ILogger>();
             var mockRegistry = new Mock<IWindowsRegistry>();
-            var mockFilesAndFolders = new Mock<IFilesAndFolders>(MockBehavior.Strict);
 
+            mockRegistry.Setup(x =>
+                x.GetRegistryValueAsync(
+                    It.Is<string>(x => string.Equals(x, "USERPROFILE", StringComparison.InvariantCultureIgnoreCase)),
+                    It.IsAny<string>(),
+                    It.IsAny<RegistryHive>()))
+                .ReturnsAsync("UserProfile")
+                .Verifiable(times: Times.Exactly(1));
+
+            var mockFilesAndFolders = new Mock<IFilesAndFolders>(MockBehavior.Strict);
             var mockSize = 1_000_000L;
             var mockSizeString = "1 GB";
 
@@ -41,6 +51,7 @@ namespace EUC.Profile.Buddy.Common.Tests.User
 
             // Assert
             Assert.That(response, Is.EqualTo(mockSizeString));
+            mockRegistry.Verify();
             Mock.VerifyAll(mockFilesAndFolders);
         }
 

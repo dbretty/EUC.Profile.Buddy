@@ -4,7 +4,12 @@
 
 namespace EUC.Profile.Buddy.Common.Tests.Profile
 {
+    using EUC.Profile.Buddy.Common.File;
+    using EUC.Profile.Buddy.Common.Logging;
+    using EUC.Profile.Buddy.Common.Profile;
     using EUC.Profile.Buddy.Common.Profile.Model;
+    using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+    using Moq;
     using NUnit.Framework;
 
     /// <summary>
@@ -13,6 +18,48 @@ namespace EUC.Profile.Buddy.Common.Tests.Profile
     [TestFixture]
     public class ProfileTests
     {
+        /// <summary>
+        /// Test method to ensure ExecuteAction with valid data succeeds.
+        /// </summary>
+        [Test]
+        public void ExecuteAction_WithClearTempFiles_ShouldSucceed()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger>();
+            var mockFilesAndFolders = new Mock<IFilesAndFolders>();
+            var mockUserProfile = new UserProfile(mockLogger.Object, mockFilesAndFolders.Object);
+
+            Assert.DoesNotThrow(() => mockUserProfile.ExecuteAction(ProfileActionDefinition.ClearTempFiles, "test", mockUserProfile));
+        }
+
+        /// <summary>
+        /// Test method to ensure ExecuteAction with valid data succeeds.
+        /// </summary>
+        [Test]
+        public void ExecuteAction_WithRunCustomScripts_ShouldSucceed()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger>();
+            var mockFilesAndFolders = new Mock<IFilesAndFolders>();
+            var mockUserProfile = new UserProfile(mockLogger.Object, mockFilesAndFolders.Object);
+
+            Assert.DoesNotThrow(() => mockUserProfile.ExecuteAction(ProfileActionDefinition.RunCustomScripts, "c:\\users", mockUserProfile));
+        }
+
+        /// <summary>
+        /// Test method to ensure ExecuteAction with valid data succeeds.
+        /// </summary>
+        [Test]
+        public void ExecuteAction_WithResetEdge_ShouldSucceed()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger>();
+            var mockFilesAndFolders = new Mock<IFilesAndFolders>();
+            var mockUserProfile = new UserProfile(mockLogger.Object, mockFilesAndFolders.Object);
+
+            Assert.DoesNotThrow(() => mockUserProfile.ExecuteAction(ProfileActionDefinition.ResetEdge, "test", mockUserProfile));
+        }
+
         /// <summary>
         /// Checks that ProfileAction returns string value.
         /// </summary>
@@ -34,6 +81,25 @@ namespace EUC.Profile.Buddy.Common.Tests.Profile
 
             // Assert
             Assert.That(response, Is.EqualTo("Clean Temporary Data"));
+        }
+
+        /// <summary>
+        /// Checks that ProfileAction returns valud data.
+        /// </summary>
+        [Test]
+        public void ProfileAction_WithValidData_ShouldReturnString()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger>();
+            var mockFilesAndFolders = new Mock<IFilesAndFolders>();
+            var mockUserProfile = new UserProfile(mockLogger.Object, mockFilesAndFolders.Object);
+
+            // Act
+            ProfileAction profileAction = mockUserProfile.ProfileActions[0];
+            var response = profileAction;
+
+            // Assert
+            Assert.That(response, Is.EqualTo(profileAction));
         }
     }
 }

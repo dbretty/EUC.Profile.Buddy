@@ -78,7 +78,7 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="maxRetries">The max retires.</param>
         /// <param name="millisecondsDelay">The ms delay before a retry.</param>
         /// <returns>A <see cref="Task"/>.</returns>
-        public Task DeleteFolderAsync(string folderName, int maxRetries = 10, int millisecondsDelay = 30);
+        public Task<bool> DeleteFolderAsync(string folderName, int maxRetries = 10, int millisecondsDelay = 30);
 
         /// <summary>
         /// Deletes a folder.
@@ -87,7 +87,7 @@ namespace EUC.Profile.Buddy.Common.File
         /// <param name="maxRetries">The max retires.</param>
         /// <param name="millisecondsDelay">The ms delay before a retry.</param>
         /// <returns>A <see cref="Task"/>.</returns>
-        public Task DeleteFileAsync(string fileName, int maxRetries = 10, int millisecondsDelay = 30);
+        public Task<bool> DeleteFileAsync(string fileName, int maxRetries = 10, int millisecondsDelay = 30);
 
         /// <summary>
         /// Creates a folder.

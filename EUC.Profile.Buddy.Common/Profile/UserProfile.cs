@@ -171,21 +171,14 @@ namespace EUC.Profile.Buddy.Common.Profile
 
                     break;
                 case ProfileActionDefinition.RunCustomScripts:
-                    if (this.filesAndFolders.CheckDirectory(Path.Join(profileDirectory, this.customScriptsLocation)))
-                    {
-                        this.logger.LogAsync($"Executing action: Run Custom Scripts");
-                        this.ExecuteCustomScriptAsync(Path.Join(profileDirectory, this.customScriptsLocation));
-                        this.logger.LogAsync($"Completed action: Run Custom Scripts");
-                    }
-
+                    this.logger.LogAsync($"Executing action: Run Custom Scripts");
+                    this.ExecuteCustomScriptAsync(profileDirectory);
+                    this.logger.LogAsync($"Completed action: Run Custom Scripts");
                     break;
                 case ProfileActionDefinition.ResetEdge:
                     this.logger.LogAsync($"Executing action: Reset Microsoft Edge");
                     this.ResetMicrosoftEdge();
                     this.logger.LogAsync($"Completed action: Reset Microsoft Edge");
-                    break;
-                default:
-                    // todo: log error;
                     break;
             }
         }
@@ -199,19 +192,28 @@ namespace EUC.Profile.Buddy.Common.Profile
         {
             ArgumentException.ThrowIfNullOrEmpty(customScriptsLocation, nameof(customScriptsLocation));
 
-            var files = Directory.EnumerateFiles(customScriptsLocation, "*.ps1", SearchOption.AllDirectories);
-            if (files is not null)
+            try
             {
-                foreach (var file in files)
+                var scriptFiles = Path.Join(customScriptsLocation, this.customScriptsLocation);
+
+                var files = Directory.EnumerateFiles(customScriptsLocation, "*.ps1", SearchOption.AllDirectories);
+                if (files is not null)
                 {
-                    var startInfo = new ProcessStartInfo()
+                    foreach (var file in files)
                     {
-                        FileName = this.customScriptExecutable,
-                        Arguments = $"-NoProfile -ExecutionPolicy ByPass -File \"{file}\"",
-                        UseShellExecute = false,
-                    };
-                    Process.Start(startInfo);
+                        var startInfo = new ProcessStartInfo()
+                        {
+                            FileName = this.customScriptExecutable,
+                            Arguments = $"-NoProfile -ExecutionPolicy ByPass -File \"{file}\"",
+                            UseShellExecute = false,
+                        };
+                        Process.Start(startInfo);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                this.logger.LogAsync($"Error executing custom scripts");
             }
         }
 

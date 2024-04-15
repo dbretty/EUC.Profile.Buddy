@@ -181,7 +181,6 @@ namespace EUC.Profile.Buddy.Common.User
         /// <summary>
         /// Gets the user data (async).
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private async void GetUserData()
         {
             this.logger.LogAsync("Getting User Details");
