@@ -1,0 +1,148 @@
+﻿@page "/userprofilesummary"
+@attribute [StreamRendering]
+
+<PageTitle>User Profile Summary</PageTitle>
+
+@using EUC.Profile.Buddy.Web.Common
+@using EUC.Profile.Buddy.Web.Repositories
+@using EUC.Profile.Buddy.Web.Repositories.Entities
+@using Microsoft.EntityFrameworkCore
+@inject ProfileDataRepository profileDataRepository
+
+<MudPaper Class="pa-16 ma-2" Elevation="0">
+    <MudContainer Fixed="true">
+        <MudText Typo="Typo.h4" Align="Align.Left" Class="px-4">EUC Profile Summary</MudText>
+    </MudContainer>
+</MudPaper>
+
+<MudPaper Class="pa-16 ma-2" Elevation="25">
+
+    <MudGrid Spacing="5" Justify="Justify.FlexStart">
+        <MudItem xs="3">
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Total Profiles</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Info" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">@totalProfiles</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="3">
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Total Profile Size</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.FileCopy" Color="Color.Info" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">@totalProfileSize</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="3">
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Potential Space Saving</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.FileCopy" Color="Color.Error" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">1.73 TB</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+    </MudGrid>
+
+</MudPaper>
+
+<MudPaper Class="pa-16 ma-2" Elevation="25">
+
+    <MudDataGrid Items="@profiles" SortMode="SortMode.Multiple">
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Title="ID" />
+            <PropertyColumn Property="x => x.UserName" Title="User Name" />
+            <PropertyColumn Property="x => x.ProfileSize" Title="Profile Size" />
+            <PropertyColumn Property="x => x.ProfileType" Title="Profile Type" />
+            <PropertyColumn Property="x => x.LastUpdated" Title="Last Updated" />
+        </Columns>
+    </MudDataGrid>
+
+</MudPaper>
+
+<MudPaper Class="pa-16 ma-2" Elevation="0">
+
+    <MudGrid Spacing="5" Justify="Justify.FlexStart">
+        <MudItem xs="4">
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Citrix Profile Management</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">Learn more about Citrix Profile Management and the various best practices for deployment.</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="4">
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Microsoft FSLogix</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">Learn more about Microsoft FSLogix and the various best practices for deployment.</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+</MudPaper>
+
+@code {
+    private List<Repositories.Entities.UserProfileSummary> profiles = [];
+
+    public int totalProfiles;
+    public long totalProfileSize;
+
+    protected override async Task OnInitializedAsync()
+    {
+        profiles = await profileDataRepository.UserProfileSummary
+            .AsNoTracking()
+            .ToListAsync();
+        var userProfile = new UserProfile();
+        totalProfiles = userProfile.TotalProfiles(profiles);
+        totalProfileSize = userProfile.TotalProfileSize(profiles);
+    }
+
+    
+}

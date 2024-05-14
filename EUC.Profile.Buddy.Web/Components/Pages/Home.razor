@@ -1,0 +1,113 @@
+﻿@page "/"
+@attribute [StreamRendering]
+
+<PageTitle>Dashboard</PageTitle>
+
+@using EUC.Profile.Buddy.Web.Common
+@using EUC.Profile.Buddy.Web.Repositories
+@using EUC.Profile.Buddy.Web.Repositories.Entities
+@using Microsoft.EntityFrameworkCore
+@inject ProfileDataRepository profileDataRepository
+
+<br/>
+<MudContainer Fixed="true">
+    <MudPaper Elevation="0">
+        <MudText Typo="Typo.h4" Align="Align.Left">Summary Dashboard</MudText>
+    </MudPaper>
+</MudContainer>
+
+<br/>
+<MudContainer Fixed="true">
+    
+    <MudGrid Justify="Justify.FlexStart">
+
+        <MudItem>
+            <MudPaper Style="height: 200px; width: 250px" Class="pa-5 ma-0" Elevation="3" Outlined="false" Square="true">
+                <MudTooltip Text="The total number of all the user profiles saves in the EUC Profile Buddy Command Center" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.Info" Variant="Variant.Text" Color="Color.Info" Size="Size.Small" />
+                </MudTooltip>
+                <br/>
+                <MudContainer Fixed="true">
+                    <MudText Typo="Typo.h5" Align="Align.Center">Total Profiles</MudText>
+                    <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Info">@totalProfiles</MudText>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem>
+            <MudPaper Style="height: 200px; width: 250px" Class="pa-5 ma-0" Elevation="3" Outlined="false" Square="true">
+                <MudTooltip Text="The size for all the user profiles saves in the EUC Profile Buddy Command Center" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.Info" Variant="Variant.Text" Color="Color.Info" Size="Size.Small" />
+                </MudTooltip>
+                <br />
+                <MudContainer Fixed="true">
+                    <MudText Typo="Typo.h5" Align="Align.Center">Profile Size</MudText>
+                    <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Info">@totalProfileSize</MudText>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem>
+            <MudPaper Style="height: 200px; width: 250px" Class="pa-5 ma-0" Elevation="3" Outlined="false" Square="true">
+                <MudTooltip Text="The total potential saving of space due to temporary data saved in the user profiles" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.Info" Variant="Variant.Text" Color="Color.Error" Size="Size.Small" />
+                </MudTooltip>
+                <br />
+                <MudContainer Fixed="true">
+                    <MudText Typo="Typo.h5" Align="Align.Center">Temp Space</MudText>
+                    <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Info">1.73 TB</MudText>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem>
+            <MudPaper Style="height: 400px; width: 400px" Class="pa-5 ma-0" Elevation="3" Outlined="false" Square="false">
+                <MudTooltip Text="The total potential saving of space due to temporary data saved in the user profiles" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.Info" Variant="Variant.Text" Color="Color.Info" Size="Size.Small" />
+                </MudTooltip>
+                <br />
+                <MudContainer Fixed="true">
+                    <MudText Typo="Typo.h5" Align="Align.Center">Profile Type</MudText>
+                    <MudChart ChartType="ChartType.Donut" InputData="@data" InputLabels="@labels" LegendPosition="Position.Bottom"></MudChart>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem>
+            <MudPaper Style="height: 400px; width: 400px" Class="pa-5 ma-0" Elevation="3" Outlined="false" Square="false">
+                <MudTooltip Text="The top 5 profiles based on size" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.Info" Variant="Variant.Text" Color="Color.Info" Size="Size.Small" />
+                </MudTooltip>
+                <br />
+                <MudContainer Fixed="true">
+                    <MudText Typo="Typo.h5" Align="Align.Center">Top 5 Profiles</MudText>
+                    <MudChart ChartType="ChartType.Donut" InputData="@data" InputLabels="@labels" LegendPosition="Position.Bottom"></MudChart>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+
+</MudContainer>
+
+@code {
+    private List<Repositories.Entities.UserProfileSummary> profiles = [];
+
+    public int totalProfiles;
+    public long totalProfileSize;
+
+    public double[] data = { 1, 3, 2, 10};
+    public string[] labels = { "Unknown", "CPM", "Local", "FSLogix" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        profiles = await profileDataRepository.UserProfileSummary
+            .AsNoTracking()
+            .ToListAsync();
+        var userProfile = new UserProfile();
+        totalProfiles = userProfile.TotalProfiles(profiles);
+        totalProfileSize = userProfile.TotalProfileSize(profiles);
+    }
+
+
+}
