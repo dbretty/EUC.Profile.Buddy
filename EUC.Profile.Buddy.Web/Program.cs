@@ -5,10 +5,15 @@ using EUC.Profile.Buddy.Web.Repositories;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using NSwag;
+using Microsoft.Extensions.Hosting.WindowsServices;
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
+{
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default,
+    Args = args
+});
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
@@ -43,15 +48,14 @@ builder.Services.AddOpenApiDocument(options =>
     };
 });
 
+builder.Host.UseWindowsService();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Error", createScopeForErrors: true);
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
-
     app.UseOpenApi();
     app.UseSwaggerUi();
     app.UseReDoc(options =>
@@ -61,7 +65,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.MapControllers();

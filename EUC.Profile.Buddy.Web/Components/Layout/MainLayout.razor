@@ -7,9 +7,15 @@
 
 <MudLayout>
     <MudAppBar Elevation="25" Color="Color.Info">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Default" Size="Size.Large" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+
+        <MudTooltip Text="Toggle Menu">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Default" Size="Size.Large" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        </MudTooltip>
+
         <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Default" Size="Size.Large" />
+
         <MudBreakpointProvider>
+
             <MudHidden Breakpoint="Breakpoint.Xl" Invert="true">
                 <MudText Typo="Typo.h5" Align="Align.Center">EUC Profile Buddy Command Center</MudText>
             </MudHidden>
@@ -29,25 +35,64 @@
             <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
                 <MudText Typo="Typo.h5" Align="Align.Center">Profile Buddy</MudText>
             </MudHidden>
+
         </MudBreakpointProvider>
+
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Default" Size="Size.Large" />
+        
     </MudAppBar>
+
     <MudDrawer @bind-Open="@open" Elevation="25" Color="Color.Dark">
+
         <MudNavMenu Class="mud-width-full" Bordered="true" Rounded="true">
-            <MudText Typo="Typo.h6" Class="px-4">Menu Options</MudText>
+
+            <MudText Typo="Typo.h6" Class="px-4">Navigation</MudText>
+
             <MudDivider Class="my-2" />
-            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" IconColor="Color.Info" OnClick="@(() => GoTo("Dashboard"))">Dashboard</MudNavLink>
+
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" IconColor="Color.Info" >
+                Dashboard
+            </MudNavLink>
+
             <MudNavGroup Title="User Profiles" Icon="@Icons.Material.Filled.AccountCircle" Expanded="true" IconColor="Color.Info">
-                <MudNavLink Icon="@Icons.Material.Filled.Assessment" IconColor="Color.Info" Href="/UserProfileSummary" OnClick="@(() => GoTo("UserProfileSummary"))">Summary</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.Assessment" IconColor="Color.Info" Href="/UserProfileSummary" >
+                    Summary
+                </MudNavLink>
             </MudNavGroup>
+
             <MudDivider Class="my-2" />
+
+            <MudNavGroup Title="Audit" Icon="@Icons.Material.Filled.Info" Expanded="true" IconColor="Color.Info">
+                <MudNavLink Icon="@Icons.Material.Filled.Task" IconColor="Color.Info" Href="/TaskInformation">
+                    Task Information
+                </MudNavLink>
+            </MudNavGroup>
+
+            <MudDivider Class="my-2" />
+
+            <MudNavGroup Title="Api" Icon="@Icons.Material.Filled.Api" Expanded="false" IconColor="Color.Info">
+                <MudNavLink Icon="@Icons.Material.Filled.Api" IconColor="Color.Info" Href="/Swagger">
+                    Swagger
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.DocumentScanner" IconColor="Color.Info" Href="/Redoc">
+                    ReDoc
+                </MudNavLink>
+            </MudNavGroup>
+
+            <MudDivider Class="my-2" />
+
         </MudNavMenu>
+
     </MudDrawer>
-    <MudMainContent Class="pt-16 px-16">
+
+    <MudMainContent Class="pt-16 px-5">
+
         <MudContainer Fixed="true">
+
             @Body
+
         </MudContainer>
+
     </MudMainContent>
     
 </MudLayout>
@@ -66,6 +111,4 @@
     {
         open = !open;
     }
-
-    private void GoTo(string page) => Snackbar.Add($"Clicked {page}");
 }

@@ -5,13 +5,12 @@
 namespace EUC.Profile.Buddy.Web.Repositories
 {
     using Microsoft.EntityFrameworkCore;
-	using Microsoft.EntityFrameworkCore.Design;
-    using static EUC.Profile.Buddy.Web.Repositories.ProfileDataRepository;
+    using Microsoft.EntityFrameworkCore.Design;
 
-	/// <summary>
-	/// EUC Profile Buddy Data Repository Builder Class.
-	/// </summary>
-	public class ProfileDataRepositoryBuilder : IDesignTimeDbContextFactory<ProfileDataRepository>
+    /// <summary>
+    /// EUC Profile Buddy Data Repository Builder Class.
+    /// </summary>
+    public class ProfileDataRepositoryBuilder : IDesignTimeDbContextFactory<ProfileDataRepository>
 	{
 		/// <summary>
 		/// Builds the ProfileDataRepository.

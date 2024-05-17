@@ -183,7 +183,7 @@ namespace EUC.Profile.Buddy.Common.User
         /// </summary>
         private async void GetUserData()
         {
-            this.logger.LogAsync("Getting User Details");
+            //this.logger.LogAsync("Getting User Details");
 
             var userNameTask = await this.registry.GetRegistryValueAsync(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
             this.UserName = (string?)userNameTask;

@@ -41,113 +41,303 @@ namespace EUC.Profile.Buddy.Web.Api.Controllers
         /// <summary>
         /// Gets all the Task Information records.
         /// </summary>
-        /// <returns>A list of all the Task Information items.</returns>
+        /// <returns>A <see cref="Task{TaskInformationRequestDto}"/> representing the result of the asynchronous operation.</returns>
         /// <remarks>
         /// Sample request:
         ///
         ///     GET /TaskInformation
-        ///     {}
+        ///     {
+        ///     }
         ///
         /// </remarks>
-        /// <response code="200">Returns the newly created item.</response>
-        /// <response code="400">If the item is null.</response>
+        /// <response code="200">Returns the Task Information records.</response>
+        /// <response code="404">Returns if the no Task Records are found.</response>
+        /// <response code="400">Returns the HTTP exception.</response>
         [HttpGet]
         [ValidateModelState]
         [ProducesResponseType(statusCode: (int)HttpStatusCode.OK)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(statusCode: (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<List<TaskInformationDto>>> GetAllTaskInformation()
+        public async Task<ActionResult<List<TaskInformationRequestDto>>> GetTaskInformation()
         {
-            var taskInformation = await this._profileDataRepository.TaskInformation.OrderByDescending(
-                x => x.TaskExecuted).ToListAsync();
+            var taskInformation = await this._profileDataRepository.TaskInformation
+                .OrderByDescending(x => x.TaskExecuted)
+                .AsNoTracking()
+                .ToListAsync();
 
-            if (taskInformation is null)
+            if (taskInformation.Count == 0)
             {
-                return this.BadRequest("No tasks available");
+                return this.NotFound("No tasks available");
             }
             else
             {
-                var returnData = this._mapper.Map<List<TaskInformationDto>>(taskInformation);
-                return this.Ok(returnData);
+                try
+                {
+                    var returnData = this._mapper.Map<List<TaskInformationRequestDto>>(taskInformation);
+                    return this.Ok(returnData);
+                }
+                catch (HttpRequestException ex)
+                {
+                    return this.BadRequest($"HTTP exception thrown: {ex.Message}");
+                }
             }
         }
 
         /// <summary>
-        /// Gets a specific Task information Record.
+        /// Gets a single Task Information record by ID.
+        /// </summary>
+        /// <param name="id">The Task Information record ID.</param>
+        /// <returns>A <see cref="Task{TaskInformationRequestDto}"/> representing the result of the asynchronous operation.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /TaskInformation/id/{id}
+        ///     {
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the Task Information record.</response>
+        /// <response code="404">Returns if the no Task Records are found.</response>
+        /// <response code="400">Returns the HTTP exception.</response>
+        [HttpGet("id/{id:guid}")]
+        [ValidateModelState]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.OK)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<List<TaskInformationRequestDto>>> GetTaskInformationByID(Guid id)
+        {
+            var existingTaskID = await this._profileDataRepository.TaskInformation
+                .OrderByDescending(x => x.TaskExecuted)
+                .Where(x => x.Id == id)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (existingTaskID.Count == 0)
+            {
+                return this.NotFound($"Task ID {id} not found");
+            }
+            else
+            {
+                try
+                {
+                    var returnData = this._mapper.Map<List<TaskInformationRequestDto>>(existingTaskID);
+                    return this.Ok(returnData);
+                }
+                catch (HttpRequestException ex)
+                {
+                    return this.BadRequest($"HTTP exception thrown: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all the Task Information records by User Name.
+        /// </summary>
+        /// <param name="username">The Task Information record User Name.</param>
+        /// <returns>A <see cref="Task{TaskInformationRequestDto}"/> representing the result of the asynchronous operation.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /TaskInformation/username/{username}
+        ///     {
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the Task Information records.</response>
+        /// <response code="404">Returns if the no Task Records are found.</response>
+        /// <response code="400">Returns the HTTP exception.</response>
+        [HttpGet("username/{username}")]
+        [ValidateModelState]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.OK)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<List<TaskInformationRequestDto>>> GetTaskInformationByUserName(string username)
+        {
+            var existingTask = await this._profileDataRepository.TaskInformation
+                .OrderByDescending(x => x.TaskExecuted)
+                .Where(x => x.UserName == username)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (existingTask.Count == 0)
+            {
+                return this.NotFound($"No Task Information records for {username} found");
+            }
+            else
+            {
+                try
+                {
+                    var returnData = this._mapper.Map<List<TaskInformationRequestDto>>(existingTask);
+                    return this.Ok(returnData);
+                }
+                catch (HttpRequestException ex)
+                {
+                    return this.BadRequest($"HTTP exception thrown: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds a Task Information record.
+        /// </summary>
+        /// <param name="taskInformationPostDto">The request body for the operation.</param>
+        /// <returns>A <see cref="Task{taskInformationPostDto}"/> representing the result of the asynchronous operation.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /TaskInformation
+        ///     {
+        ///         UserName: "Dave Brett"
+        ///         TaskName: "Task 1"
+        ///         TaskState: 0
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the Task Information record.</response>
+        /// <response code="400">Returns the HTTP exception.</response>
+        [HttpPost]
+        [ValidateModelState]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.OK)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> AddTaskInformation([FromBody] TaskInformationPostDto taskInformationPostDto)
+        {
+            try
+            {
+                var taskInformationData = this._mapper.Map<TaskInformation>(taskInformationPostDto);
+                taskInformationData.TaskExecuted = DateTime.UtcNow;
+                taskInformationData.TaskRunTime = DateTime.UtcNow - taskInformationData.TaskExecuted;
+                this._profileDataRepository.TaskInformation.Add(taskInformationData);
+                await this._profileDataRepository.SaveChangesAsync();
+                return this.Ok(taskInformationData);
+            }
+            catch (HttpRequestException ex)
+            {
+                return this.BadRequest($"HTTP exception thrown: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Updates a Task Information record.
+        /// </summary>
+        /// <param name="id">The Task Information ID.</param>
+        /// <param name="taskInformationPostDto">The request body for the operation.</param>
+        /// <returns>A <see cref="Task{taskInformationPostDto}"/> representing the result of the asynchronous operation.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /TaskInformation/id/{id}
+        ///     {
+        ///         UserName: "Dave Brett"
+        ///         TaskName: "Task 1"
+        ///         TaskState: 1
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the updated Task Information record.</response>
+        /// <response code="404">Returns if the Task Record does not exist.</response>
+        /// <response code="400">Returns the HTTP exception.</response>
+        [HttpPost("id/{id}")]
+        [ValidateModelState]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.OK)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> UpdateTaskInformation(Guid id, [FromBody] TaskInformationPostDto taskInformationPostDto)
+        {
+            var existingTask = await this._profileDataRepository.TaskInformation
+                .Where(x => x.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (existingTask is null)
+            {
+                return this.BadRequest($"Unable to find task with TaskID: {id}");
+            }
+            else
+            {
+                try
+                {
+                    var taskInformationData = this._mapper.Map<TaskInformation>(taskInformationPostDto);
+                    taskInformationData.Id = existingTask.Id;
+                    taskInformationData.TaskExecuted = existingTask.TaskExecuted;
+                    taskInformationData.TaskRunTime = DateTime.UtcNow - existingTask.TaskExecuted;
+                    if (existingTask.TaskState != taskInformationPostDto.TaskState)
+                    {
+                        taskInformationData.TaskState = taskInformationPostDto.TaskState;
+                    }
+
+                    if (!string.IsNullOrEmpty(taskInformationPostDto.UserName))
+                    {
+                        taskInformationData.UserName = taskInformationPostDto.UserName;
+                    }
+                    else
+                    {
+                        taskInformationData.UserName = existingTask.UserName;
+                    }
+
+                    if (!string.IsNullOrEmpty(taskInformationPostDto.TaskName))
+                    {
+                        taskInformationData.TaskName = taskInformationPostDto.TaskName;
+                    }
+                    else
+                    {
+                        taskInformationData.TaskName = existingTask.TaskName;
+                    }
+
+                    this._profileDataRepository.TaskInformation.Update(taskInformationData);
+                    await this._profileDataRepository.SaveChangesAsync();
+                    return this.Ok(taskInformationData);
+                }
+                catch (HttpRequestException ex)
+                {
+                    return this.BadRequest($"HTTP exception thrown: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes a Task Information record.
         /// </summary>
         /// <param name="id">The Task Information ID.</param>
         /// <returns>A <see cref="Task{TaskInformationDto}"/> representing the result of the asynchronous operation.</returns>
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /TaskInformation{id}
+        ///     DELETE /TaskInformation{id}
         ///     {
-        ///         id: Guid
         ///     }
         ///
         /// </remarks>
-        /// <response code="200">Returns the newly created item.</response>
-        /// <response code="404">If the item is not found.</response>
-        [HttpGet("{id}")]
+        /// <response code="200">Returns the deleted Task Information ID.</response>
+        /// <response code="404">Returns if the Task Record does not exist.</response>
+        /// <response code="400">Returns the HTTP exception.</response>
+        [HttpDelete("id/{id}")]
         [ValidateModelState]
         [ProducesResponseType(statusCode: (int)HttpStatusCode.OK)]
         [ProducesResponseType(statusCode: (int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<List<TaskInformationDto>>> GetTaskInformationByID(Guid id)
+        [ProducesResponseType(statusCode: (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> DeleteTaskInformation(Guid id)
         {
             var existingTask = await this._profileDataRepository.TaskInformation
                 .Where(x => x.Id == id)
-                .ToListAsync();
-
-            if (existingTask is null)
-            {
-                return this.NotFound($"Task ID {id} not found");
-            }
-            else
-            {
-                var returnData = this._mapper.Map<List<TaskInformationDto>>(existingTask);
-                return this.Ok(returnData);
-            }
-        }
-
-        /// <summary>
-        /// Adds a new Task information record.
-        /// </summary>
-        /// <param name="taskInformationDto"> the request for the operation.</param>
-        /// <returns>A <see cref="Task{TaskInformationDto}"/> representing the result of the asynchronous operation.</returns>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST /TaskInformation
-        ///     {
-        ///         TaskId: Guid
-        ///         UserName: "Dave Brett"
-        ///         TaskName: "Task 1"
-        ///         TaskExecutedTime: "12:00:30"
-        ///         TaskState: 0
-        ///     }
-        ///
-        /// </remarks>
-        /// <response code="200">Returns the newly created item.</response>
-        /// <response code="400">If the item already exists.</response>
-        [HttpPost]
-        [ValidateModelState]
-        [ProducesResponseType(statusCode: (int)HttpStatusCode.OK)]
-        [ProducesResponseType(statusCode: (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> AddTaskInformation([FromBody] TaskInformationDto taskInformationDto)
-        {
-            var existingTask = await this._profileDataRepository.TaskInformation
-                .Where(x => x.Id == taskInformationDto.TaskID)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             if (existingTask is null)
             {
-                var taskInformationData = this._mapper.Map<TaskInformation>(taskInformationDto);
-                this._profileDataRepository.TaskInformation.Add(taskInformationData);
-                await this._profileDataRepository.SaveChangesAsync();
-                return this.Ok(taskInformationDto);
+                return this.BadRequest($"Unable to find task with TaskID: {id}");
             }
             else
             {
-                return this.BadRequest($"Unable to add task with TaskID: {taskInformationDto.TaskID} because it already exists");
+                try
+                {
+                    this._profileDataRepository.TaskInformation.Remove(existingTask);
+                    await this._profileDataRepository.SaveChangesAsync();
+                    return this.Ok(id);
+                }
+                catch (HttpRequestException ex)
+                {
+                    return this.BadRequest($"HTTP exception thrown: {ex.Message}");
+                }
             }
         }
     }

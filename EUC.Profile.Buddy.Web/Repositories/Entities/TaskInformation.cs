@@ -26,7 +26,7 @@ namespace EUC.Profile.Buddy.Web.Repositories.Entities
         /// <summary>
 		/// Gets or sets the Task Name.
 		/// </summary>
-        public string? TaskName { get; set; }
+        public string TaskName { get; set; } = string.Empty;
 
         /// <summary>
 		/// Gets or sets the task executed date and time.
@@ -36,6 +36,11 @@ namespace EUC.Profile.Buddy.Web.Repositories.Entities
         /// <summary>
 		/// Gets or sets the task state.
 		/// </summary>
-        public TaskState TaskState { get; set; }
+        public EUCTaskState TaskState { get; set; }
+
+        /// <summary>
+		/// Gets or sets the task run time.
+		/// </summary>
+        public TimeSpan TaskRunTime { get; set; }
     }
 }

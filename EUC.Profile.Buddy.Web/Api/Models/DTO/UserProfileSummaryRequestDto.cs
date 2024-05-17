@@ -1,22 +1,21 @@
-﻿// <copyright file="UserProfileSummary.cs" company="bretty.me.uk">
+﻿// <copyright file="UserProfileSummaryRequestDto.cs" company="bretty.me.uk">
 // Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 
-namespace EUC.Profile.Buddy.Web.Repositories.Entities
+namespace EUC.Profile.Buddy.Web.Api.Models.DTO
 {
     using System.ComponentModel.DataAnnotations;
     using EUC.Profile.Buddy.Web.Repositories.Model;
 
-	/// <summary>
-	/// Class to build the User Profile Summary.
-	/// </summary>
-	public class UserProfileSummary
-	{
-		/// <summary>
-		/// Gets or sets the Id.
-		/// </summary>
-		[Key]
-		public Guid Id { get; set; }
+    /// <summary>
+    /// User Profile Summary Request DTO Class.
+    /// </summary>
+    public class UserProfileSummaryRequestDto
+    {
+        /// <summary>
+        /// Gets or sets the Id.
+        /// </summary>
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the users name.
@@ -43,10 +42,10 @@ namespace EUC.Profile.Buddy.Web.Repositories.Entities
         /// </summary>
         public EUCProfileType ProfileType { get; set; }
 
-		/// <summary>
-		/// Gets or sets the last updated time of this entity.
-		/// </summary>
-		public DateTime LastUpdated { get; set; }
+        /// <summary>
+        /// Gets or sets the last updated time of this entity.
+        /// </summary>
+        public DateTime LastUpdated { get; set; }
 
         /// <summary>
         /// Gets or sets the date created time of this entity.

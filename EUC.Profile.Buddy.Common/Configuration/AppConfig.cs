@@ -46,6 +46,7 @@ namespace EUC.Profile.Buddy.Common.Configuration
             this.FilesAndFolders = new FilesAndFolders(this.Logger);
             this.UserProfile = new UserProfile(this.Logger, this.FilesAndFolders);
             this.UserDetail = new UserDetail(this.Logger, this.Registry, this.FilesAndFolders);
+            //this.TaskInformationClient = new TaskInformationClient(this.HTTPClient);
             this.AppRegistryKey = ApplicationRegistryKey;
             this.LogLevel = LoggingLevelInfo;
             this.ClearTempAtStart = ClearTemp;
@@ -66,6 +67,12 @@ namespace EUC.Profile.Buddy.Common.Configuration
 
         /// <inheritdoc/>
         public IUserDetail UserDetail { get; set; }
+
+        /// <inheritdoc/>
+        //public HttpClient HTTPClient { get; set; }
+
+        /// <inheritdoc/>
+        //public TaskInformationClient TaskInformationClient { get; set; }
 
         /// <inheritdoc/>
         public string AppRegistryKey { get; set; }

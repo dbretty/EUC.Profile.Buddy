@@ -5,6 +5,7 @@
 namespace EUC.Profile.Buddy.Common.Profile
 {
     using System.Diagnostics;
+    using EUC.Profile.Buddy.Common.Client;
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Logging.Model;

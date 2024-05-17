@@ -4,6 +4,7 @@
 
 namespace EUC.Profile.Buddy.Common.Configuration
 {
+    using EUC.Profile.Buddy.Common.Client;
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Profile;
@@ -54,5 +55,10 @@ namespace EUC.Profile.Buddy.Common.Configuration
         /// Gets or Sets Clear Temp At Start.
         /// </summary>
         string ClearTempAtStart { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Task Information Client.
+        /// </summary>
+        //public TaskInformationClient TaskInformationClient { get; set; }
     }
 }

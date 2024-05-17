@@ -1,4 +1,4 @@
-﻿// <copyright file="TaskInformationDto.cs" company="bretty.me.uk">
+﻿// <copyright file="TaskInformationRequestDto.cs" company="bretty.me.uk">
 // Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 
@@ -8,38 +8,38 @@ namespace EUC.Profile.Buddy.Web.Api.Models.DTO
     using EUC.Profile.Buddy.Web.Repositories.Model;
 
     /// <summary>
-    /// Task Information DTO Class.
+    /// Task Information Request DTO Class.
     /// </summary>
-    public class TaskInformationDto
+    public class TaskInformationRequestDto
     {
         /// <summary>
 		/// Gets or sets the Id.
 		/// </summary>
-        [Required]
-        public Guid TaskID { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
 		/// Gets or sets the users name.
 		/// </summary>
-        [Required]
-        public string UserName { get; set; } = string.Empty;
+		public string UserName { get; set; } = string.Empty;
 
         /// <summary>
 		/// Gets or sets the Task Name.
 		/// </summary>
-        [Required]
         public string? TaskName { get; set; }
 
         /// <summary>
 		/// Gets or sets the task executed date and time.
 		/// </summary>
-        [Required]
-        public DateTime TaskExecutedTime { get; set; }
+        public DateTime TaskExecuted { get; set; }
 
         /// <summary>
 		/// Gets or sets the task state.
 		/// </summary>
-        [Required]
-        public TaskState TaskCurrentState { get; set; }
+        public EUCTaskState TaskState { get; set; }
+
+        /// <summary>
+		/// Gets or sets the task run time.
+		/// </summary>
+        public TimeSpan TaskRunTime { get; set; }
     }
 }

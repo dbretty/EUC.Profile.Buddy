@@ -1,4 +1,4 @@
-﻿// <copyright file="TaskState.cs" company="bretty.me.uk">
+﻿// <copyright file="EUCTaskState.cs" company="bretty.me.uk">
 // Copyright (c) bretty.me.uk. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,7 @@ namespace EUC.Profile.Buddy.Web.Repositories.Model
     /// <summary>
 	/// Enum to hold the task status.
 	/// </summary>
-	public enum TaskState
+	public enum EUCTaskState
     {
         /// <summary>
         /// Unknown Status.
