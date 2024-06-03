@@ -8,6 +8,8 @@ namespace EUC.Profile.Buddy.GUI
     using EUC.Profile.Buddy.Common.Profile.Model;
     using EUC.Profile.Buddy.Common.Configuration;
     using EUC.Profile.Buddy.Common.Logging.Model;
+    using EUC.Profile.Buddy.Common.ApiClient;
+    using System.IO.Pipes;
 
     public partial class FormMain : Form
     {
@@ -49,13 +51,33 @@ namespace EUC.Profile.Buddy.GUI
 
             if (EUCProfileBuddy.ClearTempAtStart == "Yes")
             {
+
+                Guid taskID = new Guid();
+                TaskInformationPostDto taskInformationPostDto = new TaskInformationPostDto();
+
+                if (EUCProfileBuddy.LogToServer == "Yes")
+                {
+                    taskInformationPostDto.TaskName = "Clearing Temp Files at Startup";
+                    taskInformationPostDto.UserName = EUCProfileBuddy.UserDetail.UserName;
+                    taskInformationPostDto.TaskState = EUCTaskState.Running;
+
+                    var Result = await EUCProfileBuddy.TaskInformationClient.AddTaskInformationAsync(taskInformationPostDto);
+                    taskID = Result.Id;
+                }
+
                 ProfileAction desiredAction = (ProfileAction)EUCProfileBuddy.UserProfile.ProfileActions[0];
                 EUCProfileBuddy.Logger.LogAsync($"Running startup action: Clear Temp At Start");
                 EUCProfileBuddy.UserProfile.ExecuteAction(desiredAction.ActionDefinition, this.lblProfileDirectory.Text, EUCProfileBuddy.UserProfile);
+
+                if (EUCProfileBuddy.LogToServer == "Yes")
+                {
+                    taskInformationPostDto.TaskState = EUCTaskState.Completed;
+                    await EUCProfileBuddy.TaskInformationClient.UpdateTaskInformationAsync(taskID, taskInformationPostDto);
+                }
             }
 
             EnableUi(true);
-
+            guiElements.UpdateLabel(lblProfileSize, await EUCProfileBuddy.UserDetail.UpdateProfileSizeAsync(this.lblProfileDirectory.Text));
         }
 
         private void NotifyMain_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -205,9 +227,22 @@ namespace EUC.Profile.Buddy.GUI
         }
 
 
-        private void btnGo_Click(object sender, EventArgs e)
+        private async void btnGo_Click(object sender, EventArgs e)
         {
             EnableUi(false, "Executing selected action");
+
+            Guid taskID = new Guid();
+            TaskInformationPostDto taskInformationPostDto = new TaskInformationPostDto();
+
+            if (EUCProfileBuddy.LogToServer == "Yes")
+            {
+                taskInformationPostDto.TaskName = $"Running action: {this.cmbActions.Text}";
+                taskInformationPostDto.UserName = EUCProfileBuddy.UserDetail.UserName;
+                taskInformationPostDto.TaskState = EUCTaskState.Running;
+
+                var Result = await EUCProfileBuddy.TaskInformationClient.AddTaskInformationAsync(taskInformationPostDto);
+                taskID = Result.Id;
+            }
 
             ProfileAction desiredAction = (ProfileAction)this.cmbActions.SelectedItem;
 
@@ -217,6 +252,12 @@ namespace EUC.Profile.Buddy.GUI
             GUIElements.DisplayInformationMessage($"Action: {this.cmbActions.Text} Completed");
 
             guiElements.LoadActions(this.cmbActions, EUCProfileBuddy.UserProfile);
+
+            if (EUCProfileBuddy.LogToServer == "Yes")
+            {
+                taskInformationPostDto.TaskState = EUCTaskState.Completed;
+                await EUCProfileBuddy.TaskInformationClient.UpdateTaskInformationAsync(taskID, taskInformationPostDto);
+            }
 
             EnableUi(true);
         }
@@ -230,6 +271,19 @@ namespace EUC.Profile.Buddy.GUI
                 if (dialogResult == DialogResult.Yes)
                 {
                     EnableUi(false, "Deleting file or folder");
+
+                    Guid taskID = new Guid();
+                    TaskInformationPostDto taskInformationPostDto = new TaskInformationPostDto();
+
+                    if (EUCProfileBuddy.LogToServer == "Yes")
+                    {
+                        taskInformationPostDto.TaskName = $"Deleting folder: {(string)folderToDelete}";
+                        taskInformationPostDto.UserName = EUCProfileBuddy.UserDetail.UserName;
+                        taskInformationPostDto.TaskState = EUCTaskState.Running;
+
+                        var Result = await EUCProfileBuddy.TaskInformationClient.AddTaskInformationAsync(taskInformationPostDto);
+                        taskID = Result.Id;
+                    }
 
                     string selectedItem = (string)folderToDelete;
                     if (selectedItem.IndexOf('\\') > 0)
@@ -256,6 +310,12 @@ namespace EUC.Profile.Buddy.GUI
                     guiElements.UpdateDataGrid(newFolders, this.dgUserProfileFolders);
                     var newFiles = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFilesAsync(this.lblCurrentDirectory.Text);
                     guiElements.UpdateDataGrid(newFiles, this.dgUserProfileFolders);
+
+                    if (EUCProfileBuddy.LogToServer == "Yes")
+                    {
+                        taskInformationPostDto.TaskState = EUCTaskState.Completed;
+                        await EUCProfileBuddy.TaskInformationClient.UpdateTaskInformationAsync(taskID, taskInformationPostDto);
+                    }
 
                     EnableUi(true);
                 }

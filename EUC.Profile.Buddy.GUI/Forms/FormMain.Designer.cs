@@ -97,7 +97,7 @@ namespace EUC.Profile.Buddy.GUI
             // 
             ContextMain.Items.AddRange(new ToolStripItem[] { showDetailToolStripMenuItem, exitToolStripMenuItem });
             ContextMain.Name = "ContextMain";
-            ContextMain.Size = new Size(207, 48);
+            ContextMain.Size = new Size(207, 70);
             // 
             // showDetailToolStripMenuItem
             // 

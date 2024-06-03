@@ -22,10 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EUC.Profile.Buddy.Common.Tests", "EUC.Profile.Buddy.Common.Test\EUC.Profile.Buddy.Common.Tests.csproj", "{DB426C42-1078-4E18-B64F-62C55797845C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{F56E07E7-4327-4AF1-8D1C-CC8FF9ACCEB7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EUC.Profile.Buddy.Web", "EUC.Profile.Buddy.Web\EUC.Profile.Buddy.Web.csproj", "{9C97EFF5-5C96-4DA3-8A8D-300FA0F86DF4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,10 +44,6 @@ Global
 		{DB426C42-1078-4E18-B64F-62C55797845C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB426C42-1078-4E18-B64F-62C55797845C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB426C42-1078-4E18-B64F-62C55797845C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C97EFF5-5C96-4DA3-8A8D-300FA0F86DF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C97EFF5-5C96-4DA3-8A8D-300FA0F86DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C97EFF5-5C96-4DA3-8A8D-300FA0F86DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C97EFF5-5C96-4DA3-8A8D-300FA0F86DF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,7 +53,6 @@ Global
 		{F16E35BE-9DB6-4F32-8801-3396AEDFA97D} = {39E07EA8-BCD4-4CFF-B626-7F804222C70A}
 		{C1E5415D-934A-4B18-9A17-197014064DB0} = {F4014735-565C-4180-839E-B7D9B34175AD}
 		{DB426C42-1078-4E18-B64F-62C55797845C} = {F4014735-565C-4180-839E-B7D9B34175AD}
-		{9C97EFF5-5C96-4DA3-8A8D-300FA0F86DF4} = {F56E07E7-4327-4AF1-8D1C-CC8FF9ACCEB7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4141EDCD-B8A8-4A24-8BEA-A90E1CC040D7}

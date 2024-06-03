@@ -183,7 +183,7 @@ namespace EUC.Profile.Buddy.Common.User
         /// </summary>
         private async void GetUserData()
         {
-            //this.logger.LogAsync("Getting User Details");
+            this.logger.LogAsync("Getting User Details");
 
             var userNameTask = await this.registry.GetRegistryValueAsync(UserNameValue, VolatileEnvironmentValue, RegistryHive.CurrentUser);
             this.UserName = (string?)userNameTask;
@@ -205,19 +205,10 @@ namespace EUC.Profile.Buddy.Common.User
             this.AppDataRoaming = (string?)roamingAppDataTask;
             this.logger.LogAsync($"Appdata Roaming: {this.AppDataRoaming}");
 
-            if (this.ProfileDirectory is not null)
-            {
-                this.ProfileSize = await this.UpdateProfileSizeAsync(this.ProfileDirectory);
-            }
-            else
-            {
-                this.ProfileSize = "0 GB";
-            }
-
-            this.logger.LogAsync($"Profile Size: {this.ProfileSize}");
-
             this.GetProfileType();
             this.logger.LogAsync($"Profile Type: {this.ProfileType}");
+
+            this.ProfileSize = "Calculating";
         }
 
         /// <summary>

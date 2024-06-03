@@ -4,7 +4,7 @@
 
 namespace EUC.Profile.Buddy.Common.Configuration
 {
-    using EUC.Profile.Buddy.Common.Client;
+    using EUC.Profile.Buddy.Common.ApiClient;
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Profile;
@@ -42,6 +42,16 @@ namespace EUC.Profile.Buddy.Common.Configuration
         IUserProfile UserProfile { get; }
 
         /// <summary>
+        /// Gets The Task Information Client.
+        /// </summary>
+        TaskInformationClient TaskInformationClient { get; }
+
+        /// <summary>
+        /// Gets The Task Information Client.
+        /// </summary>
+        UserProfileSummaryClient UserProfileSummaryClient { get; }
+
+        /// <summary>
         /// Gets The Application Registry Key.
         /// </summary>
         string AppRegistryKey { get; }
@@ -57,8 +67,8 @@ namespace EUC.Profile.Buddy.Common.Configuration
         string ClearTempAtStart { get; set; }
 
         /// <summary>
-        /// Gets or Sets Task Information Client.
+        /// Gets or Sets Log To Server.
         /// </summary>
-        //public TaskInformationClient TaskInformationClient { get; set; }
+        string LogToServer { get; set; }
     }
 }

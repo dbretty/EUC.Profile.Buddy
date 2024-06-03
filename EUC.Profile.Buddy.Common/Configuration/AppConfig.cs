@@ -4,6 +4,7 @@
 
 namespace EUC.Profile.Buddy.Common.Configuration
 {
+    using EUC.Profile.Buddy.Common.ApiClient;
     using EUC.Profile.Buddy.Common.File;
     using EUC.Profile.Buddy.Common.Logging;
     using EUC.Profile.Buddy.Common.Profile;
@@ -37,6 +38,11 @@ namespace EUC.Profile.Buddy.Common.Configuration
         private const string ClearTemp = "No";
 
         /// <summary>
+        /// Private Clear Temp at Start.
+        /// </summary>
+        private const string LogServer = "No";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AppConfig"/> class.
         /// </summary>
         public AppConfig()
@@ -46,10 +52,12 @@ namespace EUC.Profile.Buddy.Common.Configuration
             this.FilesAndFolders = new FilesAndFolders(this.Logger);
             this.UserProfile = new UserProfile(this.Logger, this.FilesAndFolders);
             this.UserDetail = new UserDetail(this.Logger, this.Registry, this.FilesAndFolders);
-            //this.TaskInformationClient = new TaskInformationClient(this.HTTPClient);
+            this.TaskInformationClient = new TaskInformationClient();
+            this.UserProfileSummaryClient = new UserProfileSummaryClient();
             this.AppRegistryKey = ApplicationRegistryKey;
             this.LogLevel = LoggingLevelInfo;
             this.ClearTempAtStart = ClearTemp;
+            this.LogToServer = LogServer;
             this.EUCProfileBuddyStartup();
         }
 
@@ -69,10 +77,10 @@ namespace EUC.Profile.Buddy.Common.Configuration
         public IUserDetail UserDetail { get; set; }
 
         /// <inheritdoc/>
-        //public HttpClient HTTPClient { get; set; }
+        public TaskInformationClient TaskInformationClient { get; set; }
 
         /// <inheritdoc/>
-        //public TaskInformationClient TaskInformationClient { get; set; }
+        public UserProfileSummaryClient UserProfileSummaryClient { get; set; }
 
         /// <inheritdoc/>
         public string AppRegistryKey { get; set; }
@@ -82,6 +90,9 @@ namespace EUC.Profile.Buddy.Common.Configuration
 
         /// <inheritdoc/>
         public string ClearTempAtStart { get; set; }
+
+        /// <inheritdoc/>
+        public string LogToServer { get; set; }
 
         /// <summary>
         /// Startup module to cater for start actions.
@@ -142,6 +153,18 @@ namespace EUC.Profile.Buddy.Common.Configuration
                     this.Logger.LogAsync($"Error reading: ClearTempAtStart", Logging.Model.LogLevel.ERROR);
                     throw new InvalidOperationException();
                 }
+
+                var logToServerRegistry = this.Registry.GetRegistryValue("LogToServer", this.AppRegistryKey, RegistryHive.CurrentUser);
+                if (logToServerRegistry is not null)
+                {
+                    this.Logger.LogAsync($"Log To Server: {logToServerRegistry}");
+                    this.LogToServer = (string)logToServerRegistry;
+                }
+                else
+                {
+                    this.Logger.LogAsync($"Error reading: LogToServer", Logging.Model.LogLevel.ERROR);
+                    throw new InvalidOperationException();
+                }
             }
             else
             {
@@ -156,6 +179,9 @@ namespace EUC.Profile.Buddy.Common.Configuration
 
                     this.Registry.SetRegistryValue("ClearTempAtStart", this.AppRegistryKey, this.ClearTempAtStart, RegistryHive.CurrentUser);
                     this.Logger.LogAsync($"Creating ClearTempAtStart: {this.ClearTempAtStart}");
+
+                    this.Registry.SetRegistryValue("LogToServer", this.AppRegistryKey, this.ClearTempAtStart, RegistryHive.CurrentUser);
+                    this.Logger.LogAsync($"Creating LogToServer: {this.LogToServer}");
                 }
                 else
                 {
