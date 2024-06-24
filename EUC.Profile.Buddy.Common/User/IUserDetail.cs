@@ -41,6 +41,11 @@ namespace EUC.Profile.Buddy.Common.User
         public string? ProfileSize { get; set; }
 
         /// <summary>
+        /// Gets or sets the Profile Size Raw Value.
+        /// </summary>
+        public long? ProfileSizeRaw { get; set; }
+
+        /// <summary>
         /// Gets The Profile Type.
         /// </summary>
         public string? UserProfileType { get; }

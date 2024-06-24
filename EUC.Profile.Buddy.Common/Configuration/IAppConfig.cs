@@ -70,5 +70,15 @@ namespace EUC.Profile.Buddy.Common.Configuration
         /// Gets or Sets Log To Server.
         /// </summary>
         string LogToServer { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Logging Server Uri.
+        /// </summary>
+        string LoggingServerUri { get; set; }
+
+        /// <summary>
+        /// Gets or Sets User Profile Guid.
+        /// </summary>
+        Guid UserProfileGuid { get; set; }
     }
 }

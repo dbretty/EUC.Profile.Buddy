@@ -10,6 +10,10 @@ namespace EUC.Profile.Buddy.GUI
     using EUC.Profile.Buddy.Common.Logging.Model;
     using EUC.Profile.Buddy.Common.ApiClient;
     using System.IO.Pipes;
+    using EUC.Profile.Buddy.Common.Profile;
+    using EUC.Profile.Buddy.Common.User.Model;
+    using System.Threading.Tasks;
+    using Microsoft.Win32;
 
     public partial class FormMain : Form
     {
@@ -78,6 +82,55 @@ namespace EUC.Profile.Buddy.GUI
 
             EnableUi(true);
             guiElements.UpdateLabel(lblProfileSize, await EUCProfileBuddy.UserDetail.UpdateProfileSizeAsync(this.lblProfileDirectory.Text));
+
+            if (EUCProfileBuddy.LogToServer == "Yes")
+            {
+                Guid taskUserID = new Guid();
+                UserProfileSummaryPostDto userProfileSummaryPostDto = new UserProfileSummaryPostDto();
+                userProfileSummaryPostDto.UserName = EUCProfileBuddy.UserDetail.UserName;
+                switch (EUCProfileBuddy.UserDetail.ProfileDefinition)
+                {
+                    case ProfileTypeDefinition.Local:
+                        userProfileSummaryPostDto.ProfileType = EUCProfileType.Local;
+                        break;
+                    case ProfileTypeDefinition.Citrix:
+                        userProfileSummaryPostDto.ProfileType = EUCProfileType.CitrixProfileManager;
+                        break;
+                    case ProfileTypeDefinition.FSLogix:
+                        userProfileSummaryPostDto.ProfileType = EUCProfileType.FSLogix;
+                        break;
+                }
+                userProfileSummaryPostDto.ProfileSize = (long)EUCProfileBuddy.UserDetail.ProfileSizeRaw;
+
+                long tempSize = 0;
+                foreach (var folder in EUCProfileBuddy.UserProfile.TempFolders)
+                {
+                    var tempFolder = Path.Join(EUCProfileBuddy.UserDetail.ProfileDirectory, folder);
+                    if (Directory.Exists(tempFolder))
+                    {
+                        var tempHoldingLocation = await EUCProfileBuddy.FilesAndFolders.BuildTreeSizeFoldersAsync(tempFolder);
+                        foreach (var x in tempHoldingLocation)
+                        {
+                            tempSize = (long)(tempSize + x.RawSize);
+                        }
+                    }
+                }
+                userProfileSummaryPostDto.TempSize = tempSize;
+
+                if (EUCProfileBuddy.UserProfileGuid == Guid.Empty)
+                {
+                    var Result = await EUCProfileBuddy.UserProfileSummaryClient.AddUserProfileAsync(userProfileSummaryPostDto);
+                    taskUserID = Result.Id;
+
+                    EUCProfileBuddy.Registry.SetRegistryValue("UserProfileGuid", EUCProfileBuddy.AppRegistryKey, taskUserID, RegistryHive.CurrentUser);
+                }
+                else
+                {
+                    var Result = await EUCProfileBuddy.UserProfileSummaryClient.UpdateUserProfileAsync(EUCProfileBuddy.UserProfileGuid, userProfileSummaryPostDto);
+                    taskUserID = Result.Id;
+                }
+
+            }
         }
 
         private void NotifyMain_MouseDoubleClick(object sender, MouseEventArgs e)

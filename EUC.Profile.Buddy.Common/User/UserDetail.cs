@@ -145,6 +145,9 @@ namespace EUC.Profile.Buddy.Common.User
         public string? ProfileSize { get; set; }
 
         /// <inheritdoc/>
+        public long? ProfileSizeRaw { get; set; }
+
+        /// <inheritdoc/>
         public string? UserProfileType { get; set; }
 
         /// <inheritdoc/>
@@ -163,6 +166,7 @@ namespace EUC.Profile.Buddy.Common.User
             var profileSize = this.filesAndFolders.FormatFileSize(profileSizeLong);
 
             this.ProfileSize = profileSize;
+            this.ProfileSizeRaw = profileSizeLong;
 
             return profileSize;
         }
