@@ -80,7 +80,7 @@ namespace EUC.Profile.Buddy.GUI.Forms
                     EUCProfileBuddy.Logger.LogAsync($"Updated ClearTempAtStart: No");
                     this.lblStatus.Text = "Saved setting, ClearTempAtStart: No";
                 }
-            }  
+            }
         }
     }
 }
