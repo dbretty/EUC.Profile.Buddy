@@ -64,7 +64,6 @@ namespace EUC.Profile.Buddy.GUI.Classes
             notifyIcon.BalloonTipText = baloonTip;
             form.ShowInTaskbar = false;
             form.WindowState = FormWindowState.Minimized;
-            form.Hide();
             notifyIcon.ShowBalloonTip(BaloonTipTimeout);
         }
 
@@ -115,7 +114,7 @@ namespace EUC.Profile.Buddy.GUI.Classes
         }
 
         /// <summary>
-        /// Update DataGrid PV Pair.
+        /// Update DataGrid KV Pair.
         /// </summary>
         /// <param name="treeSize">The DataGrid Object.</param>
         /// <param name="dataGridView">The data grid view.</param>

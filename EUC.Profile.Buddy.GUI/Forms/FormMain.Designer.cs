@@ -76,6 +76,7 @@ namespace EUC.Profile.Buddy.GUI
             pbMain = new ProgressBar();
             lblStatus = new Label();
             btnSettings = new Button();
+            lblLogToServer = new Label();
             ContextMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgUserProfileFolders).BeginInit();
@@ -97,7 +98,7 @@ namespace EUC.Profile.Buddy.GUI
             // 
             ContextMain.Items.AddRange(new ToolStripItem[] { showDetailToolStripMenuItem, exitToolStripMenuItem });
             ContextMain.Name = "ContextMain";
-            ContextMain.Size = new Size(207, 70);
+            ContextMain.Size = new Size(207, 48);
             // 
             // showDetailToolStripMenuItem
             // 
@@ -158,7 +159,7 @@ namespace EUC.Profile.Buddy.GUI
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(64, 64, 64);
-            label1.Location = new Point(86, 25);
+            label1.Location = new Point(84, 16);
             label1.Name = "label1";
             label1.Size = new Size(207, 32);
             label1.TabIndex = 4;
@@ -558,6 +559,17 @@ namespace EUC.Profile.Buddy.GUI
             btnSettings.UseVisualStyleBackColor = false;
             btnSettings.Click += btnSettings_Click;
             // 
+            // lblLogToServer
+            // 
+            lblLogToServer.AutoSize = true;
+            lblLogToServer.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblLogToServer.ForeColor = Color.FromArgb(64, 64, 64);
+            lblLogToServer.Location = new Point(89, 49);
+            lblLogToServer.Name = "lblLogToServer";
+            lblLogToServer.Size = new Size(0, 13);
+            lblLogToServer.TabIndex = 33;
+            lblLogToServer.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -565,6 +577,7 @@ namespace EUC.Profile.Buddy.GUI
             BackColor = Color.White;
             ClientSize = new Size(519, 689);
             ControlBox = false;
+            Controls.Add(lblLogToServer);
             Controls.Add(btnSettings);
             Controls.Add(lblStatus);
             Controls.Add(pbMain);
@@ -654,5 +667,6 @@ namespace EUC.Profile.Buddy.GUI
         private ProgressBar pbMain;
         private Label lblStatus;
         private Button btnSettings;
+        private Label lblLogToServer;
     }
 }

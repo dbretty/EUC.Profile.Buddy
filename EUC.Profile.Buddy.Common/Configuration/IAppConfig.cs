@@ -80,5 +80,10 @@ namespace EUC.Profile.Buddy.Common.Configuration
         /// Gets or Sets User Profile Guid.
         /// </summary>
         Guid UserProfileGuid { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether Hub Connection.
+        /// </summary>
+        bool HubConnection { get; set; }
     }
 }

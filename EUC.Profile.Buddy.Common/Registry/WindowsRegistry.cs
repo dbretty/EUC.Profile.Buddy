@@ -58,7 +58,7 @@ namespace EUC.Profile.Buddy.Common.Registry
                         if (localValue is null)
                         {
                             this.logger.LogAsync($"Registry value not found: {valueName}", LogLevel.ERROR);
-                            throw new InvalidValueException();
+                            return null;
                         }
                         else
                         {

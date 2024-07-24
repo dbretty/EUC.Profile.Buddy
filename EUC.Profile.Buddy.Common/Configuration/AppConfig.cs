@@ -48,6 +48,11 @@ namespace EUC.Profile.Buddy.Common.Configuration
         private const string LogServerUri = "localhost";
 
         /// <summary>
+        /// Hub Connection.
+        /// </summary>
+        private const bool HubConnectionActive = false;
+
+        /// <summary>
         /// Private User Profile GUID.
         /// </summary>
         private Guid userProfileGuid = Guid.Empty;
@@ -70,6 +75,7 @@ namespace EUC.Profile.Buddy.Common.Configuration
             this.LogToServer = LogServer;
             this.LoggingServerUri = LogServerUri;
             this.UserProfileGuid = this.userProfileGuid;
+            this.HubConnection = HubConnectionActive;
             this.EUCProfileBuddyStartup();
         }
 
@@ -112,6 +118,9 @@ namespace EUC.Profile.Buddy.Common.Configuration
         /// <inheritdoc/>
         public Guid UserProfileGuid { get; set; }
 
+        /// <inheritdoc/>
+        public bool HubConnection { get; set; }
+
         /// <summary>
         /// Startup module to cater for start actions.
         /// </summary>
@@ -131,8 +140,8 @@ namespace EUC.Profile.Buddy.Common.Configuration
                 }
                 else
                 {
-                    this.Logger.LogAsync($"Error reading: TempDataLocations", Logging.Model.LogLevel.ERROR);
-                    throw new InvalidOperationException();
+                    this.Registry.SetRegistryValue("TempDataLocations", this.AppRegistryKey, this.UserProfile.TempFolders, RegistryHive.CurrentUser);
+                    this.Logger.LogAsync($"Creating TempDataLocations: {this.UserProfile.TempFolders}");
                 }
 
                 var logLevel = this.Registry.GetRegistryValue("LogLevel", this.AppRegistryKey, RegistryHive.CurrentUser);
@@ -156,8 +165,8 @@ namespace EUC.Profile.Buddy.Common.Configuration
                 }
                 else
                 {
-                    this.Logger.LogAsync($"Error reading: LogLevel", Logging.Model.LogLevel.ERROR);
-                    throw new InvalidOperationException();
+                    this.Registry.SetRegistryValue("LogLevel", this.AppRegistryKey, this.LogLevel, RegistryHive.CurrentUser);
+                    this.Logger.LogAsync($"Creating LogLevel: {this.LogLevel}");
                 }
 
                 var clearTemp = this.Registry.GetRegistryValue("ClearTempAtStart", this.AppRegistryKey, RegistryHive.CurrentUser);
@@ -168,8 +177,8 @@ namespace EUC.Profile.Buddy.Common.Configuration
                 }
                 else
                 {
-                    this.Logger.LogAsync($"Error reading: ClearTempAtStart", Logging.Model.LogLevel.ERROR);
-                    throw new InvalidOperationException();
+                    this.Registry.SetRegistryValue("ClearTempAtStart", this.AppRegistryKey, this.ClearTempAtStart, RegistryHive.CurrentUser);
+                    this.Logger.LogAsync($"Creating ClearTempAtStart: {this.ClearTempAtStart}");
                 }
 
                 var logToServerRegistry = this.Registry.GetRegistryValue("LogToServer", this.AppRegistryKey, RegistryHive.CurrentUser);
@@ -180,8 +189,8 @@ namespace EUC.Profile.Buddy.Common.Configuration
                 }
                 else
                 {
-                    this.Logger.LogAsync($"Error reading: LogToServer", Logging.Model.LogLevel.ERROR);
-                    throw new InvalidOperationException();
+                    this.Registry.SetRegistryValue("LogToServer", this.AppRegistryKey, this.LogToServer, RegistryHive.CurrentUser);
+                    this.Logger.LogAsync($"Creating LogToServer: {this.LogToServer}");
                 }
 
                 var logServerUriRegistry = this.Registry.GetRegistryValue("LoggingServer", this.AppRegistryKey, RegistryHive.CurrentUser);
@@ -195,8 +204,8 @@ namespace EUC.Profile.Buddy.Common.Configuration
                 }
                 else
                 {
-                    this.Logger.LogAsync($"Error reading: LoggingServer", Logging.Model.LogLevel.ERROR);
-                    throw new InvalidOperationException();
+                    this.Registry.SetRegistryValue("LoggingServer", this.AppRegistryKey, this.LoggingServerUri, RegistryHive.CurrentUser);
+                    this.Logger.LogAsync($"Creating LoggingServer: {this.LoggingServerUri}");
                 }
 
                 var userProfileGuidRegistry = this.Registry.GetRegistryValue("UserProfileGuid", this.AppRegistryKey, RegistryHive.CurrentUser);
@@ -207,8 +216,8 @@ namespace EUC.Profile.Buddy.Common.Configuration
                 }
                 else
                 {
-                    this.Logger.LogAsync($"Error reading: UserProfileGuid", Logging.Model.LogLevel.ERROR);
-                    throw new InvalidOperationException();
+                    this.Registry.SetRegistryValue("UserProfileGuid", this.AppRegistryKey, this.UserProfileGuid, RegistryHive.CurrentUser);
+                    this.Logger.LogAsync($"Creating UserProfileGuid: {this.UserProfileGuid}");
                 }
             }
             else

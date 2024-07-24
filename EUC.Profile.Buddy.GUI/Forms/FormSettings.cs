@@ -53,7 +53,7 @@ namespace EUC.Profile.Buddy.GUI.Forms
             {
                 if (chkClearTempAtStart.Checked == true)
                 {
-                    if (EUCProfileBuddy.LogToServer == "Yes")
+                    if (string.Equals(EUCProfileBuddy.LogToServer, "Yes", StringComparison.OrdinalIgnoreCase))
                     {
                         TaskInformationPostDto taskInformationPostDto = new TaskInformationPostDto();
                         taskInformationPostDto.TaskName = "Set Clear Temp Files at Startup to Yes";
@@ -62,13 +62,13 @@ namespace EUC.Profile.Buddy.GUI.Forms
                         await EUCProfileBuddy.TaskInformationClient.AddTaskInformationAsync(taskInformationPostDto);
                     }
                     EUCProfileBuddy.Registry.SetRegistryValue("ClearTempAtStart", EUCProfileBuddy.AppRegistryKey, "Yes", RegistryHive.CurrentUser);
-                    EUCProfileBuddy.Logger.LogAsync($"Updated ClearTempAtStart: Yes");
+                    await EUCProfileBuddy.Logger.LogAsync($"Updated ClearTempAtStart: Yes");
                     this.lblStatus.Text = "Saved setting, ClearTempAtStart: Yes";
 
                 }
                 else
                 {
-                    if (EUCProfileBuddy.LogToServer == "Yes")
+                    if (string.Equals(EUCProfileBuddy.LogToServer, "Yes", StringComparison.OrdinalIgnoreCase))
                     {
                         TaskInformationPostDto taskInformationPostDto = new TaskInformationPostDto();
                         taskInformationPostDto.TaskName = "Set Clear Temp Files at Startup to No";
@@ -77,7 +77,7 @@ namespace EUC.Profile.Buddy.GUI.Forms
                         await EUCProfileBuddy.TaskInformationClient.AddTaskInformationAsync(taskInformationPostDto);
                     }
                     EUCProfileBuddy.Registry.SetRegistryValue("ClearTempAtStart", EUCProfileBuddy.AppRegistryKey, "No", RegistryHive.CurrentUser);
-                    EUCProfileBuddy.Logger.LogAsync($"Updated ClearTempAtStart: No");
+                    await EUCProfileBuddy.Logger.LogAsync($"Updated ClearTempAtStart: No");
                     this.lblStatus.Text = "Saved setting, ClearTempAtStart: No";
                 }
             }
